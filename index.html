@@ -53,6 +53,30 @@
       margin: 2rem auto 0;
       opacity: 0.3;
     }
+
+    .login-button {
+      margin-top: 2.5rem;
+      padding: 0.85rem 2.5rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: #0a0a0a;
+      background: #f0f0f0;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .login-button:hover {
+      background: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.12);
+    }
+
+    .login-button:active {
+      transform: translateY(0);
+    }
   </style>
 </head>
 <body>
@@ -60,6 +84,7 @@
     <h1>RORR</h1>
     <p>coming soon</p>
     <div class="dot"></div>
+    <button type="button" class="login-button">로그인</button>
   </div>
 </body>
 </html>
