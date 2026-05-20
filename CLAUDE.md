@@ -1,3 +1,23 @@
+## ⚠️ 필수 전역 규칙 — 모든 페이지에 반드시 적용
+
+> **모든 페이지 최상위 컨테이너는 반드시 `h-dvh w-full`을 사용한다.**
+>
+> `index.html`의 `body`가 `display: flex; align-items: center` flex 컨테이너이므로,
+> 최상위에 `w-full`이 없으면 페이지 너비가 텍스트 길이에 따라 제각각 달라진다.
+>
+> ```tsx
+> // ✅ 올바름
+> <div className="h-dvh w-full ...">
+>
+> // ❌ 금지 — w-full 누락 시 width가 content 길이로 수축
+> <div className="h-dvh ...">
+> ```
+>
+> `index.html`에 `#root { width: 100%; }` 스타일이 이미 적용되어 있다.
+> 새 페이지를 구현할 때 이 규칙을 빠뜨리면 안 된다.
+
+---
+
 > **페이지 구현 스펙** (피그마 URL, 레이아웃, 상태, API, 인터랙션 완전 명세):
 > `.claude/docs/pages/` 디렉토리 → 각 페이지별 파일 참조 (README.md에 목록)
 
@@ -111,6 +131,7 @@ Figma 코드에서 추출한 값을 **그대로** 사용한다. 근사값으로 
 
 ### 6단계 — FSD 파일 배치
 
+
 ```
 src/
   pages/<route>/index.tsx          ← 라우트 컴포넌트 + MOCK_* 데이터
@@ -128,7 +149,7 @@ src/
 - `shared/ui` 기존 컴포넌트 최대 재사용. 새 컴포넌트는 `shared/ui/` 또는 해당 feature의 `ui/`에 생성.
 - 스펙 파일의 API 엔드포인트·타입을 그대로 사용 (임의 변경 금지).
 
-### 6단계 — 타입 체크 필수
+### 7단계 — 타입 체크 필수
 
 구현 완료 후 반드시 실행:
 ```bash
