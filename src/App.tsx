@@ -15,9 +15,7 @@ function AppContent() {
   return (
     <div className="flex min-h-dvh items-center justify-center bg-[#f0f2f5]">
       <div className="flex flex-col items-center gap-4">
-        <p className="font-pretendard text-lg font-semibold text-[#000000]">
-          현재 페이지: {currentPage}
-        </p>
+        <p className="text-lg font-semibold text-[#000000]">현재 페이지: {currentPage}</p>
         <button
           type="button"
           onClick={() => setCurrentPage(PAGES.FOLLOW_LEAGUE)}
