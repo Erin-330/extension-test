@@ -6,6 +6,8 @@ export type FollowTargetItem = {
   slug: string
   image_url: string
   boostYN?: 'Y' | 'N'
+  team_name?: string
+  team_image_url?: string
 }
 
 export type FollowListResponse = {

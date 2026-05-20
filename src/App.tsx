@@ -2,14 +2,25 @@ import { useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { PAGES, type Page } from './shared/constants/pages'
 import { LeagueListPage } from './pages/follow/league-list'
+import { TeamListPage } from './pages/follow/team-list'
+import { PlayerListPage } from './pages/follow/player-list'
 
 const queryClient = new QueryClient()
 
 function AppContent() {
   const [currentPage, setCurrentPage] = useState<Page>(PAGES.FOLLOW_LEAGUE)
+  const handleNavigate = (page: string) => setCurrentPage(page as Page)
 
   if (currentPage === PAGES.FOLLOW_LEAGUE) {
-    return <LeagueListPage onNavigate={(page) => setCurrentPage(page as Page)} />
+    return <LeagueListPage onNavigate={handleNavigate} />
+  }
+
+  if (currentPage === PAGES.FOLLOW_TEAM) {
+    return <TeamListPage onNavigate={handleNavigate} />
+  }
+
+  if (currentPage === PAGES.FOLLOW_PLAYER) {
+    return <PlayerListPage onNavigate={handleNavigate} />
   }
 
   return (
