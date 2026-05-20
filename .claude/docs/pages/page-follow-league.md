@@ -11,8 +11,7 @@
 | 진입 조건 | 첫 로그인 또는 ProfileMenu → "팔로우 설정" |
 
 ## 피그마
-**Figma:** https://www.figma.com/design/FR0ELVIB6XF3dHidbEqBdz/DesignSystem_REM-EDIT?node-id=478-23409&m=dev
-
+**Figma:** https://www.figma.com/design/FR0ELVIB6XF3dHidbEqBdz/DesignSystem_REM-EDIT?node-id=178-50767&m=dev
 ---
 
 ## 레이아웃 구조
