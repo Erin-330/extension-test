@@ -76,15 +76,14 @@ export function PlayerSelectButton({
       <div className="flex h-full flex-1 items-center gap-3 overflow-hidden px-3">
         {/* Player avatar (circular) */}
         <div className="flex shrink-0 items-center justify-center p-[2px]">
-          <div className="h-7 w-7 overflow-hidden rounded-full bg-[#4e4743]">
-            <img
-              src={playerImgUrl}
-              alt={playerName}
-              className="h-full w-full object-cover"
-              onError={(e) => {
-                ;(e.currentTarget as HTMLImageElement).src = `https://placehold.co/28x28/4e4743/ffffff?text=${playerName.slice(0, 1)}`
-              }}
-            />
+          <div className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-[#4e4743]">
+            {playerImgUrl ? (
+              <img src={playerImgUrl} alt={playerName} className="h-full w-full object-cover" />
+            ) : (
+              <span className="text-[11px] font-bold leading-none text-white">
+                {playerName.slice(0, 1).toUpperCase()}
+              </span>
+            )}
           </div>
         </div>
 
@@ -104,14 +103,7 @@ export function PlayerSelectButton({
         {/* Team logo */}
         {teamImgUrl && (
           <div className="h-5 w-5 shrink-0 overflow-hidden">
-            <img
-              src={teamImgUrl}
-              alt={teamName ?? ''}
-              className="h-full w-full object-contain"
-              onError={(e) => {
-                ;(e.currentTarget as HTMLImageElement).src = `https://placehold.co/20x20/e2e8f0/969cda?text=${(teamName ?? '').slice(0, 1)}`
-              }}
-            />
+            <img src={teamImgUrl} alt={teamName ?? ''} className="h-full w-full object-contain" />
           </div>
         )}
       </div>

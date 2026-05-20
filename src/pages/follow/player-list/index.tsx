@@ -19,122 +19,22 @@ type MockPlayer = FollowTargetItem & {
   team_name?: string
 }
 
-const TEAM_LOGO_T1 = 'https://www.figma.com/api/mcp/asset/38f6fcb1-c81e-427e-9610-058fbd19ee0f'
-const TEAM_LOGO_KT = 'https://www.figma.com/api/mcp/asset/b7584157-7d21-4466-a1b7-c1ee2b9e7f76'
-const TEAM_LOGO_GENG = 'https://www.figma.com/api/mcp/asset/1b1472b1-66db-490d-bcfe-fdfeece19aca'
-const PLAYER_IMG = 'https://www.figma.com/api/mcp/asset/a741e6cc-9feb-413c-8067-703cda0a1393'
+const T1 = 'https://www.figma.com/api/mcp/asset/d7e529d4-82fc-4f78-ac8a-204d14ee066f'
+const KT = 'https://www.figma.com/api/mcp/asset/1c866d28-ee39-47d2-a49c-a2911e87033d'
+const GENG = 'https://www.figma.com/api/mcp/asset/1b6a58ee-8280-4162-9a7b-a7a097dfdfb7'
 
 const MOCK_PLAYERS: MockPlayer[] = [
-  {
-    target_id: 'doran',
-    name: 'Doran',
-    slug: 'Choi Hyeon-Joon',
-    image_url: PLAYER_IMG,
-    boostYN: 'Y',
-    full_name: 'Choi Hyeon-Joon',
-    team_img_url: TEAM_LOGO_T1,
-    team_name: 'T1',
-  },
-  {
-    target_id: 'faker',
-    name: 'Faker',
-    slug: 'Lee Sang-Hyeok',
-    image_url: PLAYER_IMG,
-    boostYN: 'Y',
-    full_name: 'Lee Sang-Hyeok',
-    team_img_url: TEAM_LOGO_T1,
-    team_name: 'T1',
-  },
-  {
-    target_id: 'keria',
-    name: 'Keria',
-    slug: 'Ryu Min-Seok',
-    image_url: PLAYER_IMG,
-    boostYN: 'Y',
-    full_name: 'Ryu Min-Seok',
-    team_img_url: TEAM_LOGO_T1,
-    team_name: 'T1',
-  },
-  {
-    target_id: 'oner',
-    name: 'Oner',
-    slug: 'Mun Hyeon-Jun',
-    image_url: PLAYER_IMG,
-    boostYN: 'Y',
-    full_name: 'Mun Hyeon-Jun',
-    team_img_url: TEAM_LOGO_T1,
-    team_name: 'T1',
-  },
-  {
-    target_id: 'perfect',
-    name: 'PerfecT',
-    slug: 'Lee Seung-Min',
-    image_url: PLAYER_IMG,
-    boostYN: 'N',
-    full_name: 'Lee Seung-Min',
-    team_img_url: TEAM_LOGO_KT,
-    team_name: 'KT Rollster',
-  },
-  {
-    target_id: 'bdd',
-    name: 'Bdd',
-    slug: 'Gwak Bo-Seong',
-    image_url: PLAYER_IMG,
-    boostYN: 'N',
-    full_name: 'Gwak Bo-Seong',
-    team_img_url: TEAM_LOGO_KT,
-    team_name: 'KT Rollster',
-  },
-  {
-    target_id: 'cuzz',
-    name: 'Cuzz',
-    slug: 'Mun Woo-Chan',
-    image_url: PLAYER_IMG,
-    boostYN: 'N',
-    full_name: 'Mun Woo-Chan',
-    team_img_url: TEAM_LOGO_KT,
-    team_name: 'KT Rollster',
-  },
-  {
-    target_id: 'aiming',
-    name: 'Aiming',
-    slug: 'Kim Ha-Ram',
-    image_url: PLAYER_IMG,
-    boostYN: 'N',
-    full_name: 'Kim Ha-Ram',
-    team_img_url: TEAM_LOGO_KT,
-    team_name: 'KT Rollster',
-  },
-  {
-    target_id: 'ghost',
-    name: 'Ghost',
-    slug: 'Jang Yong-Jun',
-    image_url: PLAYER_IMG,
-    boostYN: 'N',
-    full_name: 'Jang Yong-Jun',
-    team_img_url: TEAM_LOGO_KT,
-    team_name: 'KT Rollster',
-  },
-  {
-    target_id: 'canyon',
-    name: 'Canyon',
-    slug: 'Kim Geon-Bu',
-    image_url: PLAYER_IMG,
-    boostYN: 'Y',
-    full_name: 'Kim Geon-Bu',
-    team_img_url: TEAM_LOGO_GENG,
-    team_name: 'Gen.G',
-  },
-  {
-    target_id: 'ruler',
-    name: 'Ruler',
-    slug: 'Park Jae-Hyuk',
-    image_url: PLAYER_IMG,
-    boostYN: 'Y',
-    full_name: 'Park Jae-Hyuk',
-    team_img_url: TEAM_LOGO_GENG,
-    team_name: 'Gen.G',
-  },
+  { target_id: 'doran',   name: 'Doran',   slug: 'doran',   image_url: '', boostYN: 'Y', full_name: 'Choi Hyeon-Joon', team_name: 'T1',         team_img_url: T1 },
+  { target_id: 'faker',   name: 'Faker',   slug: 'faker',   image_url: '', boostYN: 'Y', full_name: 'Lee Sang-Hyeok',  team_name: 'T1',         team_img_url: T1 },
+  { target_id: 'keria',   name: 'Keria',   slug: 'keria',   image_url: '', boostYN: 'Y', full_name: 'Ryu Min-Seok',    team_name: 'T1',         team_img_url: T1 },
+  { target_id: 'oner',    name: 'Oner',    slug: 'oner',    image_url: '', boostYN: 'Y', full_name: 'Mun Hyeon-Jun',   team_name: 'T1',         team_img_url: T1 },
+  { target_id: 'perfect', name: 'PerfecT', slug: 'perfect', image_url: '', boostYN: 'N', full_name: 'Lee Seung-Min',   team_name: 'KT Rollster', team_img_url: KT },
+  { target_id: 'bdd',     name: 'Bdd',     slug: 'bdd',     image_url: '', boostYN: 'N', full_name: 'Gwak Bo-Seong',   team_name: 'KT Rollster', team_img_url: KT },
+  { target_id: 'cuzz',    name: 'Cuzz',    slug: 'cuzz',    image_url: '', boostYN: 'N', full_name: 'Mun Woo-Chan',    team_name: 'KT Rollster', team_img_url: KT },
+  { target_id: 'aiming',  name: 'Aiming',  slug: 'aiming',  image_url: '', boostYN: 'N', full_name: 'Kim Ha-Ram',      team_name: 'KT Rollster', team_img_url: KT },
+  { target_id: 'ghost',   name: 'Ghost',   slug: 'ghost',   image_url: '', boostYN: 'N', full_name: 'Jang Yong-Jun',   team_name: 'KT Rollster', team_img_url: KT },
+  { target_id: 'canyon',  name: 'Canyon',  slug: 'canyon',  image_url: '', boostYN: 'Y', full_name: 'Kim Geon-Bu',     team_name: 'Gen.G',       team_img_url: GENG },
+  { target_id: 'ruler',   name: 'Ruler',   slug: 'ruler',   image_url: '', boostYN: 'Y', full_name: 'Park Jae-Hyuk',   team_name: 'Gen.G',       team_img_url: GENG },
 ]
 
 interface PlayerListPageProps {
