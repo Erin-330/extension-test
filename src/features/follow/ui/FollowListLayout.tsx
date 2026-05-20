@@ -23,6 +23,7 @@ interface FollowListLayoutProps {
   stepIndicator: ReactNode
   renderListContent: () => ReactNode
   onClose?: () => void
+  searchPlaceholder?: string
 }
 
 export function FollowListLayout({
@@ -33,6 +34,7 @@ export function FollowListLayout({
   stepIndicator,
   renderListContent,
   onClose,
+  searchPlaceholder = 'Search leagues...',
 }: FollowListLayoutProps) {
   const sentinelRef = useRef<HTMLDivElement>(null)
 
@@ -113,7 +115,7 @@ export function FollowListLayout({
                 type="text"
                 value={searchPanel.query}
                 onChange={(e) => searchPanel.setQuery(e.target.value)}
-                placeholder="Search leagues..."
+                placeholder={searchPlaceholder}
                 className="flex-1 bg-transparent text-[14px] text-black placeholder-[#b2bac3] outline-none"
               />
               <button type="button" onClick={searchPanel.close} className="shrink-0 text-[#757b90]">
