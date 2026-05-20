@@ -151,6 +151,55 @@ if (orderedTargetIds.length > FOLLOW_SELECTION_LIMIT.league) {
 
 ---
 
+## Multiselect UI (Figma 기준)
+
+**한 번에 여러 개 선택 가능 (최대 5개).**
+
+### 미선택 상태
+```
+카드: bg-white drop-shadow-[0px_2px_2px_rgba(0,0,0,0.08)] rounded-[8px] h-[68px]
+오른쪽 SelectNum: px-[12px] rounded-br-[8px] rounded-tr-[8px]
+  내부 아이콘 박스: border-[#969cda] border-[0.4px] rounded-[6px] size-[32px]
+  (person+plus 아이콘)
+```
+
+### 선택 상태
+```
+카드: border-2 border-[#209fee] rounded-[8px] h-[68px] overflow-clip
+오른쪽 SelectNum: bg-[#209fee] w-[54px] h-full (rounded-br/tr 없음, overflow-clip)
+  내부: checkmark 아이콘(w-[13px] h-[9px]) + 선택 순서 번호
+  번호 텍스트: font-Pretendard-Light text-[14px] text-white leading-[20px]
+```
+
+### 선택 순서 번호
+- `orderedTargetIds` 배열 기준 1-based 인덱스 표시
+- 선택 해제 시 나머지 항목 번호 자동 재정렬
+
+---
+
+## 선택 상태 페이지 간 유지 (Zustand)
+
+`followSelectionsStore`(Zustand)에 선택 상태를 저장해 페이지 이동 후에도 유지한다.
+
+```ts
+// features/follow/model/store/followSelectionsStore.ts
+{
+  leagues: FollowTargetItem[]   // 리그 선택 목록
+  teams: FollowTargetItem[]
+  players: FollowTargetItem[]
+  toggleLeague: (item: FollowTargetItem) => void
+  toggleTeam: (item: FollowTargetItem) => void
+  togglePlayer: (item: FollowTargetItem) => void
+  reset: () => void
+}
+```
+
+- `/follow/league-list` → Next → `/follow/team-list` → Back → `/follow/league-list` 복귀 시 선택 유지
+- `orderedTargetIds`는 `followSelectionsStore.leagues`에서 파생
+- `useHydrateFollowSelections` 훅으로 첫 진입 시 기존 팔로우 데이터로 초기화
+
+---
+
 ## 무한 스크롤
 
 ```ts

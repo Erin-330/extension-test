@@ -143,20 +143,49 @@ FOLLOW_SELECTION_LIMIT.player = 20   // 최대 20개 (최소 없음)
 
 ## Zustand 스토어 (`followSelectionsStore`)
 
-모든 단계에서 공유하는 선택 상태:
+모든 단계에서 공유하는 선택 상태 — 페이지 이동(Next/Back) 후에도 선택이 유지된다:
 ```ts
+// features/follow/model/store/followSelectionsStore.ts
 {
   leagues: FollowTargetItem[]
   teams: FollowTargetItem[]
   players: FollowTargetItem[]
-  toggleLeague: (item) => void
-  toggleTeam: (item) => void
-  togglePlayer: (item) => void
+  toggleLeague: (item: FollowTargetItem) => void
+  toggleTeam: (item: FollowTargetItem) => void
+  togglePlayer: (item: FollowTargetItem) => void
   reset: () => void
 }
 ```
 
-`useHydrateFollowSelections` 훅으로 초기 진입 시 기존 팔로우 데이터로 스토어 초기화.
+- `orderedTargetIds`는 각 단계의 store 배열(`leagues` / `teams` / `players`)에서 파생
+- Back 버튼으로 이전 단계 복귀 시 해당 단계의 선택 상태 그대로 유지
+- `useHydrateFollowSelections` 훅으로 초기 진입 시 기존 팔로우 데이터로 스토어 초기화
+
+---
+
+## Multiselect UI (Figma 기준)
+
+**한 번에 여러 개 선택 가능 (팀: 최대 10개, 선수: 최대 20개).**
+
+### 미선택 상태 (팀/선수 공통)
+```
+카드: bg-white drop-shadow-[0px_1px_2px_rgba(0,0,0,0.1)] rounded-[8px] h-[68px]
+오른쪽 SelectNum: px-[12px] rounded-br-[8px] rounded-tr-[8px]
+  내부 아이콘 박스: border-[#969cda] border-[0.4px] rounded-[6px] size-[32px]
+  (person+plus 아이콘)
+```
+
+### 선택 상태 (팀/선수 공통)
+```
+카드: border-2 border-[#209fee] rounded-[8px] h-[68px] overflow-clip
+오른쪽 SelectNum: bg-[#209fee] w-[54px] h-full (overflow-clip)
+  내부: checkmark 아이콘(w-[13px] h-[9px]) + 선택 순서 번호
+  번호 텍스트: font-Pretendard-Light text-[14px] text-white leading-[20px]
+```
+
+### 선택 순서 번호
+- `orderedTargetIds` 배열 기준 1-based 인덱스 표시
+- 선택 해제 시 나머지 항목 번호 자동 재정렬
 
 ---
 

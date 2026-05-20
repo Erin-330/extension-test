@@ -25,36 +25,25 @@ function BoostBadge() {
 }
 
 function SelectNum({ count, isActive }: { count?: number; isActive: boolean }) {
+  if (isActive && count != null) {
+    return (
+      <div className="flex h-full w-[54px] shrink-0 items-center justify-center gap-[4px] overflow-clip rounded-br-[8px] rounded-tr-[8px] bg-[#209fee]">
+        <svg width="13" height="9" viewBox="0 0 13 9" fill="none">
+          <path d="M1 4L5 8L12 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <span className="text-[14px] font-light leading-5 text-white">{count}</span>
+      </div>
+    )
+  }
   return (
-    <div className="flex h-full shrink-0 items-center justify-center overflow-clip rounded-br-[8px] rounded-tr-[8px] px-3">
-      {isActive && count != null ? (
-        <div className="flex h-8 w-8 items-center justify-center rounded-[6px] bg-[#969cda] text-[13px] font-bold text-white">
-          {count}
-        </div>
-      ) : (
-        <div className="flex h-8 w-8 items-center justify-center rounded-[6px] border-[0.4px] border-[#969cda]">
-          <svg
-            className="h-5 w-5 text-[#969cda]"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.5" />
-            <path
-              d="M2 21c0-4 3.134-7 7-7s7 3 7 7"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-            <path
-              d="M19 12v6M16 15h6"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
-        </div>
-      )}
+    <div className="flex h-full shrink-0 items-center justify-center overflow-clip rounded-br-[8px] rounded-tr-[8px] px-[12px]">
+      <div className="flex h-[32px] w-[32px] items-center justify-center rounded-[6px] border-[0.4px] border-[#969cda]">
+        <svg className="h-5 w-5 text-[#969cda]" viewBox="0 0 24 24" fill="none">
+          <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M2 21c0-4 3.134-7 7-7s7 3 7 7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M19 12v6M16 15h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      </div>
     </div>
   )
 }
@@ -72,8 +61,13 @@ export function LeagueSelectButton({
     <button
       type="button"
       onClick={onClick}
-      className="flex h-[68px] w-full shrink-0 items-start gap-1 rounded-[8px] bg-white text-left"
-      style={{ boxShadow: '0px 2px 2px rgba(0,0,0,0.08)' }}
+      className={[
+        'flex h-[68px] w-full shrink-0 items-start gap-[4px] rounded-[8px] bg-white text-left overflow-clip',
+        isActive
+          ? 'border-2 border-[#209fee]'
+          : '',
+      ].filter(Boolean).join(' ')}
+      style={isActive ? undefined : { boxShadow: '0px 2px 2px rgba(0,0,0,0.08)' }}
     >
       {/* Info section */}
       <div className="flex h-full flex-1 items-center gap-3 overflow-hidden px-3">
