@@ -1,6 +1,6 @@
 ## ⚠️ 필수 전역 규칙 — 모든 페이지에 반드시 적용
 
-> **모든 페이지 최상위 컨테이너는 반드시 `h-dvh w-full`을 사용한다.**
+> **규칙 1 — 최상위 컨테이너 `h-dvh w-full`**
 >
 > `index.html`의 `body`가 `display: flex; align-items: center` flex 컨테이너이므로,
 > 최상위에 `w-full`이 없으면 페이지 너비가 텍스트 길이에 따라 제각각 달라진다.
@@ -14,7 +14,42 @@
 > ```
 >
 > `index.html`에 `#root { width: 100%; }` 스타일이 이미 적용되어 있다.
-> 새 페이지를 구현할 때 이 규칙을 빠뜨리면 안 된다.
+
+---
+
+> **규칙 2 — SVG·아이콘은 반드시 Figma MCP 에셋 그대로 사용**
+>
+> 모든 아이콘·SVG·이미지는 **직접 손으로 그리거나(custom SVG path) 추측해서 그리는 것을 절대 금지한다.**
+> Figma MCP `get_design_context` 호출 결과에서 반환된 `https://www.figma.com/api/mcp/asset/...` URL을
+> `<img src={...} />` 로 그대로 사용한다.
+>
+> | 금지 | 허용 |
+> |------|------|
+> | `<path d="M3 2h9c2.5 0 4...">` (수작업 SVG 경로) | `<img src="https://www.figma.com/api/mcp/asset/..." />` |
+> | `<circle cx="9" cy="9" r="5.5" ...>` (근사 아이콘) | Figma MCP 반환 에셋 URL |
+> | `https://placehold.co/...` (외부 placeholder) | Figma MCP 반환 에셋 URL |
+>
+> - Figma MCP 에셋 URL은 **7일 유효**. 구현 시점에 반드시 새로 호출해서 최신 URL을 사용한다.
+> - 아이콘 하나라도 Figma MCP를 호출하지 않고 임의로 그리면 안 된다.
+> - 로고, 버튼 아이콘, 리스트 아이템 이미지, 체크마크, 화살표 등 **화면에 표시되는 모든 시각 요소**가 해당된다.
+
+---
+
+> **규칙 3 — API 없이 목 데이터만으로 동작**
+>
+> API가 연결되지 않은 상태에서도 화면이 즉시 표시되어야 한다.
+>
+> ```ts
+> // ✅ 올바름 — API 로딩 중/실패해도 목 데이터를 즉시 표시
+> const displayList = list.length > 0 ? list : MOCK_ITEMS
+>
+> // ❌ 금지 — isLoading이 true이면 빈 화면
+> const displayList = list.length > 0 || isLoading ? list : MOCK_ITEMS
+> ```
+>
+> - `useQuery` / `useInfiniteQuery`는 선언하되, 응답 전까지는 항상 목 데이터를 표시한다.
+> - `placehold.co` 같은 외부 placeholder 서비스는 네트워크 요청이 발생하므로 사용하지 않는다.
+>   반드시 Figma MCP 에셋 URL을 목 데이터 이미지로 사용한다.
 
 ---
 
@@ -80,7 +115,7 @@ Figma 출력에서 반드시 추출할 항목:
 
 ### 3단계 — 목 데이터 필수 포함
 
-**API 연결 여부와 관계없이 목 데이터를 항상 포함한다.**
+**API 연결 여부와 관계없이 목 데이터를 항상 포함한다. 화면은 즉시 표시되어야 한다.**
 
 ```ts
 // 페이지 컴포넌트 상단에 MOCK_* 상수로 선언
@@ -88,15 +123,21 @@ const MOCK_ITEMS = [
   {
     id: '...',
     name: '...',
-    image_url: 'https://www.figma.com/api/mcp/asset/...',  // Figma 에셋 URL 사용
+    image_url: 'https://www.figma.com/api/mcp/asset/...',  // ← 반드시 Figma MCP 에셋 URL
     // Figma 스크린샷에 표시된 항목 그대로 재현
   },
   // ...
 ]
+
+// ✅ 올바른 표시 로직 — API 전에도 목 데이터 즉시 표시
+const displayList = list.length > 0 ? list : MOCK_ITEMS
+
+// ❌ 금지 — isLoading이 true이면 빈 화면이 됨
+const displayList = list.length > 0 || isLoading ? list : MOCK_ITEMS
 ```
 
 - 목 데이터 항목 수와 내용은 **Figma 스크린샷에 보이는 것과 동일**하게 구성한다.
-- Figma 에셋 이미지 URL이 있으면 그대로 사용한다 (7일 유효).
+- 이미지 URL은 **반드시 Figma MCP 에셋 URL**을 사용한다. `placehold.co` 등 외부 서비스 금지.
 - API가 연결되면 목 데이터는 `placeholderData` 또는 초기값으로 유지한다.
 
 ### 4단계 — 픽셀 단위 구현 (Figma 값 그대로)

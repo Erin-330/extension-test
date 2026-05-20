@@ -81,7 +81,10 @@ export function useFollowListPage(
     const combined = [...extraSelected.current, ...items].filter(
       (item, idx, arr) => arr.findIndex((i) => i.target_id === item.target_id) === idx,
     )
-    const selected = combined.filter((i) => orderedTargetIds.includes(i.target_id))
+    // selected items sorted by selection order (orderedTargetIds index)
+    const selected = orderedTargetIds
+      .map((id) => combined.find((i) => i.target_id === id))
+      .filter((i): i is FollowTargetItem => i !== undefined)
     const unselected = combined.filter((i) => !orderedTargetIds.includes(i.target_id))
     return [...selected, ...unselected]
   }

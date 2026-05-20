@@ -175,6 +175,23 @@ if (orderedTargetIds.length > FOLLOW_SELECTION_LIMIT.league) {
 - `orderedTargetIds` 배열 기준 1-based 인덱스 표시
 - 선택 해제 시 나머지 항목 번호 자동 재정렬
 
+### 목록 정렬 규칙 ⚠️ 필수
+- **선택된 항목은 반드시 선택 순서(1→2→3…) 그대로 목록 맨 위에 표시한다.**
+- `getDisplayList`는 `orderedTargetIds` 배열 순서대로 선택 항목을 재정렬한 뒤, 미선택 항목을 그 아래에 이어 붙인다.
+- 원래 목록 순서(API 응답 순, 서버 정렬 순)로 선택 항목을 표시하면 안 된다.
+
+```ts
+// ✅ 올바른 구현 — 선택 순서 기준 정렬
+const selected = orderedTargetIds
+  .map((id) => combined.find((i) => i.target_id === id))
+  .filter((i): i is FollowTargetItem => i !== undefined)
+const unselected = combined.filter((i) => !orderedTargetIds.includes(i.target_id))
+return [...selected, ...unselected]
+
+// ❌ 금지 — 목록 순서 그대로 선택 항목을 나열 (번호가 뒤죽박죽)
+const selected = combined.filter((i) => orderedTargetIds.includes(i.target_id))
+```
+
 ---
 
 ## 선택 상태 페이지 간 유지 (Zustand)
