@@ -94,7 +94,22 @@ Figma 코드에서 추출한 값을 **그대로** 사용한다. 근사값으로 
 | `backdrop-blur(3px)` | `style={{ backdropFilter: 'blur(3px)' }}` | `backdrop-blur-sm` |
 | `opacity: 0.66` | `style={{ opacity: 0.66 }}` | `opacity-70` (0.7) |
 
-### 5단계 — FSD 파일 배치
+### 5단계 — 전역 레이아웃 규칙 준수
+
+**모든 페이지 최상위 컨테이너는 `h-dvh w-full`을 사용한다.**
+
+`index.html`의 `body`가 `display: flex; align-items: center` flex 컨테이너이기 때문에,
+`#root`에 `width: 100%`가 없으면 자식 컴포넌트의 `w-full`이 content 너비로 수축한다.
+이 문제는 `index.html`에 `#root { width: 100%; }` 스타일로 이미 해결되어 있다.
+
+```tsx
+// 모든 페이지 최상위 div — 이 패턴을 반드시 지킨다
+<div className="h-dvh w-full ...">
+```
+
+새 페이지를 추가할 때 최상위 컨테이너에 `w-full`이 빠지면 페이지 너비가 content 길이에 따라 달라지므로 주의한다.
+
+### 6단계 — FSD 파일 배치
 
 ```
 src/
