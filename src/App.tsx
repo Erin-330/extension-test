@@ -1,39 +1,39 @@
-import { Button } from './components/Button'
+import { useState } from 'react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { PAGES, type Page } from './shared/constants/pages'
+import { LeagueListPage } from './pages/follow/league-list'
 
-function App() {
+const queryClient = new QueryClient()
+
+function AppContent() {
+  const [currentPage, setCurrentPage] = useState<Page>(PAGES.FOLLOW_LEAGUE)
+
+  if (currentPage === PAGES.FOLLOW_LEAGUE) {
+    return <LeagueListPage onNavigate={(page) => setCurrentPage(page as Page)} />
+  }
+
   return (
-    <div className="min-h-screen bg-red-500 flex flex-col items-center justify-center gap-8 p-8">
-      <h1 className="text-3xl font-bold text-gray-900">Button Component Demo</h1>
-
-      <section className="flex flex-col gap-4 w-full max-w-lg">
-        <h2 className="text-lg font-semibold text-gray-700">Variants</h2>
-        <div className="flex flex-wrap gap-3">
-          <Button variant="primary" onClick={() => alert('primary')}>Primary</Button>
-          <Button variant="secondary" onClick={() => alert('secondary')}>Secondary</Button>
-          <Button variant="danger" onClick={() => alert('danger')}>Danger</Button>
-          <Button variant="ghost" onClick={() => alert('ghost')}>Ghost</Button>
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-4 w-full max-w-lg">
-        <h2 className="text-lg font-semibold text-gray-700">Sizes</h2>
-        <div className="flex flex-wrap items-center gap-3">
-          <Button size="sm">Small</Button>
-          <Button size="md">Medium</Button>
-          <Button size="lg">Large</Button>
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-4 w-full max-w-lg">
-        <h2 className="text-lg font-semibold text-gray-700">States</h2>
-        <div className="flex flex-wrap gap-3">
-          <Button disabled>Disabled</Button>
-          <Button loading>Loading</Button>
-          <Button variant="secondary" loading>Loading Secondary</Button>
-        </div>
-      </section>
+    <div className="flex min-h-dvh items-center justify-center bg-[#f0f2f5]">
+      <div className="flex flex-col items-center gap-4">
+        <p className="font-pretendard text-lg font-semibold text-[#000000]">
+          현재 페이지: {currentPage}
+        </p>
+        <button
+          type="button"
+          onClick={() => setCurrentPage(PAGES.FOLLOW_LEAGUE)}
+          className="rounded-[30px] bg-[#969cda] px-6 py-3 text-sm font-semibold text-white"
+        >
+          팔로우 리그로 이동
+        </button>
+      </div>
     </div>
   )
 }
 
-export default App
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppContent />
+    </QueryClientProvider>
+  )
+}

@@ -27,19 +27,115 @@
 
 **규칙**: 코드 작성 전 반드시 해당 파일을 Read 도구로 열어서 확인한다. 작업 영역이 겹치면 해당하는 파일을 모두 읽는다.
 
+---
+
 ## 페이지 구현 워크플로우
 
-특정 페이지 구현 요청 시 (예: "로그인 페이지 만들어줘", "/schedule 구현해줘", "부스트 선택 페이지"):
+특정 페이지 구현 요청 시 (예: "로그인 페이지 만들어줘", "/schedule 구현해줘", "팔로우 리그 페이지"):
 
-1. `.claude/docs/pages/` 에서 해당 페이지 스펙 파일을 Read 도구로 열어 읽는다
-   - 파일 목록은 `.claude/docs/pages/README.md` 참조
-2. 스펙 파일의 `**Figma:**` 필드 확인:
-   - **URL이 있으면** → Figma MCP `get_design_context` (또는 `get_screenshot`) 호출하여 실제 디자인 파악 → 디자인 기반으로 UI 구현
-   - **미입력이면** → 스펙의 레이아웃 구조·className만으로 구현
-3. Figma 디자인 + 스펙 파일(레이아웃, 상태, API, 인터랙션)을 모두 반영하여 구현
-4. FSD 구조에 맞게 파일 배치:
-   - 라우트 컴포넌트 → `src/pages/<route>/index.tsx`
-   - 비즈니스 로직 → `src/features/<feature>/`
-   - 공통 UI → `src/shared/ui/`
-5. `shared/ui` 기존 컴포넌트 최대 재사용. 새 컴포넌트 필요 시 `shared/ui/` 또는 해당 feature의 `ui/` 에 생성
-6. 스펙 파일의 API 섹션에 정의된 엔드포인트·타입을 그대로 사용 (임의 변경 금지)
+### 1단계 — 스펙 파일 읽기
+`.claude/docs/pages/README.md` 목록에서 해당 파일을 찾아 **반드시 Read 도구로 먼저 읽는다**.
+- 연관 페이지가 여러 개면 모두 읽는다 (예: 팔로우 리그 → 팔로우 팀/선수도 함께).
+
+### 2단계 — Figma 디자인 파악 ⚠️ URL이 있으면 코드 작성 전 반드시 실행
+
+> **스펙 파일의 레이아웃·className 설명은 구조 참고용일 뿐이다.**
+> **시각적 스타일(색상·크기·간격·폰트·효과)의 유일한 기준은 Figma다.**
+> **Figma MCP를 호출하지 않고 코드를 작성하면 안 된다.**
+
+스펙 파일의 `**Figma:**` 필드에 URL이 있으면, 코드를 한 줄도 작성하기 전에:
+
+1. `mcp__claude_ai_Figma__get_design_context` 호출 → 컴포넌트 코드·디자인 토큰 추출
+2. `mcp__claude_ai_Figma__get_screenshot` 호출 → 시각적 레퍼런스 확보
+
+두 호출 모두 완료한 뒤에만 구현을 시작한다. Figma와 스펙이 충돌하면 **Figma를 따른다.**
+
+Figma 출력에서 반드시 추출할 항목:
+- **정확한 색상값** (`#46383a`, `#f0f2f5`, `#969cda` 등 — Tailwind 색상 이름으로 대체 금지)
+- **정확한 크기·간격** (`h-[68px]`, `gap-[16px]`, `px-[11px]`, `rounded-[16px]` 등)
+- **폰트 스타일** (size, weight, lineHeight 수치 그대로)
+- **그림자·블러 효과** (`boxShadow`, `backdropFilter` 인라인 style로 적용)
+- **그라디언트** (Tailwind `bg-gradient-to-*`로 표현 불가한 경우 inline `style` 사용)
+- **에셋 이미지 URL** (Figma MCP가 반환한 `https://www.figma.com/api/mcp/asset/...` 경로)
+
+### 3단계 — 목 데이터 필수 포함
+
+**API 연결 여부와 관계없이 목 데이터를 항상 포함한다.**
+
+```ts
+// 페이지 컴포넌트 상단에 MOCK_* 상수로 선언
+const MOCK_ITEMS = [
+  {
+    id: '...',
+    name: '...',
+    image_url: 'https://www.figma.com/api/mcp/asset/...',  // Figma 에셋 URL 사용
+    // Figma 스크린샷에 표시된 항목 그대로 재현
+  },
+  // ...
+]
+```
+
+- 목 데이터 항목 수와 내용은 **Figma 스크린샷에 보이는 것과 동일**하게 구성한다.
+- Figma 에셋 이미지 URL이 있으면 그대로 사용한다 (7일 유효).
+- API가 연결되면 목 데이터는 `placeholderData` 또는 초기값으로 유지한다.
+
+### 4단계 — 픽셀 단위 구현 (Figma 값 그대로)
+
+Figma 코드에서 추출한 값을 **그대로** 사용한다. 근사값으로 대체하지 않는다.
+"비슷해 보여서" 다른 값을 쓰는 것은 금지다.
+
+| 피그마 값 | 올바른 구현 | 잘못된 구현 |
+|-----------|------------|------------|
+| `h-[68px]` | `h-[68px]` | `h-16` (64px) |
+| `gap-[16px]` | `gap-4` 또는 `gap-[16px]` | `gap-3` (12px) |
+| `rounded-[16px]` | `rounded-[16px]` | `rounded-2xl` (16px — OK) |
+| `rgba(0,0,0,0.08)` shadow | `style={{ boxShadow: '0px 2px 2px rgba(0,0,0,0.08)' }}` | `shadow-sm` |
+| `linear-gradient(#c0b1ff, #6f4cff)` | `style={{ background: 'linear-gradient(...)' }}` | Tailwind `from-purple-300` |
+| `backdrop-blur(3px)` | `style={{ backdropFilter: 'blur(3px)' }}` | `backdrop-blur-sm` |
+| `opacity: 0.66` | `style={{ opacity: 0.66 }}` | `opacity-70` (0.7) |
+
+### 5단계 — FSD 파일 배치
+
+```
+src/
+  pages/<route>/index.tsx          ← 라우트 컴포넌트 + MOCK_* 데이터
+  features/<feature>/
+    api/<feature>Api.ts            ← fetch 함수 + 타입
+    model/
+      store/<feature>Store.ts      ← Zustand 스토어
+      hooks/use<Feature>Page.ts    ← TanStack Query + 비즈니스 로직
+    ui/<Component>.tsx             ← 해당 feature 전용 컴포넌트
+  shared/
+    ui/<Component>.tsx             ← 여러 feature에서 재사용되는 컴포넌트
+    constants/pages.ts             ← PAGES 상수
+```
+
+- `shared/ui` 기존 컴포넌트 최대 재사용. 새 컴포넌트는 `shared/ui/` 또는 해당 feature의 `ui/`에 생성.
+- 스펙 파일의 API 엔드포인트·타입을 그대로 사용 (임의 변경 금지).
+
+### 6단계 — 타입 체크 필수
+
+구현 완료 후 반드시 실행:
+```bash
+npm run type-check
+```
+오류가 없을 때만 완료로 간주한다.
+
+---
+
+## 피그마 URL 없을 때
+
+`**Figma:** *(미입력)*` 상태일 때만 스펙의 레이아웃 구조·className으로 구현한다.
+목 데이터는 여전히 포함하되, 이미지는 `https://placehold.co/` URL을 사용한다.
+**URL이 조금이라도 적혀 있으면 위의 2단계를 반드시 실행한다.**
+
+---
+
+## 컴포넌트 구현 기준 (Figma에서 추출)
+
+Figma `get_design_context` 응답의 **"These styles are contained in the design"** 섹션을 우선 참조한다:
+- 폰트 family, size, weight, lineHeight
+- 색상 토큰 (Primary, Surface, Background, Text 등)
+- 이펙트 (Shadow, Blur, Gradient)
+
+이 값들을 `tailwind.config.ts`의 `theme.extend`에 추가하거나, 컴포넌트 inline style로 적용한다.
