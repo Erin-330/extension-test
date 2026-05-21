@@ -22,6 +22,19 @@
 
 ## ⚠️ Figma와 반드시 일치해야 하는 항목
 
+### ⚠️ 너비 100% 필수
+
+랭킹 페이지의 **모든 컨테이너·행·카드는 반드시 `w-full`** 이어야 한다.
+`flex` 자식 요소에 `w-full`이 누락되면 콘텐츠가 화면 너비를 채우지 못한다.
+
+```tsx
+{/* ✅ */}
+<div className="w-full flex items-center ...">
+
+{/* ❌ — w-full 없으면 콘텐츠가 좁아짐 */}
+<div className="flex items-center ...">
+```
+
 ### UI Header
 - 왼쪽: X 닫기 버튼, 오른쪽: 정보(i) 버튼
 - 버튼 외형·에셋은 `get_design_context` 결과 그대로
