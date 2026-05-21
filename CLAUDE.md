@@ -134,7 +134,28 @@ npm run type-check  # 오류 없을 때만 완료
 
 #### 0단계 — 공통 파일 먼저 작성
 
-`index.html`, `src/main.tsx`, `src/index.css`, `src/App.tsx`, `src/shared/constants/pages.ts`를 먼저 완성한다.
+`tailwind.config.ts`, `postcss.config.js`, `index.html`, `src/main.tsx`, `src/index.css`, `src/App.tsx`, `src/shared/constants/pages.ts`를 먼저 완성한다.
+
+**tailwind.config.ts** 내용:
+```ts
+import type { Config } from 'tailwindcss'
+
+export default {
+  content: ['./index.html', './src/**/*.{ts,tsx}'],
+  theme: { extend: {} },
+  plugins: [],
+} satisfies Config
+```
+
+**postcss.config.js** 내용:
+```js
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+```
 
 #### 1단계 — 페이지별 순차 구현 (Figma → 코드 → 다음 페이지)
 
@@ -156,6 +177,8 @@ fileKey: `FR0ELVIB6XF3dHidbEqBdz`
 
 ```
 index.html                          ← Pretendard CDN + body font-family (규칙 7)
+tailwind.config.ts                  ← content: ["./index.html","./src/**/*.{ts,tsx}"], plugins: []
+postcss.config.js                   ← tailwindcss + autoprefixer
 src/
   main.tsx / index.css / App.tsx
   shared/constants/pages.ts         ← PAGES = { MAIN, FOLLOW_LEAGUE, FOLLOW_TEAM, FOLLOW_PLAYER, PROFILE, RANK, PURCHASE_LIST }
