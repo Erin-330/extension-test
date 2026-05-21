@@ -4,11 +4,32 @@ interface MainPageProps {
   onNavigate: (page: string) => void
 }
 
+const IMG_USER_ICON = 'https://www.figma.com/api/mcp/asset/bb3c27d7-6044-42a7-8f8a-b1b05728fcf3'
+const IMG_GRADE_BORDER = 'https://www.figma.com/api/mcp/asset/c7a85590-e5f2-42b6-953e-8965724c2eb5'
+
 export function MainPage({ onNavigate }: MainPageProps) {
   return (
     <div className="flex h-dvh w-full flex-col bg-[#f0f2f5]">
-      <header className="flex h-14 w-full shrink-0 items-center justify-center px-4">
+      <header className="flex h-14 w-full shrink-0 items-center justify-between px-4">
+        <button
+          type="button"
+          onClick={() => onNavigate(PAGES.PROFILE)}
+          aria-label="프로필"
+          className="relative flex shrink-0 size-[40px] items-center justify-center"
+        >
+          <div className="relative size-[36px]">
+            <div className="absolute inset-[3.98%_3.57%_3.16%_3.57%] overflow-hidden rounded-full bg-[#bbbfd0]">
+              <div className="absolute inset-[16.67%_6.69%_0_6.69%]">
+                <img src={IMG_USER_ICON} alt="" className="absolute block inset-0 size-full" />
+              </div>
+            </div>
+            <div className="absolute inset-[0.41%_0_-0.41%_0]">
+              <img src={IMG_GRADE_BORDER} alt="" className="absolute block inset-0 size-full" />
+            </div>
+          </div>
+        </button>
         <span className="text-base font-semibold text-[#000000]">RORR</span>
+        <div className="size-[40px]" />
       </header>
 
       <main className="flex flex-1 flex-col items-center justify-center gap-6 px-6">

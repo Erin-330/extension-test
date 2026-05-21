@@ -7,6 +7,7 @@ import { TeamListPage } from './pages/follow/team-list'
 import { PlayerListPage } from './pages/follow/player-list'
 import { RankPage } from './pages/rank'
 import { PurchaseListPage } from './pages/purchase/list'
+import { ProfilePage } from './pages/profile'
 
 const queryClient = new QueryClient()
 
@@ -32,6 +33,10 @@ function AppContent() {
 
   if (currentPage === PAGES.PURCHASE_LIST) {
     return <PurchaseListPage onNavigate={handleNavigate} />
+  }
+
+  if (currentPage === PAGES.PROFILE) {
+    return <ProfilePage onNavigate={handleNavigate} />
   }
 
   return <MainPage onNavigate={handleNavigate} />
