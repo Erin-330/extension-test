@@ -8,7 +8,8 @@
 | Figma node-id | `1767:73369` |
 | fileKey | `FR0ELVIB6XF3dHidbEqBdz` |
 
-**구현 전 반드시 `get_design_context(node-id: 1767:73369)`를 호출하고, 그 결과를 그대로 구현한다.**
+**구현 전 반드시 `get_screenshot(node-id: 1767:73369)` + `get_design_context(node-id: 1767:73369)`를 병렬 호출한다.**
+`get_screenshot` 캡처가 유일한 레이아웃 기준 — 섹션 순서·간격·크기 임의 변경 금지. 스펙 설명과 스크린샷이 다르면 스크린샷을 따른다.
 
 ---
 
