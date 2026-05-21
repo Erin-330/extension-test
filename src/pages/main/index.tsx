@@ -19,21 +19,39 @@ export function MainPage({ onNavigate }: MainPageProps) {
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => onNavigate(PAGES.FOLLOW_LEAGUE)}
-          className="flex h-12 min-w-[160px] items-center justify-center gap-2 rounded-[30px] bg-[#969cda] px-6 text-sm font-semibold text-white shadow-[0px_2px_6px_0px_rgba(0,0,0,0.15)] transition-colors hover:bg-[#afb5ea]"
-        >
-          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-              stroke="white"
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span>리그</span>
-        </button>
+        <div className="flex flex-col items-center gap-3">
+          <button
+            type="button"
+            onClick={() => onNavigate(PAGES.FOLLOW_LEAGUE)}
+            className="flex h-12 min-w-[160px] items-center justify-center gap-2 rounded-[30px] bg-[#969cda] px-6 text-sm font-semibold text-white shadow-[0px_2px_6px_0px_rgba(0,0,0,0.15)] transition-colors hover:bg-[#afb5ea]"
+          >
+            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span>리그</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onNavigate(PAGES.RANK)}
+            className="flex h-12 min-w-[160px] items-center justify-center gap-2 rounded-[30px] bg-white px-6 text-sm font-semibold text-[#969cda] shadow-[0px_2px_6px_0px_rgba(0,0,0,0.15)] ring-1 ring-[#ced6e6] transition-colors hover:bg-[#f0f2f5]"
+          >
+            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M3 4h4v16H3V4zm7-2h4v18h-4V2zm7 6h4v12h-4V8z"
+                stroke="#969cda"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span>랭킹</span>
+          </button>
+        </div>
       </main>
     </div>
   )
