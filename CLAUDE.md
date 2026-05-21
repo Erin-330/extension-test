@@ -1,218 +1,216 @@
-## ⚠️ 필수 전역 규칙 — 모든 페이지에 반드시 적용
+## 핵심 규칙
 
-> **규칙 1 — 최상위 컨테이너 `h-dvh w-full`**
->
-> `index.html`의 `body`가 `display: flex; align-items: center` flex 컨테이너이므로,
-> 최상위에 `w-full`이 없으면 페이지 너비가 텍스트 길이에 따라 제각각 달라진다.
->
-> ```tsx
-> // ✅ 올바름
-> <div className="h-dvh w-full ...">
->
-> // ❌ 금지 — w-full 누락 시 width가 content 길이로 수축
-> <div className="h-dvh ...">
-> ```
->
-> `index.html`에 `#root { width: 100%; }` 스타일이 이미 적용되어 있다.
+### 1. Figma가 유일한 기준
 
----
+페이지를 구현할 때 **Figma 디자인이 1순위**다. 스펙 파일의 설명은 참고용이며 Figma와 충돌하면 Figma를 따른다.
 
-> **규칙 2 — SVG·아이콘은 반드시 Figma MCP 에셋 그대로 사용**
->
-> 모든 아이콘·SVG·이미지는 **직접 손으로 그리거나(custom SVG path) 추측해서 그리는 것을 절대 금지한다.**
-> Figma MCP `get_design_context` 호출 결과에서 반환된 `https://www.figma.com/api/mcp/asset/...` URL을
-> `<img src={...} />` 로 그대로 사용한다.
->
-> | 금지 | 허용 |
-> |------|------|
-> | `<path d="M3 2h9c2.5 0 4...">` (수작업 SVG 경로) | `<img src="https://www.figma.com/api/mcp/asset/..." />` |
-> | `<circle cx="9" cy="9" r="5.5" ...>` (근사 아이콘) | Figma MCP 반환 에셋 URL |
-> | `https://placehold.co/...` (외부 placeholder) | Figma MCP 반환 에셋 URL |
->
-> - Figma MCP 에셋 URL은 **7일 유효**. 구현 시점에 반드시 새로 호출해서 최신 URL을 사용한다.
-> - 아이콘 하나라도 Figma MCP를 호출하지 않고 임의로 그리면 안 된다.
-> - 로고, 버튼 아이콘, 리스트 아이템 이미지, 체크마크, 화살표 등 **화면에 표시되는 모든 시각 요소**가 해당된다.
+코드를 한 줄도 작성하기 전에 반드시:
+1. 스펙 파일(`/.claude/docs/pages/`)에서 Figma URL 확인
+2. **요청된 UI/컴포넌트에 해당하는 node-id만** `get_design_context` + `get_screenshot`을 **동시에(병렬로)** 호출
+3. 코드 작성 전, 응답에서 아래 항목을 **명시적으로 열거**한다:
+   - 모든 배경색·텍스트색 hex 값
+   - 모든 텍스트 font-size / font-weight
+   - 모든 간격(padding, gap, margin) px 값
+   - 모든 이미지 에셋 URL (`https://www.figma.com/api/mcp/asset/...`)
+4. 열거한 값을 **그대로** 사용 (근사값·추정값 금지)
+
+> 요청하지 않은 다른 페이지나 컴포넌트의 `get_design_context`는 호출하지 않는다.
+> 여러 UI를 동시에 구현할 때만 해당 node-id들을 **한 번에 병렬 호출**한다.
 
 ---
 
-> **규칙 3 — API 없이 목 데이터만으로 동작**
->
-> API가 연결되지 않은 상태에서도 화면이 즉시 표시되어야 한다.
->
-> ```ts
-> // ✅ 올바름 — API 로딩 중/실패해도 목 데이터를 즉시 표시
-> const displayList = list.length > 0 ? list : MOCK_ITEMS
->
-> // ❌ 금지 — isLoading이 true이면 빈 화면
-> const displayList = list.length > 0 || isLoading ? list : MOCK_ITEMS
-> ```
->
-> - `useQuery` / `useInfiniteQuery`는 선언하되, 응답 전까지는 항상 목 데이터를 표시한다.
-> - `placehold.co` 같은 외부 placeholder 서비스는 네트워크 요청이 발생하므로 사용하지 않는다.
->   반드시 Figma MCP 에셋 URL을 목 데이터 이미지로 사용한다.
+### 2. 에셋은 Figma URL만 사용
+
+모든 아이콘·이미지는 `get_design_context`가 반환한 `https://www.figma.com/api/mcp/asset/...` URL을 `<img src={...} />` 로 사용한다.
+
+- SVG path 수작업 금지
+- `placehold.co` 등 외부 placeholder 금지
+- Figma 내부 스프라이트시트 crop 코드 재현 금지 — 에셋 URL만 쓰면 된다
+
+이미 구현된 페이지에 동일한 에셋이 있으면 **Figma 재호출 없이 해당 파일에서 URL을 복사**한다.
+
+#### ⛔ 에셋 URL 날조 금지
+
+`get_design_context` 응답에서 에셋 URL이 보이지 않는다고 URL을 **절대 만들지 않는다.**
+UUID가 `0000-0000-0000-000000000000` 형태거나 Figma 응답에 없는 값이면 **날조된 URL**이다.
+
+에셋 URL을 못 찾은 경우:
+1. 해당 에셋이 포함된 **자식 node-id**를 특정해서 `get_design_context`를 추가 호출한다
+2. 그래도 없으면 `get_screenshot` 결과를 보고 레이어 이름으로 다시 탐색한다
+3. 에셋을 찾기 전까지 코드를 작성하지 않는다
 
 ---
 
-> **페이지 구현 스펙** (피그마 URL, 레이아웃, 상태, API, 인터랙션 완전 명세):
-> `.claude/docs/pages/` 디렉토리 → 각 페이지별 파일 참조 (README.md에 목록)
-
-| 작업 영역                               | 읽을 파일                                  |
-| --------------------------------------- | ------------------------------------------ |
-| FSD 레이어 구조, import 규칙, 폴더 구성 | `.claude/docs/01-architecture.md`          |
-| TanStack Query, Zustand 스토어          | `.claude/docs/02-state-management.md`      |
-| API 호출, Axios 클라이언트, 인터셉터    | `.claude/docs/03-api-http.md`              |
-| 라우터, 인증 가드, 소셜 로그인          | `.claude/docs/04-routing-auth.md`          |
-| WebSocket, 실시간 채팅                  | `.claude/docs/05-websocket-realtime.md`    |
-| 공통 UI 컴포넌트, 스타일 규칙           | `.claude/docs/06-ui-components.md`         |
-| Live2D, Rive 애니메이션, PIXI           | `.claude/docs/07-live2d-rive-animation.md` |
-| Jest 테스트 작성, 모킹, 커버리지        | `.claude/docs/08-testing.md`               |
-| 개발 명령어, 환경변수, 빌드             | `.claude/docs/09-dev-workflow.md`          |
-| 공통 훅, 유틸 함수                      | `.claude/docs/10-shared-hooks-utils.md`    |
-| 전체 API 엔드포인트 (URL, TS 타입)      | `.claude/docs/11-api-reference.md`         |
-| 메인 페이지 (채팅, WebSocket, 퀴즈)     | `.claude/docs/12-page-main.md`             |
-| 스케줄 페이지 (목록, 상세, 필터)        | `.claude/docs/13-page-schedule.md`         |
-| 부스트 생성 3단계 플로우                | `.claude/docs/14-page-boost.md`            |
-| 팔로우 온보딩 3단계 플로우              | `.claude/docs/15-page-follow.md`           |
-| 프로필, 충전, 메시지함, 구매내역        | `.claude/docs/16-page-profile-charge-mail.md` |
-| 랭킹 페이지                             | `.claude/docs/17-page-rank.md`             |
-| 퀴즈, 내 픽, 스트릭 캘린더             | `.claude/docs/18-page-quiz-streak.md`      |
-| 부스트 목록, 부스트 월                  | `.claude/docs/19-page-boost-list-wall.md`  |
-| 디자인 시스템 (Typography, 컴포넌트)    | `.claude/docs/20-design-system.md`         |
-| 로그인, OAuth, JWT 인증 흐름            | `.claude/docs/21-page-login-auth.md`       |
-
-**규칙**: 코드 작성 전 반드시 해당 파일을 Read 도구로 열어서 확인한다. 작업 영역이 겹치면 해당하는 파일을 모두 읽는다.
-
----
-
-## 페이지 구현 워크플로우
-
-특정 페이지 구현 요청 시 (예: "로그인 페이지 만들어줘", "/schedule 구현해줘", "팔로우 리그 페이지"):
-
-### 1단계 — 스펙 파일 읽기
-`.claude/docs/pages/README.md` 목록에서 해당 파일을 찾아 **반드시 Read 도구로 먼저 읽는다**.
-- 연관 페이지가 여러 개면 모두 읽는다 (예: 팔로우 리그 → 팔로우 팀/선수도 함께).
-
-### 2단계 — Figma 디자인 파악 ⚠️ URL이 있으면 코드 작성 전 반드시 실행
-
-> **스펙 파일의 레이아웃·className 설명은 구조 참고용일 뿐이다.**
-> **시각적 스타일(색상·크기·간격·폰트·효과)의 유일한 기준은 Figma다.**
-> **Figma MCP를 호출하지 않고 코드를 작성하면 안 된다.**
-
-스펙 파일의 `**Figma:**` 필드에 URL이 있으면, 코드를 한 줄도 작성하기 전에:
-
-1. `mcp__claude_ai_Figma__get_design_context` 호출 → 컴포넌트 코드·디자인 토큰 추출
-2. `mcp__claude_ai_Figma__get_screenshot` 호출 → 시각적 레퍼런스 확보
-
-두 호출 모두 완료한 뒤에만 구현을 시작한다. Figma와 스펙이 충돌하면 **Figma를 따른다.**
-
-Figma 출력에서 반드시 추출할 항목:
-- **정확한 색상값** (`#46383a`, `#f0f2f5`, `#969cda` 등 — Tailwind 색상 이름으로 대체 금지)
-- **정확한 크기·간격** (`h-[68px]`, `gap-[16px]`, `px-[11px]`, `rounded-[16px]` 등)
-- **폰트 스타일** (size, weight, lineHeight 수치 그대로)
-- **그림자·블러 효과** (`boxShadow`, `backdropFilter` 인라인 style로 적용)
-- **그라디언트** (Tailwind `bg-gradient-to-*`로 표현 불가한 경우 inline `style` 사용)
-- **에셋 이미지 URL** (Figma MCP가 반환한 `https://www.figma.com/api/mcp/asset/...` 경로)
-
-### 3단계 — 목 데이터 필수 포함
-
-**API 연결 여부와 관계없이 목 데이터를 항상 포함한다. 화면은 즉시 표시되어야 한다.**
+### 3. API 없이도 즉시 표시
 
 ```ts
-// 페이지 컴포넌트 상단에 MOCK_* 상수로 선언
-const MOCK_ITEMS = [
-  {
-    id: '...',
-    name: '...',
-    image_url: 'https://www.figma.com/api/mcp/asset/...',  // ← 반드시 Figma MCP 에셋 URL
-    // Figma 스크린샷에 표시된 항목 그대로 재현
-  },
-  // ...
-]
-
-// ✅ 올바른 표시 로직 — API 전에도 목 데이터 즉시 표시
+// ✅ API 전에도 목 데이터 즉시 표시
 const displayList = list.length > 0 ? list : MOCK_ITEMS
 
-// ❌ 금지 — isLoading이 true이면 빈 화면이 됨
-const displayList = list.length > 0 || isLoading ? list : MOCK_ITEMS
+// ❌ 금지
+const displayList = isLoading ? [] : (list.length > 0 ? list : MOCK_ITEMS)
 ```
 
-- 목 데이터 항목 수와 내용은 **Figma 스크린샷에 보이는 것과 동일**하게 구성한다.
-- 이미지 URL은 **반드시 Figma MCP 에셋 URL**을 사용한다. `placehold.co` 등 외부 서비스 금지.
-- API가 연결되면 목 데이터는 `placeholderData` 또는 초기값으로 유지한다.
+목 데이터 이미지 URL = Figma MCP 에셋 URL (Figma 스크린샷에 보이는 항목 그대로).
 
-### 4단계 — 픽셀 단위 구현 (Figma 값 그대로)
+---
 
-Figma 코드에서 추출한 값을 **그대로** 사용한다. 근사값으로 대체하지 않는다.
-"비슷해 보여서" 다른 값을 쓰는 것은 금지다.
+### 4. 공통 레이아웃
 
-| 피그마 값 | 올바른 구현 | 잘못된 구현 |
-|-----------|------------|------------|
-| `h-[68px]` | `h-[68px]` | `h-16` (64px) |
-| `gap-[16px]` | `gap-4` 또는 `gap-[16px]` | `gap-3` (12px) |
-| `rounded-[16px]` | `rounded-[16px]` | `rounded-2xl` (16px — OK) |
-| `rgba(0,0,0,0.08)` shadow | `style={{ boxShadow: '0px 2px 2px rgba(0,0,0,0.08)' }}` | `shadow-sm` |
-| `linear-gradient(#c0b1ff, #6f4cff)` | `style={{ background: 'linear-gradient(...)' }}` | Tailwind `from-purple-300` |
-| `backdrop-blur(3px)` | `style={{ backdropFilter: 'blur(3px)' }}` | `backdrop-blur-sm` |
-| `opacity: 0.66` | `style={{ opacity: 0.66 }}` | `opacity-70` (0.7) |
+**구현된 모든 UI는 반드시 화면 전체(100%)를 채워야 한다.**
 
-### 5단계 — 전역 레이아웃 규칙 준수
+#### index.css 필수 설정
 
-**모든 페이지 최상위 컨테이너는 `h-dvh w-full`을 사용한다.**
+페이지가 화면을 100% 채우려면 `src/index.css`에 반드시 아래가 포함되어야 한다:
 
-`index.html`의 `body`가 `display: flex; align-items: center` flex 컨테이너이기 때문에,
-`#root`에 `width: 100%`가 없으면 자식 컴포넌트의 `w-full`이 content 너비로 수축한다.
-이 문제는 `index.html`에 `#root { width: 100%; }` 스타일로 이미 해결되어 있다.
+```css
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+```
+
+#### 페이지 최상위 컨테이너
+
+모든 페이지 최상위 컨테이너는 반드시 `h-dvh w-full`:
 
 ```tsx
-// 모든 페이지 최상위 div — 이 패턴을 반드시 지킨다
-<div className="h-dvh w-full ...">
+<div className="h-dvh w-full flex flex-col bg-[#46383a] px-[11px] pb-[11px]">
 ```
 
-새 페이지를 추가할 때 최상위 컨테이너에 `w-full`이 빠지면 페이지 너비가 content 길이에 따라 달라지므로 주의한다.
+---
 
-### 6단계 — FSD 파일 배치
+### 7. 폰트
 
+프로젝트 전체 폰트는 **Pretendard**다.
+
+- `index.html`에 jsDelivr CDN으로 로드되어 있음:
+  ```html
+  <link rel="stylesheet" as="style" crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  ```
+- `body`의 `font-family`도 `'Pretendard', -apple-system, ...`으로 설정되어 있음
+- Tailwind에서 `font-pretendard` 또는 `font-['Pretendard',sans-serif]` 클래스로 사용
+- Figma가 반환하는 `font-['Pretendard:Bold',sans-serif]` 같은 클래스는 **CSS에서 동작하지 않음** — 반드시 아래처럼 분리해서 작성:
+
+  | Figma 표기 | 실제 사용 클래스 |
+  |-----------|----------------|
+  | `Pretendard:Light` | `font-['Pretendard',sans-serif] font-light` (300) |
+  | `Pretendard:Regular` | `font-['Pretendard',sans-serif] font-normal` (400) |
+  | `Pretendard:Bold` | `font-['Pretendard',sans-serif] font-bold` (700) |
+  | `Pretendard:ExtraBold` | `font-['Pretendard',sans-serif] font-extrabold` (800) |
+
+---
+
+### 5. 파일 구조
 
 ```
 src/
   pages/<route>/index.tsx          ← 라우트 컴포넌트 + MOCK_* 데이터
   features/<feature>/
-    api/<feature>Api.ts            ← fetch 함수 + 타입
-    model/
-      store/<feature>Store.ts      ← Zustand 스토어
-      hooks/use<Feature>Page.ts    ← TanStack Query + 비즈니스 로직
-    ui/<Component>.tsx             ← 해당 feature 전용 컴포넌트
+    api/<feature>Api.ts
+    model/store/<feature>Store.ts
+    model/hooks/use<Feature>Page.ts
+    ui/<Component>.tsx
   shared/
-    ui/<Component>.tsx             ← 여러 feature에서 재사용되는 컴포넌트
-    constants/pages.ts             ← PAGES 상수
+    ui/<Component>.tsx
+    constants/pages.ts
 ```
 
-- `shared/ui` 기존 컴포넌트 최대 재사용. 새 컴포넌트는 `shared/ui/` 또는 해당 feature의 `ui/`에 생성.
-- 스펙 파일의 API 엔드포인트·타입을 그대로 사용 (임의 변경 금지).
+---
 
-### 7단계 — 타입 체크 필수
+### 6. 완료 조건
 
-구현 완료 후 반드시 실행:
 ```bash
-npm run type-check
+npm run type-check  # 오류 없을 때만 완료
 ```
-오류가 없을 때만 완료로 간주한다.
 
 ---
 
-## 피그마 URL 없을 때
+### 8. "rorr 만들어줘" 트리거 — 풀 부트스트랩
 
-`**Figma:** *(미입력)*` 상태일 때만 스펙의 레이아웃 구조·className으로 구현한다.
-목 데이터는 여전히 포함하되, 이미지는 `https://placehold.co/` URL을 사용한다.
-**URL이 조금이라도 적혀 있으면 위의 2단계를 반드시 실행한다.**
+요청 메시지에 **"rorr"** 이 포함되어 있고 앱/프로젝트를 새로 만들어달라는 의도이면, 아무것도 묻지 않고 아래 **5개 페이지를 모두** 구현한다.
+
+#### 0단계 — 공통 파일 먼저 작성
+
+`index.html`, `src/main.tsx`, `src/index.css`, `src/App.tsx`, `src/shared/constants/pages.ts`를 먼저 완성한다.
+
+#### 1단계 — 페이지별 순차 구현 (Figma → 코드 → 다음 페이지)
+
+**각 페이지를 한 번에 하나씩** 아래 순서로 구현한다. 다음 페이지로 넘어가기 전, 현재 페이지의 에셋 URL이 모두 실제 Figma URL인지 확인한다.
+
+| 순서 | 페이지 | 스펙 파일 | Figma node-id |
+|------|--------|-----------|---------------|
+| 1 | 팔로우 리그 (1단계) | `page-follow.md` | `178:50767` |
+| 2 | 프로필 | `page-profile.md` | `197:35086` |
+| 3 | 랭킹 | `page-rank.md` | `212:31020` |
+| 4 | 구매 리스트 | `page-purchase-list.md` | `1767:73369` |
+
+fileKey: `FR0ELVIB6XF3dHidbEqBdz`
+
+각 페이지 구현 시 **규칙 1**의 4단계 프로세스를 반드시 따른다:
+`get_design_context` + `get_screenshot` 동시 호출 → 추출값 열거 → 코드 작성
+
+#### 생성 파일 트리
+
+```
+index.html                          ← Pretendard CDN + body font-family (규칙 7)
+src/
+  main.tsx / index.css / App.tsx
+  shared/constants/pages.ts         ← PAGES = { MAIN, FOLLOW_LEAGUE, FOLLOW_TEAM, FOLLOW_PLAYER, PROFILE, RANK, PURCHASE_LIST }
+  pages/
+    main/index.tsx                  ← 버튼 4개 허브
+    follow/league-list/index.tsx    ← Figma 기반 리그 선택 UI
+    profile/index.tsx               ← Figma 기반 프로필 UI
+    rank/index.tsx                  ← Figma 기반 랭킹 UI
+    purchase/list/index.tsx         ← Figma 기반 구매 리스트 UI
+```
+
+**메인 허브**: 버튼 4개(팔로우 / 프로필 / 랭킹 / 구매 리스트), 각 버튼 클릭 시 해당 페이지로 이동. Figma URL 없으므로 `bg-[#46383a]` 기본 컨테이너에 버튼 나열.
+
+**App.tsx**: `useState<Page>(PAGES.MAIN)` 기반 라우터. 각 페이지는 `onNavigate: (page: string) => void` prop 하나만 받는 named export. 뒤로가기는 `onNavigate(PAGES.MAIN)`.
+
+**각 페이지**: Figma `get_design_context` 추출값 그대로 구현. 스펙 파일의 레이아웃·컴포넌트 구조 참조. 목 데이터 포함(이미지 URL = Figma MCP 에셋 URL).
+
+```bash
+npm run type-check  # 오류 0개 확인 후 완료 선언
+```
 
 ---
 
-## 컴포넌트 구현 기준 (Figma에서 추출)
+### 9. "페이지 다시 구현해줘" 트리거
 
-Figma `get_design_context` 응답의 **"These styles are contained in the design"** 섹션을 우선 참조한다:
-- 폰트 family, size, weight, lineHeight
-- 색상 토큰 (Primary, Surface, Background, Text 등)
-- 이펙트 (Shadow, Blur, Gradient)
+요청에 **"다시 구현"**, **"다시 만들어"**, **"수정된 피그마 반영"** 의도가 있으면:
 
-이 값들을 `tailwind.config.ts`의 `theme.extend`에 추가하거나, 컴포넌트 inline style로 적용한다.
+1. 스펙 파일에서 해당 페이지의 node-id와 fileKey 확인
+2. `get_design_context` + `get_screenshot`을 **새로 호출** (이전 대화의 결과나 현재 파일의 URL 재사용 금지)
+3. 기존 파일 내용을 **전체 교체**
+4. `npm run type-check` 통과 후 완료
+
+---
+
+## 스펙 파일 목록
+
+| 작업 영역 | 파일 |
+|-----------|------|
+| FSD 구조, import 규칙 | `.claude/docs/01-architecture.md` |
+| TanStack Query, Zustand | `.claude/docs/02-state-management.md` |
+| API, Axios | `.claude/docs/03-api-http.md` |
+| 라우터, 인증 | `.claude/docs/04-routing-auth.md` |
+| WebSocket | `.claude/docs/05-websocket-realtime.md` |
+| 공통 UI, 스타일 | `.claude/docs/06-ui-components.md` |
+| 공통 훅, 유틸 | `.claude/docs/10-shared-hooks-utils.md` |
+| 전체 API 엔드포인트 | `.claude/docs/11-api-reference.md` |
+
+| 페이지 | 스펙 파일 |
+|--------|-----------|
+| 메인 | `.claude/docs/pages/page-main.md` |
+| 팔로우 리그/팀/선수 | `.claude/docs/pages/page-follow.md` |
+| 프로필 | `.claude/docs/pages/page-profile.md` |
+| 랭킹 | `.claude/docs/pages/page-rank.md` |
+| 구매 내역 | `.claude/docs/pages/page-purchase-list.md` |
+| 스케줄 | `.claude/docs/pages/page-schedule-list.md`, `page-schedule-detail.md` |
+| 부스트 | `.claude/docs/pages/page-boost-select.md`, `page-boost-confirm.md` |
+| 로그인 | `.claude/docs/pages/page-login.md` |
+| 충전 | `.claude/docs/pages/page-charge.md` |

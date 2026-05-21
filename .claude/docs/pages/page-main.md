@@ -166,6 +166,21 @@ useEffect(() => {
 
 ---
 
+## 부트스트랩 모드 (extension-test 전용)
+
+extension-test 프로젝트에서는 MainPage가 아래 버튼 4개만 가진 심플한 허브 역할을 한다.
+
+| 버튼 라벨 | 이동 대상 (`PAGES.*`) |
+|-----------|----------------------|
+| 팔로우 | `FOLLOW_LEAGUE` |
+| 프로필 | `PROFILE` |
+| 랭킹 | `RANK` |
+| 구매 리스트 | `PURCHASE_LIST` |
+
+레이아웃: 공통 외부 컨테이너(`h-dvh w-full flex flex-col bg-[#46383a] px-[11px] pb-[11px]`) 안에 버튼 4개 세로 나열.
+
+---
+
 ## 헤더 데이터 로딩
 
 - 에너지 잔액: `authApi.getUserBalance(userId)` 또는 `profileApi.getProfile()` 캐시 사용

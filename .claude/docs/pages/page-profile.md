@@ -3,169 +3,53 @@
 ## 기본 정보
 | 항목 | 내용 |
 |------|------|
-| 라우트 | `/profile` |
 | 컴포넌트 | `ProfilePage` |
 | 파일 | `src/pages/profile/index.tsx` |
-| 인증 필요 | O (실패 시 `/login`) |
-| 특이사항 | 매 마운트마다 프로필 refetch |
+| Figma node-id | `197:35086` |
+| fileKey | `FR0ELVIB6XF3dHidbEqBdz` |
 
-## 피그마
-**Figma:** https://www.figma.com/design/FR0ELVIB6XF3dHidbEqBdz/DesignSystem_REM-EDIT?node-id=197-35086&m=dev
-
----
-
-## 레이아웃 구조
-
-```
-<div className="relative h-full min-h-[100dvh] w-full bg-background">
-  ┌─────────────────────────────────────────────────┐
-  │ <ProfileHeader>                                 │  ← fixed top
-  │   onClose={() => setPage(PAGES.MAIN)}           │
-  │   onMailClick={() => setPage(PAGES.MAIL)}       │
-  │   messageCount={profile.msgCnt}                 │
-  │   isLoading={isLoading}                         │
-  ├─────────────────────────────────────────────────┤
-  │ <main className="flex h-[100dvh] w-full          │
-  │   flex-col bg-background">                      │
-  │   <div className="flex min-h-0 flex-1            │
-  │     flex-col overflow-y-auto overflow-x-hidden   │
-  │     px-4 pt-20">                                │
-  │                                                 │
-  │     [로딩 중]: <RiveLoading inline>              │
-  │                                                 │
-  │     [완료]:                                      │
-  │       <ProfileUserCard profile={profile} />     │
-  │       <div className="w-full border-b           │
-  │         border-dsText-80" />                    │
-  │       <ProfileMenu onSetPage={handleSetPage} /> │
-  │                                                 │
-  ├─────────────────────────────────────────────────┤
-  │ <footer className="flex shrink-0 flex-col        │
-  │   items-center justify-center p-4">             │
-  │   <div className="mb-4 w-full border-b          │
-  │     border-dsText-80" />                        │
-  │   <RorrIcon className="h-[3.375rem] w-16        │
-  │     text-[#2D39B4]" />                          │
-  └─────────────────────────────────────────────────┘
-```
+**구현 전 반드시 `get_design_context(node-id: 197:35086)`를 호출하고, 그 결과를 그대로 구현한다.**
 
 ---
 
-## ProfileHeader 컴포넌트
+## ⚠️ 구현 시 반드시 지켜야 할 규칙
 
-```
-[fixed top] h-14 flex items-center justify-between px-4 bg-background
+### 아바타 (Profile with Frame)
 
-left: [CloseIcon 버튼]
-right:
-  [MailIcon 버튼]  (messageCount > 0 → 빨간 뱃지)
-  badge 표시: messageCount > 99 → "99+"
-```
+Figma 코드에 `absolute contents` 래퍼가 중첩되어 있으나, `display: contents`는 박스를 생성하지 않으므로 무시한다.  
+IconUser의 실제 inset은 **최상위 `relative size-[96px]` 기준 `inset-[0.41%_0_-0.41%_0]`** 이다.
 
----
-
-## ProfileUserCard 컴포넌트
-
-```
-[프로필 이미지 원형] (picture)
-  + [등급 테두리: ProfileGradeBorder gradeId={gradeId}]
-
-[displayname]     ← Typography variant="subtitle"
-[email]           ← Typography variant="description" color="text80"
-[gradeName 뱃지]  ← 등급명
-
-[에너지 잔액 행]
-  [에너지 아이콘] {cash} Energy
-
-[경험치 행]
-  [경험치 아이콘] {exp} EXP
-```
-
----
-
-## ProfileGradeBorder
-
-등급별 테두리 색상/스타일 컴포넌트:
 ```tsx
-<ProfileGradeBorder gradeId={profile.gradeId}>
-  <img src={profile.picture} className="rounded-full" />
-</ProfileGradeBorder>
+<div className="relative shrink-0 size-[96px]">
+  {/* ✅ 올바른 구현 */}
+  <div className="absolute bg-[#bbbfd0] overflow-clip rounded-full inset-[0.41%_0_-0.41%_0]">
+    <div className="absolute inset-[16.67%_6.69%_0_6.69%]">
+      <img ... />  {/* Union 유저 실루엣 */}
+    </div>
+  </div>
+  <div className="absolute inset-[0.41%_0_-0.41%_0]">
+    <img ... />  {/* GradeBorder */}
+    <div className="absolute inset-[5%]"><img ... /></div>   {/* highLight Stroke */}
+    <div className="absolute inset-[6%]"><img ... /></div>   {/* innerLine Stroke */}
+  </div>
+</div>
 ```
+
+- `inset-[3.98%_3.57%_3.16%_3.57%]` 은 contents 래퍼 값 — **절대 사용 금지**
+- `rounded-full` 없으면 회색 사각형이 GradeBorder 밖으로 삐져나옴
 
 ---
 
-## ProfileMenu 컴포넌트
+## 목 데이터
 
-메뉴 행 목록:
-```
-[팔로우 설정]   → /follow/league-list  (FROM_PROFILE_STATE_KEY state 포함)
-[내 픽 히스토리] → /streak/history
-[에너지 충전]   → /charge
-[구매 내역]     → /purchase-list
-[랭킹]         → /rank
-─────────────────────────────────────────────
-[로그아웃]     → clearToken() + navigate('/login')
-```
-
-각 행 (`ProfileMenuRow`):
-```
-[아이콘] [메뉴명] [ChevronRightIcon]
-```
-
----
-
-## 상태 관리
-
-### TanStack Query (`useProfile`)
 ```ts
-// features/profile/model/hooks/useProfile.ts
-useProfile()
-→ { profile: SparkProfile | null, isLoading, refetch }
-
-// GET /spark/profile
-// SparkProfile:
-{
-  email, displayname, picture, exp,
-  cash: string,  gradeId, gradeName, msgCnt
+const MOCK_PROFILE = {
+  email: 'yeomdw@gmail.com',
+  displayname: 'dany13',
+  cash: '12,345',
+  exp: '45,678',
+  gradeName: 'HALL OF FAME',
 }
-```
-
----
-
-## API 호출
-
-### `GET /spark/profile` (마운트 시 + refetch)
-TanStack Query 키: `['profile']`
-
----
-
-## 이벤트 핸들러
-
-### 로그아웃
-```ts
-clearToken()          // localStorage 토큰 제거
-LoLSocket.disconnect() // 소켓 연결 종료
-navigate('/login')
-```
-
-### ProfileMenu 네비게이션
-```ts
-// FROM_PROFILE_STATE_KEY state 전달 (일부 페이지에서 복귀 시 프로필로 돌아가기 위해)
-setPage(page, { state: { [FROM_PROFILE_STATE_KEY]: true } })
-```
-
----
-
-## 가드
-
-```ts
-useEffect(() => {
-  if (!isAuthValid()) setPage(PAGES.LOGIN)
-}, [setPage])
-
-useEffect(() => {
-  if (isAuthValid()) refetch()
-}, [refetch])
 ```
 
 ---
@@ -174,11 +58,6 @@ useEffect(() => {
 
 | 목적지 | 트리거 |
 |--------|--------|
-| `PAGES.MAIN` | 헤더 CloseIcon |
-| `PAGES.MAIL` | 헤더 MailIcon |
-| `/follow/league-list` | 팔로우 설정 메뉴 |
-| `/streak/history` | 내 픽 히스토리 메뉴 |
-| `/charge` | 에너지 충전 메뉴 |
-| `/purchase-list` | 구매 내역 메뉴 |
-| `/rank` | 랭킹 메뉴 |
-| `/login` | 로그아웃 |
+| `PAGES.MAIN` | 외부 헤더 X 버튼, UI Header 닫기(ButtonCloseMod) |
+| `PAGES.FOLLOW_LEAGUE` | Follow Team & Player 메뉴 항목 |
+| `PAGES.PURCHASE_LIST` | Purchase List 메뉴 항목 |
