@@ -7,6 +7,7 @@ export const PAGES = {
   FOLLOW_LEAGUE: 'FOLLOW_LEAGUE',
   FOLLOW_TEAM: 'FOLLOW_TEAM',
   FOLLOW_PLAYER: 'FOLLOW_PLAYER',
+  RANK: 'RANK',
 } as const
 
 export type Page = (typeof PAGES)[keyof typeof PAGES]

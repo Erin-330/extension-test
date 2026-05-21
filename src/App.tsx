@@ -5,6 +5,7 @@ import { MainPage } from './pages/main'
 import { LeagueListPage } from './pages/follow/league-list'
 import { TeamListPage } from './pages/follow/team-list'
 import { PlayerListPage } from './pages/follow/player-list'
+import { RankPage } from './pages/rank'
 
 const queryClient = new QueryClient()
 
@@ -22,6 +23,10 @@ function AppContent() {
 
   if (currentPage === PAGES.FOLLOW_PLAYER) {
     return <PlayerListPage onNavigate={handleNavigate} />
+  }
+
+  if (currentPage === PAGES.RANK) {
+    return <RankPage onNavigate={handleNavigate} />
   }
 
   return <MainPage onNavigate={handleNavigate} />
