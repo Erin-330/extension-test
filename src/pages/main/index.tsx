@@ -51,6 +51,25 @@ export function MainPage({ onNavigate }: MainPageProps) {
             </svg>
             <span>랭킹</span>
           </button>
+
+          <button
+            type="button"
+            onClick={() => onNavigate(PAGES.PURCHASE_LIST)}
+            className="flex h-12 min-w-[160px] items-center justify-center gap-2 rounded-[30px] border border-[#a7c1e1] bg-white px-6 text-sm font-semibold text-[#46383a] shadow-[0px_2px_6px_0px_rgba(0,0,0,0.08)] transition-colors hover:bg-[#f5f7fa]"
+          >
+            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M3 3h2l2.4 12.5a2 2 0 0 0 2 1.5h8.5a2 2 0 0 0 2-1.5L21 8H6"
+                stroke="#46383a"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <circle cx="9" cy="20" r="1.5" stroke="#46383a" strokeWidth="1.5" />
+              <circle cx="18" cy="20" r="1.5" stroke="#46383a" strokeWidth="1.5" />
+            </svg>
+            <span>구매 리스트</span>
+          </button>
         </div>
       </main>
     </div>
