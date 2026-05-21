@@ -163,7 +163,7 @@ export default {
 
 | 순서 | 페이지 | 스펙 파일 | Figma node-id |
 |------|--------|-----------|---------------|
-| 1 | 팔로우 리그 (1단계) | `page-follow.md` | `178:50767` |
+| 1 | 팔로우 (리그→팀→선수 3단계 전부) | `page-follow.md` | node-id·병렬 호출 방법은 스펙 파일 참조 |
 | 2 | 프로필 | `page-profile.md` | `197:35086` |
 | 3 | 랭킹 | `page-rank.md` | `212:31020` |
 | 4 | 구매 리스트 | `page-purchase-list.md` | `1767:73369` |
@@ -184,7 +184,9 @@ src/
   shared/constants/pages.ts         ← PAGES = { MAIN, FOLLOW_LEAGUE, FOLLOW_TEAM, FOLLOW_PLAYER, PROFILE, RANK, PURCHASE_LIST }
   pages/
     main/index.tsx                  ← 버튼 4개 허브
-    follow/league-list/index.tsx    ← Figma 기반 리그 선택 UI
+    follow/league-list/index.tsx    ← Figma 기반 리그 선택 UI (1/3단계)
+    follow/team-list/index.tsx      ← Figma 기반 팀 선택 UI (2/3단계)
+    follow/player-list/index.tsx    ← Figma 기반 선수 선택 UI (3/3단계)
     profile/index.tsx               ← Figma 기반 프로필 UI
     rank/index.tsx                  ← Figma 기반 랭킹 UI
     purchase/list/index.tsx         ← Figma 기반 구매 리스트 UI
