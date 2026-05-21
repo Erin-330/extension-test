@@ -37,13 +37,30 @@ fileKey: `FR0ELVIB6XF3dHidbEqBdz`
 │ AppHeader (RORR 로고 + 닫기)                      │
 ├─────────────────────────────────────────────────┤
 │ 타이틀 + 서브타이틀                               │
-│ 검색 버튼 (우상단)                                │
+│ 검색 버튼 (우상단, absolute)                      │
 ├─────────────────────────────────────────────────┤
 │ 리스트 (스크롤)                                   │
 │   선택 순서대로 상단 정렬 → 미선택 순              │
 ├─────────────────────────────────────────────────┤
 │ StepIndicator (하단 고정, backdrop-blur)          │
 └─────────────────────────────────────────────────┘
+```
+
+### 타이틀 영역 주의사항
+
+- 타이틀 컨테이너는 **`w-full`** — 고정 너비(`w-[215px]` 등) 절대 사용 금지
+- 검색 버튼이 `absolute right-0 top-0`이므로 컨테이너에 `pr-[40px]`을 줘서 겹침 방지
+- 타이틀 텍스트("Back Your League" 등)는 **한 줄**로 표시 — `whitespace-nowrap` 적용
+
+```tsx
+{/* ✅ */}
+<div className="flex flex-col gap-[4px] items-start shrink-0 w-full pr-[40px]">
+  <p className="... whitespace-nowrap">{title}</p>
+  <p className="...">{subtitle}</p>
+</div>
+
+{/* ❌ 고정 너비로 인해 타이틀 줄바꿈 발생 */}
+<div className="flex flex-col gap-[4px] items-start shrink-0 w-[215px] pr-[40px]">
 ```
 
 ---
