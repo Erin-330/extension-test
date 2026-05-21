@@ -34,6 +34,22 @@ export function MainPage({ onNavigate }: MainPageProps) {
           </svg>
           <span>리그</span>
         </button>
+
+        <button
+          type="button"
+          onClick={() => onNavigate(PAGES.RANK)}
+          className="flex h-12 min-w-[160px] items-center justify-center gap-2 rounded-[30px] bg-[#46383a] px-6 text-sm font-semibold text-white shadow-[0px_2px_6px_0px_rgba(0,0,0,0.15)] transition-colors hover:bg-[#5c4a4d]"
+        >
+          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M5 9V4H19V9C19 12.866 15.866 16 12 16M5 9C5 12.866 8.13401 16 12 16M5 9H3C3 11 4 12.5 6 13M19 9H21C21 11 20 12.5 18 13M12 16V19M12 19H8V21H16V19H12Z"
+              stroke="white"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span>랭킹</span>
+        </button>
       </main>
     </div>
   )
