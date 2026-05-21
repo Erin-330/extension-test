@@ -29,6 +29,18 @@
 - `placehold.co` 등 외부 placeholder 금지
 - Figma 내부 스프라이트시트 crop 코드 재현 금지 — 에셋 URL만 쓰면 된다
 
+#### ⛔ img 태그 필수 속성
+
+모든 `<img>` 태그에는 반드시 `shrink-0`을 붙인다. 없으면 flex 컨테이너 안에서 아이콘이 늘어나거나 찌그러진다.
+
+```tsx
+{/* ✅ */}
+<img src={assetUrl} className="shrink-0" />
+
+{/* ❌ — flex 안에서 늘어남 */}
+<img src={assetUrl} />
+```
+
 이미 구현된 페이지에 동일한 에셋이 있으면 **Figma 재호출 없이 해당 파일에서 URL을 복사**한다.
 
 #### ⛔ 유니코드·텍스트 아이콘 절대 금지

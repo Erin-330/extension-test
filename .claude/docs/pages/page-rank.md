@@ -66,23 +66,15 @@
 
 ### 그레이드 섹션
 
-#### ⛔ 등급 아이콘 — 반드시 Figma 에셋 원본 크기로 표시
+#### ⛔ 등급 아이콘 — Figma 에셋 URL + shrink-0 필수
 
-각 섹션 헤더 왼쪽의 등급 아이콘(Diamond 💎, Platinum, Gold 등)은 **`get_design_context`가 반환한 에셋 URL을 `<img />`로 렌더링**한다.
+각 섹션 헤더 왼쪽의 등급 아이콘(Diamond, Platinum, Gold, Silver, Bronze, Participant)은 **`get_design_context`가 반환한 에셋 URL을 `<img className="shrink-0" />`로 렌더링**한다.
 
-- 아이콘에 임의 `w-` / `h-` 크기 지정 금지 — Figma에서 추출한 크기 그대로 사용
-- 아이콘이 작게 나오는 원인 1순위: 부모 컨테이너가 `flex` + `items-center`인데 `<img>`에 크기 미지정 → 브라우저가 0×0 또는 매우 작게 렌더링
-- 반드시 `<img src={...} width={W} height={H} />` 형태로 Figma 추출 크기를 명시
+- `shrink-0` 없으면 flex 컨테이너 안에서 아이콘이 찌그러지거나 사라짐 — **반드시 포함**
+- 등급 아이콘이 get_design_context 응답에 없으면 해당 섹션 헤더의 **자식 node-id**를 특정해 추가 호출
+- 텍스트·유니코드·이모지로 대체 절대 금지
 
-```tsx
-{/* ✅ Figma 추출 크기 명시 */}
-<img src="https://www.figma.com/api/mcp/asset/..." width={32} height={32} className="shrink-0" />
-
-{/* ❌ 크기 미지정 — 아이콘이 찌그러지거나 거의 안 보임 */}
-<img src="https://www.figma.com/api/mcp/asset/..." />
-```
-
-- 각 섹션 헤더: 그라디언트 배경 + 등급 아이콘(Figma 크기 명시) + 등급명 텍스트
+- 각 섹션 헤더: 그라디언트 배경 + 등급 아이콘(`shrink-0` img) + 등급명 텍스트
 - 아이템 행: 순위 | 아바타(size-[20px]) | 이름 | 왼쪽스탯 | 수직구분선 | 오른쪽스탯
 - **아바타는 반드시 size-[20px]** — 현재 구현의 size-[28px] 사용 금지
 - **Platinum 섹션의 rank 9 "Andy" 행은 보라색 배경 + 흰 텍스트** (내 위치 강조)
