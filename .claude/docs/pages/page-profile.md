@@ -15,6 +15,27 @@
 
 ## ⚠️ 구현 시 반드시 지켜야 할 규칙
 
+### 메뉴 아이템 아이콘 — Figma Icons_UI 구조를 그대로 사용
+
+**`get_design_context` 가 반환한 Icons_UI 블록 전체 구조를 그대로 복사한다.**
+img 태그만 꺼내서 쓰는 것은 절대 금지 — Figma는 `overflow-clip` 컨테이너 → `absolute inset` 중간 레이어 → `img` 순의 3단 구조를 사용하며, 이 구조가 아이콘을 올바른 크기로 클리핑한다.
+
+```tsx
+{/* ✅ Figma 구조 그대로 — overflow-clip 컨테이너가 절대 위치 이미지를 클리핑 */}
+<div className="overflow-clip relative shrink-0 size-[28px]">   {/* Icons_UI 컨테이너 */}
+  <div className="absolute inset-[...]">                        {/* Figma inset 레이어 */}
+    <img alt="" className="absolute block inset-0 max-w-none size-full" src={assetUrl} />
+  </div>
+</div>
+
+{/* ❌ img만 추출 — overflow-clip 없어서 이미지가 원본 크기(수십 px)로 카드를 뒤덮음 */}
+<img src={assetUrl} className="w-[28px] h-[28px]" />
+```
+
+> Figma가 바뀌면 `get_design_context`를 재호출하면 된다. 수치를 MD에 박지 않는 이유가 이것이다.
+
+---
+
 ### 아바타 (Profile with Frame)
 
 Figma 코드에 `absolute contents` 래퍼가 중첩되어 있으나, `display: contents`는 박스를 생성하지 않으므로 무시한다.  

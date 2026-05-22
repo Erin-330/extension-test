@@ -171,6 +171,30 @@ return [...selected, ...unselected]
 
 ---
 
+## ⚠️ BOOST 태그 에너지 아이콘 — Figma Icons_UI 구조를 그대로 사용
+
+리그 카드의 BOOST 태그 안 에너지 아이콘은 **매우 작은 컨테이너(Figma 기준 6px)**에 들어간다.
+`get_design_context` 가 반환한 `SendEnergyAvailableTag` → `IconsUi` 블록을 **구조 그대로** 사용해야 한다.
+
+```tsx
+{/* ✅ Figma Icons_UI 구조 그대로 — overflow-clip 컨테이너가 에너지 아이콘을 작게 클리핑 */}
+<div className="... overflow-clip ...">   {/* SendEnergyAvailableTag */}
+  <div className="overflow-clip relative shrink-0 size-[Xpx]">  {/* IconsUi — Figma 반환 크기 */}
+    <div className="absolute inset-[...]">
+      <img alt="" className="absolute block inset-0 max-w-none size-full" src={energyIconUrl} />
+    </div>
+  </div>
+  <p className="...">BOOST</p>
+</div>
+
+{/* ❌ img만 추출 — overflow-clip 없어서 에너지 이미지가 카드 전체를 덮음 */}
+<img src={energyIconUrl} />
+```
+
+> 컨테이너 크기·inset 값은 Figma가 바뀌면 재호출하면 된다. MD에 수치를 박지 않는 이유가 이것이다.
+
+---
+
 ## StepIndicator
 
 - 활성 도트: `bg-[#2d39b4]`
