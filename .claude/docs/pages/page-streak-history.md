@@ -206,6 +206,10 @@ onSelectDay(day: number | null)
 
 ## MyPicksCardItem — MatchPickCard 렌더
 
+> **⚠️ MatchPickCard 비주얼 스펙은 `.claude/docs/pages/page-mypicks.md` 참조**
+> 픽 상태(YOUR PICK 프레임, 취소 버튼, 정답/오답 프레임)의 Figma 에셋 URL과 정확한 구현 방법이 담겨있다.
+> Figma node-id: `7259:125496` / fileKey: `FR0ELVIB6XF3dHidbEqBdz`
+
 ```
 <MatchPickCard
   matchId={pick.match_id}

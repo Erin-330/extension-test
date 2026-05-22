@@ -268,3 +268,4 @@ npm run type-check  # 오류 0개 확인 후 완료 선언
 | 부스트 | `.claude/docs/pages/page-boost-select.md`, `page-boost-confirm.md` |
 | 로그인 | `.claude/docs/pages/page-login.md` |
 | 충전 | `.claude/docs/pages/page-charge.md` |
+| 픽 카드 컴포넌트 (MatchPickCard) | `.claude/docs/pages/page-mypicks.md` |
