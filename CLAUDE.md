@@ -31,15 +31,24 @@
 
 #### ⛔ img 태그 필수 속성
 
-모든 `<img>` 태그에는 반드시 `shrink-0`을 붙인다. 없으면 flex 컨테이너 안에서 아이콘이 늘어나거나 찌그러진다.
+모든 `<img>` 태그에는 반드시 **`shrink-0` + `w-[Xpx] h-[Xpx]`** 를 함께 붙인다.
+
+- `shrink-0` 없으면 flex 컨테이너 안에서 아이콘이 늘어나거나 찌그러진다.
+- `w-[Xpx] h-[Xpx]` 없으면 Figma 에셋 이미지가 **자연 크기(2x-3x 해상도)로 렌더되어 아이콘이 실제보다 수십 배 크게 나온다.**
+- X 값은 반드시 `get_design_context`가 반환한 해당 노드의 **px 치수**를 사용한다 (추정·근사 금지).
 
 ```tsx
-{/* ✅ */}
+{/* ✅ — 크기 + shrink-0 모두 명시 */}
+<img src={assetUrl} className="shrink-0 w-[24px] h-[24px]" />
+
+{/* ❌ — 크기 없음: 이미지가 원본 해상도로 크게 렌더됨 */}
 <img src={assetUrl} className="shrink-0" />
 
-{/* ❌ — flex 안에서 늘어남 */}
-<img src={assetUrl} />
+{/* ❌ — shrink-0 없음: flex 안에서 늘어남 */}
+<img src={assetUrl} className="w-[24px] h-[24px]" />
 ```
+
+절대 위치(`absolute`) 컨테이너 내부 `<img>`도 동일하게 `w-full h-full` 또는 명시적 크기를 지정해야 한다.
 
 이미 구현된 페이지에 동일한 에셋이 있으면 **Figma 재호출 없이 해당 파일에서 URL을 복사**한다.
 
