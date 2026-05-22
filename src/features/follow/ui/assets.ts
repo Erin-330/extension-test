@@ -1,0 +1,30 @@
+export const ASSETS = {
+  rorrLogoStroke: 'https://www.figma.com/api/mcp/asset/ff423397-f87a-453a-bade-8c6555bac282',
+  rorrLogoUnionStroke: 'https://www.figma.com/api/mcp/asset/ef5ed0c6-d291-4056-ae74-ec064e74a40f',
+  rorrLogoExclude: 'https://www.figma.com/api/mcp/asset/0e659215-bda0-4a5b-b11f-e5897154dd64',
+  closeIconUnion: 'https://www.figma.com/api/mcp/asset/0f858dbd-c4b6-4174-84a4-01936d0faed9',
+  boostLightning: 'https://www.figma.com/api/mcp/asset/71e55c18-3f1b-4426-be40-307e54d0afde',
+  arrowVector: 'https://www.figma.com/api/mcp/asset/ff423397-f87a-453a-bade-8c6555bac282',
+  searchButtonShape: 'https://www.figma.com/api/mcp/asset/bf9a2ddf-7851-4492-a1b8-0fabbede45b5',
+  searchIconUnion: 'https://www.figma.com/api/mcp/asset/33586590-4e5e-4ee0-82a9-f6c318007a34',
+  selectAddIcon: 'https://www.figma.com/api/mcp/asset/71e55c18-3f1b-4426-be40-307e54d0afde',
+  checkIcon: 'https://www.figma.com/api/mcp/asset/d4dd3f8e-d9c1-41c4-b32f-f24d17456127',
+  // League logos
+  leagueLCK: 'https://www.figma.com/api/mcp/asset/94455f86-941a-4cd0-be6d-1e7596aa13c9',
+  leagueLPL: 'https://www.figma.com/api/mcp/asset/1aa3773b-11c6-442d-9474-6e93a85f6036',
+  leagueVCS: 'https://www.figma.com/api/mcp/asset/39b0dd3d-de66-4c1d-bcd3-8b4259a2c095',
+  leagueMSI: 'https://www.figma.com/api/mcp/asset/82f9c857-076c-4597-93de-480d6ecd974d',
+  leagueLEC: 'https://www.figma.com/api/mcp/asset/10461c60-8802-4226-a5c8-76890e6b76a9',
+  leagueCBLOL: 'https://www.figma.com/api/mcp/asset/531c2d8b-0935-4695-9479-d6589f1af488',
+  leagueLLA: 'https://www.figma.com/api/mcp/asset/d559f4f9-5927-4b23-8b81-089089d78544',
+  // Team logos
+  teamT1: 'https://www.figma.com/api/mcp/asset/a0b93eb0-df0c-4332-80b9-76c1df62f1f8',
+  teamKT: 'https://www.figma.com/api/mcp/asset/db2bfe81-04c9-4638-961a-99d966885fca',
+  teamGenG: 'https://www.figma.com/api/mcp/asset/2fd36b37-bf9b-4fca-a41d-5948a03f8044',
+  teamHanwha: 'https://www.figma.com/api/mcp/asset/2066774d-cb29-401d-8d04-e1b68f47d392',
+  teamDplus: 'https://www.figma.com/api/mcp/asset/33e72a0d-66b7-4937-870e-26450a26b71e',
+  teamWeibo: 'https://www.figma.com/api/mcp/asset/83a4cb49-ee90-4d27-938c-e8e17bb4c68f',
+  teamWeibo2: 'https://www.figma.com/api/mcp/asset/222a0df4-cc27-4fcd-94c3-f762e4eeefee',
+  // Player
+  playerImage: 'https://www.figma.com/api/mcp/asset/40bfed9f-c17d-41c5-b452-63e3a505c032',
+}
