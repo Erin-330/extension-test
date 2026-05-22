@@ -29,10 +29,43 @@
 - **헤더에 "구매 내역" 타이틀 텍스트 없음** — 현재 구현에 있는 타이틀 제거할 것
 
 ### 아이템 카드 레이아웃
-**현재 구현(가로 한 줄)과 완전히 다름. Figma는 2행 세로 구조.**
 
-- 1행: 아이콘(48px 정사각형 테두리 박스) + 아이템명 + txId
-- 2행: 날짜(우측 정렬) + 클록 아이콘 + 경과 시간(우측 정렬)
+카드 전체는 `flex-col gap-[8px]` 2행 구조다.
+
+```
+┌──────────────────────────────────────────────┐
+│ [48px 아이콘] │ 아이템명 (위)                  │  ← 1행: flex items-start gap-[12px]
+│              │ TN.d725... (아래, truncate)     │
+├──────────────────────────────────────────────┤
+│                          날짜        🕐 11 mo │  ← 2행: flex-col items-end, 오른쪽 정렬
+└──────────────────────────────────────────────┘
+```
+
+**⚠️ `text-right` 오독 주의**
+
+Figma `get_design_context`가 아이템명 div에 `text-right`를 붙여 반환한다.
+이것은 Figma 텍스트 박스의 정렬 속성일 뿐 — **아이템명을 카드 오른쪽 끝으로 보내라는 뜻이 아니다.**
+
+```tsx
+{/* ✅ 올바른 구조 — 아이콘 오른쪽에 [아이템명 위 / txId 아래] */}
+<div className="flex gap-[12px] items-start w-full">
+  {/* 48px 아이콘 */}
+  <div className="... shrink-0 size-[48px] overflow-clip ...">...</div>
+
+  {/* 텍스트 컬럼: flex-1, 아이템명(위) + txId(아래) */}
+  <div className="flex flex-[1_0_0] flex-col gap-[8px] items-start min-w-px self-stretch">
+    <div className="... text-[#a7c1e1] text-[16px] font-bold shrink-0">아이템명</div>
+    <div className="... text-[#44494e] text-[12px] overflow-hidden text-ellipsis w-full shrink-0">txId</div>
+  </div>
+</div>
+
+{/* ❌ 잘못된 구조 — text-right를 오른쪽 배치로 해석 */}
+<div className="flex items-start justify-between w-full">
+  <div>아이콘</div>
+  <span>txId</span>
+  <span className="ml-auto">아이템명</span>  {/* 절대 금지 */}
+</div>
+```
 
 레이아웃·색상·크기는 `get_design_context` 결과를 그대로 따른다.
 
