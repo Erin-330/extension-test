@@ -30,8 +30,7 @@
 | [page-boost-list-user.md](page-boost-list-user.md) | `/boost-list` |
 | [page-boost-list-team-player.md](page-boost-list-team-player.md) | `/boost-list/team` `/boost-list/player` |
 | [page-boost-wall.md](page-boost-wall.md) | `/boost-wall` |
-| [page-follow-league.md](page-follow-league.md) | `/follow/league-list` (1단계) |
-| [page-follow-team-player.md](page-follow-team-player.md) | `/follow/team-list` `/follow/player-list` |
+| [page-follow.md](page-follow.md) | `/follow/league-list` `/follow/team-list` `/follow/player-list` (3단계) |
 | [page-profile.md](page-profile.md) | `/profile` |
 | [page-mail.md](page-mail.md) | `/mail` |
 | [page-charge.md](page-charge.md) | `/charge` `/charge/toss` `/payment/verify` |
