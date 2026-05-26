@@ -11,7 +11,7 @@
 | 2/3 팀 | `471:24358` | `src/pages/follow/team-list/index.tsx` |
 | 3/3 선수 | `502:84208` | `src/pages/follow/player-list/index.tsx` |
 -->
-
+fileKey: `FR0ELVIB6XF3dHidbEqBdz`
 ---
 
 ## 네비게이션
