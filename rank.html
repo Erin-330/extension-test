@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>RORR · 랭킹</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" crossorigin />
+  <link rel="stylesheet" href="./src/tokens.css" />
+  <style>
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== Header ===== */
+    .rank-header {
+      position: sticky;
+      top: 0;
+      background: var(--color-background-light);
+      display: grid;
+      grid-template-columns: 34px 1fr 34px;
+      align-items: center;
+      padding: 14px 16px;
+      gap: 8px;
+      z-index: 10;
+    }
+    .rank-header .icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      background: none;
+      color: var(--color-text-50);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 120ms, border-color 120ms, color 120ms;
+    }
+    .rank-header .icon-btn:hover {
+      background: var(--color-surface2-alt);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+    .rank-header .title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text-0);
+    }
+
+    /* ===== Month selector ===== */
+    .month-selector {
+      padding: 8px 20px 12px;
+    }
+    .month-selector select {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text-0);
+      font-family: var(--font-family-base);
+      font-size: 14px;
+      font-weight: 600;
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23757b90' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      cursor: pointer;
+      transition: border-color 120ms;
+    }
+    .month-selector select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+    }
+
+    /* ===== Sections ===== */
+    .rank-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 0 20px 24px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--color-text-50);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 4px 0;
+    }
+
+    /* ===== TOP 5 (Rive) ===== */
+    .top5-card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      box-shadow: var(--shadow-light-surface);
+      padding: 18px 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .top5-card .label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--color-text-50);
+    }
+    #rivCanvas {
+      width: 100%;
+      height: 280px;
+      display: block;
+    }
+
+    /* ===== My ranking card ===== */
+    .my-rank {
+      background: var(--gradient-boosterwall);
+      color: var(--color-text-100);
+      border-radius: 20px;
+      box-shadow: var(--shadow-light-surface);
+      padding: 18px 18px;
+      display: grid;
+      grid-template-columns: 40px 48px 1fr auto;
+      grid-template-rows: auto auto;
+      column-gap: 12px;
+      row-gap: 4px;
+      align-items: center;
+    }
+    .my-rank .rank-num {
+      grid-column: 1; grid-row: 1 / span 2;
+      font-size: 22px; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+    }
+    .my-rank .avatar {
+      grid-column: 2; grid-row: 1 / span 2;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.18);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 18px;
+    }
+    .my-rank .nickname {
+      grid-column: 3; grid-row: 1;
+      font-size: 16px; font-weight: 700;
+      display: flex; align-items: center; gap: 8px;
+      min-width: 0;
+    }
+    .my-rank .grade-badge {
+      grid-column: 3; grid-row: 2;
+      align-self: start;
+    }
+    .my-rank .streak-cur {
+      grid-column: 4; grid-row: 1;
+      font-size: 18px; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+    .my-rank .meta {
+      grid-column: 4; grid-row: 2;
+      font-size: 12px;
+      color: rgba(255,255,255,0.85);
+      text-align: right;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+
+    /* ===== Grade section ===== */
+    .grade-section {
+      background: var(--color-surface);
+      border-radius: 20px;
+      box-shadow: var(--shadow-light-surface);
+      overflow: hidden;
+    }
+    .grade-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .grade-header .grade-name {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 16px; font-weight: 700;
+      color: var(--color-text-0);
+    }
+    .grade-header .grade-dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      box-shadow: inset 0 -2px 4px rgba(0,0,0,0.18), 0 1px 2px rgba(0,0,0,0.08);
+    }
+    .grade-header .reward {
+      font-size: 12px; font-weight: 700;
+      color: var(--color-text-50);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .rank-row {
+      display: grid;
+      grid-template-columns: 32px 40px 1fr auto;
+      grid-template-rows: auto auto;
+      column-gap: 12px;
+      row-gap: 2px;
+      align-items: center;
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--color-border);
+      cursor: pointer;
+      transition: background 120ms;
+    }
+    .rank-row:last-child { border-bottom: none; }
+    .rank-row:hover { background: var(--color-surface2-alt); }
+    .rank-row.is-me {
+      background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    }
+    .rank-row.is-me:hover {
+      background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+    }
+    .rank-row .rnum {
+      grid-column: 1; grid-row: 1 / span 2;
+      font-size: 14px; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text-30);
+      text-align: center;
+    }
+    .rank-row .avatar {
+      grid-column: 2; grid-row: 1 / span 2;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--gradient-boosterwall);
+      color: var(--color-text-100);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 14px;
+    }
+    .rank-row .nick {
+      grid-column: 3; grid-row: 1;
+      font-size: 14px; font-weight: 700;
+      color: var(--color-text-0);
+      display: flex; align-items: center; gap: 8px;
+      min-width: 0;
+    }
+    .rank-row .badge-line {
+      grid-column: 3; grid-row: 2;
+    }
+    .rank-row .cur {
+      grid-column: 4; grid-row: 1;
+      font-size: 14px; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text-0);
+      text-align: right;
+    }
+    .rank-row .meta-r {
+      grid-column: 4; grid-row: 2;
+      font-size: 11px;
+      color: var(--color-text-50);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .grade-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: var(--color-text-100);
+    }
+    .grade-badge.diamond  { background: var(--gradient-diamond); color: var(--color-text-30); }
+    .grade-badge.gold     { background: var(--gradient-gold); }
+    .grade-badge.silver   { background: var(--gradient-silver); color: var(--color-text-30); }
+    .grade-badge.bronze   { background: var(--gradient-bronze); }
+
+    .grade-dot.diamond  { background: var(--gradient-diamond); }
+    .grade-dot.gold     { background: var(--gradient-gold); }
+    .grade-dot.silver   { background: var(--gradient-silver); }
+    .grade-dot.bronze   { background: var(--gradient-bronze); }
+
+    /* ===== Detail modal ===== */
+    .modal-scrim {
+      position: fixed; inset: 0;
+      background: var(--color-background-b-30, rgba(0,0,0,0.3));
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+    }
+    .modal-scrim.open { display: flex; }
+    .modal-sheet {
+      width: 100%;
+      max-width: 520px;
+      background: var(--color-surface);
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      animation: slideUp 200ms ease-out;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+    .modal-sheet .m-avatar {
+      width: 84px; height: 84px;
+      border-radius: 50%;
+      background: var(--gradient-boosterwall);
+      color: var(--color-text-100);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .modal-sheet .m-nick {
+      font-size: 20px; font-weight: 700;
+      color: var(--color-text-0);
+    }
+    .modal-sheet .m-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      width: 100%;
+      margin-top: 12px;
+    }
+    .modal-sheet .m-stat {
+      background: var(--color-surface2-alt);
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .modal-sheet .m-stat .lbl {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--color-text-50);
+    }
+    .modal-sheet .m-stat .val {
+      font-size: 16px; font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text-0);
+    }
+    .modal-sheet .m-close {
+      margin-top: 16px;
+      padding: 12px 28px;
+      border-radius: 10px;
+      border: none;
+      background: var(--color-primary);
+      color: var(--color-text-100);
+      font-family: var(--font-family-base);
+      font-size: 14px; font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .info-modal .modal-sheet {
+      gap: 12px;
+    }
+    .info-modal .info-title {
+      font-size: 18px; font-weight: 700;
+      color: var(--color-text-0);
+    }
+    .info-modal .info-body {
+      font-size: 14px; line-height: 20px; font-weight: 400;
+      color: var(--color-text-30);
+      text-align: left;
+      width: 100%;
+    }
+    .info-modal .info-body ul { padding-left: 18px; margin-top: 6px; }
+    .info-modal .info-body li { margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <header class="rank-header">
+    <a class="icon-btn" href="./profile.html" aria-label="닫기">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </a>
+    <div class="title">랭킹</div>
+    <button class="icon-btn" id="infoBtn" aria-label="랭킹 기준 안내">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+    </button>
+  </header>
+
+  <div class="month-selector">
+    <select id="monthSelect" aria-label="조회할 월 선택"></select>
+  </div>
+
+  <main class="rank-main">
+    <section class="top5-card" aria-label="TOP 5">
+      <span class="label">TOP 5</span>
+      <canvas id="rivCanvas"></canvas>
+    </section>
+
+    <section aria-label="내 랭킹">
+      <div class="section-title">내 랭킹</div>
+      <div class="my-rank" id="myRank"></div>
+    </section>
+
+    <section aria-label="등급별 랭킹">
+      <div class="section-title">등급별 랭킹</div>
+      <div id="gradeList"></div>
+    </section>
+  </main>
+
+  <div class="modal-scrim" id="detailModal" role="dialog" aria-modal="true" aria-label="유저 상세">
+    <div class="modal-sheet">
+      <div class="m-avatar" id="mAvatar"></div>
+      <div class="m-nick" id="mNick"></div>
+      <div id="mBadge"></div>
+      <div class="m-stats">
+        <div class="m-stat"><span class="lbl">현재</span><span class="val" id="mCur"></span></div>
+        <div class="m-stat"><span class="lbl">최장</span><span class="val" id="mLong"></span></div>
+        <div class="m-stat"><span class="lbl">보상</span><span class="val" id="mReward"></span></div>
+      </div>
+      <button class="m-close" id="detailClose">닫기</button>
+    </div>
+  </div>
+
+  <div class="modal-scrim info-modal" id="infoModal" role="dialog" aria-modal="true" aria-label="랭킹 기준">
+    <div class="modal-sheet">
+      <div class="info-title">랭킹 기준 안내</div>
+      <div class="info-body">
+        월간 스트릭 기준으로 순위를 산정합니다.
+        <ul>
+          <li>1순위: 최장 연승 수 (longest streak)</li>
+          <li>2순위: 현재 진행 중인 스트릭 수</li>
+          <li>3순위: 동일 시 가입일이 빠른 유저가 상위</li>
+        </ul>
+      </div>
+      <button class="m-close" id="infoClose">닫기</button>
+    </div>
+  </div>
+
+  <script type="module" src="./src/rank.js"></script>
+</body>
+</html>
