@@ -17,10 +17,15 @@
       position: relative;
     }
 
-    .theme-toggle {
+    .top-actions {
       position: absolute;
       top: 14px;
       right: 14px;
+      display: flex;
+      gap: 8px;
+      z-index: 10;
+    }
+    .icon-btn {
       background: none;
       border: 1px solid var(--color-border);
       border-radius: 8px;
@@ -33,9 +38,9 @@
       font-size: 16px;
       color: var(--color-text-50);
       transition: border-color 120ms, background 120ms;
-      z-index: 10;
+      text-decoration: none;
     }
-    .theme-toggle:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
+    .icon-btn:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
 
     .profile-main {
       flex: 1;
@@ -148,9 +153,14 @@
   </style>
 </head>
 <body>
-  <button class="theme-toggle" id="themeToggle" aria-label="테마 전환">
-    <span id="themeIcon">☀️</span>
-  </button>
+  <div class="top-actions">
+    <a class="icon-btn" href="./rank.html" aria-label="랭킹">
+      <span aria-hidden="true">🏆</span>
+    </a>
+    <button class="icon-btn" id="themeToggle" aria-label="테마 전환">
+      <span id="themeIcon">☀️</span>
+    </button>
+  </div>
 
   <main class="profile-main">
     <div class="profile-card">
@@ -170,7 +180,7 @@
     </div>
 
     <div class="menu-list">
-      <a class="menu-item" href="#">
+      <a class="menu-item" href="./follow.html">
         <span>Follow Team &amp; Player</span>
         <span class="chev">›</span>
       </a>
