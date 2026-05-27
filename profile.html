@@ -17,10 +17,10 @@
       position: relative;
     }
 
-    .theme-toggle {
+    .theme-toggle,
+    .rank-btn {
       position: absolute;
       top: 14px;
-      right: 14px;
       background: none;
       border: 1px solid var(--color-border);
       border-radius: 8px;
@@ -34,8 +34,13 @@
       color: var(--color-text-50);
       transition: border-color 120ms, background 120ms;
       z-index: 10;
+      text-decoration: none;
     }
-    .theme-toggle:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
+    .theme-toggle { right: 14px; }
+    .rank-btn { right: 56px; }
+    .theme-toggle:hover,
+    .rank-btn:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
+    .rank-btn svg { width: 18px; height: 18px; display: block; }
 
     .profile-main {
       flex: 1;
@@ -148,6 +153,13 @@
   </style>
 </head>
 <body>
+  <a class="rank-btn" href="./rank.html" aria-label="랭킹 보기">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="13" width="4" height="7" rx="1"/>
+      <rect x="10" y="8" width="4" height="12" rx="1"/>
+      <rect x="16" y="3" width="4" height="17" rx="1"/>
+    </svg>
+  </a>
   <button class="theme-toggle" id="themeToggle" aria-label="테마 전환">
     <span id="themeIcon">☀️</span>
   </button>
@@ -170,7 +182,7 @@
     </div>
 
     <div class="menu-list">
-      <a class="menu-item" href="#">
+      <a class="menu-item" href="./follow.html">
         <span>Follow Team &amp; Player</span>
         <span class="chev">›</span>
       </a>
