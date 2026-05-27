@@ -6,6 +6,9 @@
     "build": "vite build",
     "dev": "vite"
   },
+  "dependencies": {
+    "@rive-app/canvas": "2.37.8"
+  },
   "devDependencies": {
     "vite": "^5.4.0"
   }
