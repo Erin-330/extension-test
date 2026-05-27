@@ -17,10 +17,10 @@
       position: relative;
     }
 
-    .theme-toggle {
+    .theme-toggle,
+    .rank-link {
       position: absolute;
       top: 14px;
-      right: 14px;
       background: none;
       border: 1px solid var(--color-border);
       border-radius: 8px;
@@ -34,8 +34,12 @@
       color: var(--color-text-50);
       transition: border-color 120ms, background 120ms;
       z-index: 10;
+      text-decoration: none;
     }
-    .theme-toggle:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
+    .theme-toggle { right: 14px; }
+    .rank-link { left: 14px; }
+    .theme-toggle:hover,
+    .rank-link:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
 
     .profile-main {
       flex: 1;
@@ -148,6 +152,10 @@
   </style>
 </head>
 <body>
+  <a class="rank-link" href="./rank.html" aria-label="랭킹 보기">
+    <span aria-hidden="true">🏆</span>
+  </a>
+
   <button class="theme-toggle" id="themeToggle" aria-label="테마 전환">
     <span id="themeIcon">☀️</span>
   </button>
