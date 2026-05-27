@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>RORR · 팔로우</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" crossorigin />
+  <link rel="stylesheet" href="./src/tokens.css" />
+  <style>
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .follow-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface);
+    }
+    .header-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text-0);
+    }
+    .icon-btn {
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--color-text-50);
+      transition: border-color 120ms, background 120ms;
+      text-decoration: none;
+    }
+    .icon-btn:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
+
+    .follow-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 16px 0;
+      gap: 14px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: var(--color-surface);
+      box-shadow: var(--shadow-light-surface);
+      border: 1px solid var(--color-border);
+    }
+    .search-box input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: var(--font-family-base);
+      font-size: 14px;
+      color: var(--color-text-0);
+    }
+    .search-box input::placeholder { color: var(--color-text-50); }
+    .search-icon { color: var(--color-text-50); font-size: 14px; }
+
+    .item-list {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      padding-bottom: 12px;
+    }
+
+    .item-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--color-surface);
+      border-radius: 14px;
+      box-shadow: var(--shadow-light-surface);
+      cursor: pointer;
+      transition: background 120ms, box-shadow 120ms;
+      position: relative;
+      border: 2px solid transparent;
+    }
+    .item-card:hover { background: var(--color-surface2-alt); }
+    .item-card.selected { border-color: var(--color-selected); }
+
+    .item-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--gradient-boosterwall);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-100);
+      font-size: 16px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .item-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .item-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-text-0);
+    }
+    .item-sub {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--color-text-50);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .item-sub .sub-logo {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--gradient-spark);
+    }
+
+    .boost-badge {
+      position: absolute;
+      top: 8px;
+      right: 38px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--color-boost-icon);
+      background: var(--color-success-surface);
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .order-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-selected);
+      color: var(--color-text-100);
+      font-size: 13px;
+      font-weight: 700;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .item-card.selected .order-num { display: flex; }
+
+    .empty-state {
+      text-align: center;
+      padding: 32px 16px;
+      font-size: 13px;
+      color: var(--color-text-50);
+    }
+
+    .footer-nav {
+      position: sticky;
+      bottom: 0;
+      background: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .step-dots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .step-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-border);
+      transition: background 120ms;
+    }
+    .step-dot.active { background: var(--color-primary); }
+    .step-label {
+      margin-left: 6px;
+      font-size: 12px;
+      color: var(--color-text-50);
+    }
+    .nav-btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text-30);
+      font-family: var(--font-family-base);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 120ms, border-color 120ms, color 120ms;
+    }
+    .nav-btn:hover {
+      background: var(--color-surface2-alt);
+      border-color: var(--color-primary);
+    }
+    .nav-btn.primary {
+      background: var(--color-primary);
+      color: var(--color-text-100);
+      border-color: var(--color-primary);
+    }
+    .nav-btn.primary:hover {
+      background: var(--color-primary-dark);
+      border-color: var(--color-primary-dark);
+    }
+    .nav-btn:disabled {
+      background: var(--color-button-disable);
+      color: var(--color-text-100);
+      border-color: var(--color-button-disable);
+      cursor: not-allowed;
+    }
+
+    .step-screen { display: none; flex-direction: column; flex: 1; gap: 14px; }
+    .step-screen.active { display: flex; }
+  </style>
+</head>
+<body>
+  <header class="follow-header">
+    <a class="icon-btn" href="./profile.html" aria-label="뒤로가기">←</a>
+    <h1 class="header-title" id="stepTitle">Back Your League</h1>
+    <a class="icon-btn" href="./profile.html" aria-label="닫기">✕</a>
+  </header>
+
+  <main class="follow-main">
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="이름으로 검색" />
+    </div>
+
+    <section class="step-screen active" data-step="1">
+      <div class="item-list" id="leagueList"></div>
+    </section>
+
+    <section class="step-screen" data-step="2">
+      <div class="item-list" id="teamList"></div>
+    </section>
+
+    <section class="step-screen" data-step="3">
+      <div class="item-list" id="playerList"></div>
+    </section>
+  </main>
+
+  <nav class="footer-nav">
+    <button class="nav-btn" id="prevBtn">← 이전</button>
+    <div class="step-dots">
+      <span class="step-dot active" data-dot="1"></span>
+      <span class="step-dot" data-dot="2"></span>
+      <span class="step-dot" data-dot="3"></span>
+      <span class="step-label" id="stepLabel">리그</span>
+    </div>
+    <button class="nav-btn primary" id="nextBtn">다음 →</button>
+  </nav>
+
+  <script type="module" src="./src/follow.js"></script>
+</body>
+</html>
