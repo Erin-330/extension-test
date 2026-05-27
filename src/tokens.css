@@ -1,0 +1,115 @@
+:root {
+  --font-family-base: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, sans-serif;
+
+  --color-primary: #2d39b4;
+  --color-primary-dark: #4d57d9;
+  --color-secondary: #6f4cff;
+  --color-secondary-dark: #8c6eff;
+  --color-accent: #ff6f00;
+  --color-accent-dark: #ffb400;
+  --color-selected: #209fee;
+  --color-selected-dark: #4db2f1;
+
+  --color-success: #11c72d;
+  --color-success-dark: #2fd948;
+  --color-success-surface: #c3c7ef;
+  --color-error: #860000;
+  --color-status-color-upcoming: #5618da;
+  --color-status-color-live: #c10f0f;
+  --color-score-color: #9ca3f1;
+
+  --color-surface: #ffffff;
+  --color-surface-alt: #dce2eb;
+  --color-surface2-alt: #e9eef4;
+  --color-surface-floating: #ffffffb2;
+
+  --color-background-light: #f0f2f5;
+  --color-background-dark: #0e1116;
+
+  --color-border: #ced6e6;
+  --color-border-dark: #282f3d;
+
+  --color-text-0: #000000;
+  --color-text-30: #44494e;
+  --color-text-50: #757b90;
+  --color-text-80: #bbbfd0;
+  --color-text-90: #e6eaf0;
+  --color-text-100: #ffffff;
+
+  --color-button: #969cda;
+  --color-button-border: #c1c5ec;
+  --color-button-hover: #afb5ea;
+  --color-button-press: #c1c5ec;
+  --color-button-disable: #b2bac3;
+
+  --color-button-dark: #3c5bff;
+  --color-button-dark-border: #637cff;
+  --color-button-disable-dark: #30353b;
+
+  --color-team-left: #2f9cfc;
+  --color-team-left-50: #c0e1fe;
+  --color-team-right: #fe2054;
+  --color-team-right-50: #ffbccb;
+
+  --color-ai-companion-bg: #1d2333;
+  --color-ai-popup-surface: #ffffff26;
+  --color-ai-area-btn-hover: #8398f7;
+  --color-ai-area-btn-disable: #3c3e45;
+
+  --color-boost-icon: #00b395;
+  --color-item-color: #a7c1e1;
+
+  --shadow-light-surface:   0px 2px 4px 0px rgba(0,0,0,0.08);
+  --shadow-light-surface-2: 0px 1px 4px 0px rgba(0,0,0,0.10);
+  --shadow-dark-surface:    0px 2px 4px 0px rgba(255,255,255,0.06);
+  --shadow-live-card:       0px 2px 4px 0px rgba(86,24,218,0.20);
+  --floating-effect:        0px 2px 6px 0px rgba(0,0,0,0.15);
+  --glow-aiareabtn:         0px 0px 8px 0px #138dff;
+
+  --gradient-ai-btn:      linear-gradient(135deg, #2562b2 0%, #3991c0 100%);
+  --gradient-ai-profile:  linear-gradient(135deg, #2562b2 0%, #3991c0 50%, #6f4cff 100%);
+  --gradient-spark:       linear-gradient(135deg, #ff6f00 0%, #ffb400 100%);
+  --gradient-quiz:        linear-gradient(135deg, #6f4cff 0%, #8c6eff 100%);
+  --gradient-boost:       linear-gradient(135deg, #00b395 0%, #26bea5 100%);
+  --gradient-boosterwall: linear-gradient(135deg, #2d39b4 0%, #6f4cff 100%);
+  --gradient-boosterwall-hover: linear-gradient(135deg, #4d57d9 0%, #8c6eff 100%);
+  --gradient-top5:        linear-gradient(135deg, #ff6f00 0%, #ffb400 45%, #6f4cff 100%);
+  --gradient-diamond:     linear-gradient(135deg, #4db2f1 0%, #c0e1fe 50%, #e6eaf0 100%);
+  --gradient-platinum:    linear-gradient(135deg, #bbbfd0 0%, #e6eaf0 100%);
+  --gradient-gold:        linear-gradient(135deg, #ff6f00 0%, #ffb400 100%);
+  --gradient-silver:      linear-gradient(135deg, #757b90 0%, #bbbfd0 100%);
+  --gradient-bronze:      linear-gradient(135deg, #860000 0%, #ff6f00 100%);
+  --gradient-participant: linear-gradient(135deg, #44494e 0%, #757b90 100%);
+}
+
+[data-theme="dark"] {
+  --color-primary:          #4d57d9;
+  --color-secondary:        #8c6eff;
+  --color-accent:           #ffb400;
+  --color-selected:         #4db2f1;
+  --color-success:          #2fd948;
+  --color-surface:          #161c26;
+  --color-surface-alt:      #202a38;
+  --color-surface2-alt:     #1e2630;
+  --color-surface-floating: #24282d99;
+  --color-border:           #282f3d;
+  --color-button:           #3c5bff;
+  --color-button-border:    #637cff;
+  --color-button-disable:   #30353b;
+  --color-background-light: #0e1116;
+  --color-text-0:           #ffffff;
+  --color-text-30:          #bbbfd0;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-base);
+  background: var(--color-background-light);
+  color: var(--color-text-0);
+  transition: background 200ms ease, color 200ms ease;
+}
