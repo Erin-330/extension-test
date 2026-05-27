@@ -3,6 +3,9 @@
 ## Spec Files (읽기 규칙)
 - `login.html` 관련 작업 시 → `.claude/login.md` 먼저 읽을 것
 - `profile.html` 관련 작업 시 → `.claude/profile.md` 먼저 읽을 것
+- `follow.html` / 팔로우 관련 작업 시 → `.claude/follow-ui-layout.md` 먼저 읽을 것
+- `rank.html` / 랭킹 관련 작업 시 → `.claude/rank-ui-layout.md` 먼저 읽을 것
+- 랭킹 Rive 그래프 작업 시 → `.claude/rank-rive-graph.md` 먼저 읽을 것
 - 디자인/스타일 작업 시 → `.claude/Design System.md` 참고할 것
 
 ## Service
