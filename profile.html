@@ -37,6 +37,31 @@
     }
     .theme-toggle:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
 
+    .rank-link {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-50);
+      transition: border-color 120ms, background 120ms, color 120ms;
+      z-index: 10;
+      text-decoration: none;
+    }
+    .rank-link:hover {
+      background: var(--color-surface2-alt);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+    .rank-link svg { display: block; }
+
     .profile-main {
       flex: 1;
       display: flex;
@@ -148,6 +173,17 @@
   </style>
 </head>
 <body>
+  <a class="rank-link" href="./rank.html" aria-label="랭킹 보기">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+      <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+      <path d="M4 22h16" />
+      <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+      <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+      <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+    </svg>
+  </a>
+
   <button class="theme-toggle" id="themeToggle" aria-label="테마 전환">
     <span id="themeIcon">☀️</span>
   </button>
