@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>RORR · 랭킹</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" crossorigin />
+  <link rel="stylesheet" href="./src/tokens.css" />
+  <style>
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .rank-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface);
+    }
+    .header-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text-0);
+    }
+    .icon-btn {
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--color-text-50);
+      transition: border-color 120ms, background 120ms;
+      text-decoration: none;
+    }
+    .icon-btn:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
+
+    .rank-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 14px 16px 20px;
+      gap: 14px;
+    }
+
+    .month-select-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .month-select {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text-0);
+      font-family: var(--font-family-base);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .top5-card {
+      background: var(--color-surface);
+      border-radius: 16px;
+      box-shadow: var(--shadow-light-surface);
+      padding: 14px 14px 6px;
+      position: relative;
+    }
+    .top5-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--color-text-50);
+      margin-bottom: 6px;
+    }
+    #rivCanvas {
+      width: 100%;
+      height: 280px;
+      display: block;
+    }
+    .rive-fallback {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      height: 280px;
+      gap: 8px;
+      padding: 12px 4px;
+    }
+    .fallback-bar {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+    .fallback-bar .bar-fill {
+      width: 100%;
+      background: var(--gradient-top5);
+      border-radius: 8px 8px 0 0;
+      min-height: 12px;
+    }
+    .fallback-bar .bar-name {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-30);
+    }
+    .fallback-bar .bar-streak {
+      font-size: 10px;
+      color: var(--color-text-50);
+    }
+
+    .my-rank-section {
+      background: var(--gradient-boosterwall);
+      border-radius: 16px;
+      box-shadow: var(--shadow-light-surface);
+      padding: 14px 16px;
+      color: var(--color-text-100);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .my-rank-section .rank-num {
+      font-size: 22px;
+      font-weight: 700;
+      width: 32px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+    .my-rank-section .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--color-surface);
+      color: var(--color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .my-rank-section .nick-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .my-rank-section .nick { font-size: 14px; font-weight: 700; }
+    .tier-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 6px;
+      color: var(--color-text-100);
+    }
+    .tier-badge.diamond { background: var(--gradient-diamond); color: var(--color-text-0); }
+    .tier-badge.platinum { background: var(--gradient-platinum); color: var(--color-text-0); }
+    .tier-badge.gold { background: var(--gradient-gold); }
+    .tier-badge.silver { background: var(--gradient-silver); }
+    .tier-badge.bronze { background: var(--gradient-bronze); }
+    .my-rank-section .stat-col {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .my-rank-section .stat-streak { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .my-rank-section .stat-extra { font-size: 11px; opacity: 0.85; }
+
+    .tier-section {
+      background: var(--color-surface);
+      border-radius: 16px;
+      box-shadow: var(--shadow-light-surface);
+      overflow: hidden;
+    }
+    .tier-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface2-alt);
+    }
+    .tier-header .tier-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-text-0);
+    }
+    .tier-header .tier-reward {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-boost-icon);
+    }
+
+    .rank-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--color-border);
+      cursor: pointer;
+      transition: background 120ms;
+    }
+    .rank-row:last-child { border-bottom: none; }
+    .rank-row:hover { background: var(--color-surface2-alt); }
+    .rank-row.me { background: var(--color-success-surface); }
+    .rank-row .rank-num {
+      font-size: 13px;
+      font-weight: 700;
+      width: 24px;
+      text-align: center;
+      color: var(--color-text-30);
+      font-variant-numeric: tabular-nums;
+    }
+    .rank-row .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--gradient-boost);
+      color: var(--color-text-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .rank-row .nick-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .rank-row .nick { font-size: 13px; font-weight: 600; color: var(--color-text-0); }
+    .rank-row .stat-col {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .rank-row .stat-streak { font-size: 14px; font-weight: 700; color: var(--color-text-0); font-variant-numeric: tabular-nums; }
+    .rank-row .stat-extra { font-size: 10px; color: var(--color-text-50); }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-sheet {
+      background: var(--color-surface);
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px 28px;
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .modal-sheet .avatar-lg {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--gradient-boost);
+      color: var(--color-text-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .modal-sheet .modal-nick {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text-0);
+    }
+    .modal-sheet .modal-stats {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .modal-stat {
+      background: var(--color-surface2-alt);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .modal-stat .label { font-size: 10px; color: var(--color-text-50); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+    .modal-stat .value { font-size: 16px; font-weight: 700; color: var(--color-text-0); font-variant-numeric: tabular-nums; }
+    .modal-close {
+      margin-top: 8px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--color-primary);
+      color: var(--color-text-100);
+      border: none;
+      font-family: var(--font-family-base);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .modal-close:hover { background: var(--color-primary-dark); }
+
+    .info-modal-body {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--color-text-30);
+      text-align: left;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header class="rank-header">
+    <a class="icon-btn" href="./profile.html" aria-label="닫기">✕</a>
+    <h1 class="header-title">랭킹</h1>
+    <button class="icon-btn" id="infoBtn" aria-label="랭킹 기준 안내">ⓘ</button>
+  </header>
+
+  <main class="rank-main">
+    <div class="month-select-row">
+      <select class="month-select" id="monthSelect">
+        <option value="2026-05">2026년 5월</option>
+        <option value="2026-04">2026년 4월</option>
+        <option value="2026-03">2026년 3월</option>
+      </select>
+    </div>
+
+    <section class="top5-card">
+      <div class="top5-title">Top 5</div>
+      <canvas id="rivCanvas"></canvas>
+    </section>
+
+    <section class="my-rank-section">
+      <div class="rank-num">12</div>
+      <div class="avatar">E</div>
+      <div class="nick-col">
+        <span class="nick">erin</span>
+        <span class="tier-badge gold">Gold</span>
+      </div>
+      <div class="stat-col">
+        <span class="stat-streak">W7</span>
+        <span class="stat-extra">최장 12 · 보상 +320E</span>
+      </div>
+    </section>
+
+    <section class="tier-section">
+      <div class="tier-header">
+        <span class="tier-name">Diamond</span>
+        <span class="tier-reward">+1,200E</span>
+      </div>
+      <div class="rank-row" data-uid="u6">
+        <span class="rank-num">6</span>
+        <span class="avatar">A</span>
+        <span class="nick-col"><span class="nick">arc_main</span><span class="tier-badge diamond">Diamond</span></span>
+        <span class="stat-col"><span class="stat-streak">W18</span><span class="stat-extra">최장 25 · +1,200E</span></span>
+      </div>
+      <div class="rank-row" data-uid="u7">
+        <span class="rank-num">7</span>
+        <span class="avatar">B</span>
+        <span class="nick-col"><span class="nick">blueDragon</span><span class="tier-badge diamond">Diamond</span></span>
+        <span class="stat-col"><span class="stat-streak">W15</span><span class="stat-extra">최장 22 · +1,200E</span></span>
+      </div>
+    </section>
+
+    <section class="tier-section">
+      <div class="tier-header">
+        <span class="tier-name">Platinum</span>
+        <span class="tier-reward">+800E</span>
+      </div>
+      <div class="rank-row" data-uid="u8">
+        <span class="rank-num">8</span>
+        <span class="avatar">C</span>
+        <span class="nick-col"><span class="nick">coral_77</span><span class="tier-badge platinum">Platinum</span></span>
+        <span class="stat-col"><span class="stat-streak">W13</span><span class="stat-extra">최장 18 · +800E</span></span>
+      </div>
+      <div class="rank-row" data-uid="u9">
+        <span class="rank-num">9</span>
+        <span class="avatar">D</span>
+        <span class="nick-col"><span class="nick">dust.fan</span><span class="tier-badge platinum">Platinum</span></span>
+        <span class="stat-col"><span class="stat-streak">W11</span><span class="stat-extra">최장 14 · +800E</span></span>
+      </div>
+    </section>
+
+    <section class="tier-section">
+      <div class="tier-header">
+        <span class="tier-name">Gold</span>
+        <span class="tier-reward">+320E</span>
+      </div>
+      <div class="rank-row" data-uid="u10">
+        <span class="rank-num">10</span>
+        <span class="avatar">F</span>
+        <span class="nick-col"><span class="nick">forest_run</span><span class="tier-badge gold">Gold</span></span>
+        <span class="stat-col"><span class="stat-streak">W9</span><span class="stat-extra">최장 13 · +320E</span></span>
+      </div>
+      <div class="rank-row" data-uid="u11">
+        <span class="rank-num">11</span>
+        <span class="avatar">G</span>
+        <span class="nick-col"><span class="nick">glide_42</span><span class="tier-badge gold">Gold</span></span>
+        <span class="stat-col"><span class="stat-streak">W8</span><span class="stat-extra">최장 12 · +320E</span></span>
+      </div>
+      <div class="rank-row me" data-uid="me">
+        <span class="rank-num">12</span>
+        <span class="avatar">E</span>
+        <span class="nick-col"><span class="nick">erin (나)</span><span class="tier-badge gold">Gold</span></span>
+        <span class="stat-col"><span class="stat-streak">W7</span><span class="stat-extra">최장 12 · +320E</span></span>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="detailModal">
+    <div class="modal-sheet">
+      <div class="avatar-lg" id="detailAvatar">?</div>
+      <div class="modal-nick" id="detailNick">-</div>
+      <span class="tier-badge gold" id="detailTier">Gold</span>
+      <div class="modal-stats">
+        <div class="modal-stat"><span class="label">스트릭</span><span class="value" id="detailStreak">-</span></div>
+        <div class="modal-stat"><span class="label">최장</span><span class="value" id="detailLong">-</span></div>
+        <div class="modal-stat"><span class="label">보상</span><span class="value" id="detailReward">-</span></div>
+      </div>
+      <button class="modal-close" data-close>닫기</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="infoModal">
+    <div class="modal-sheet">
+      <h3 class="modal-nick">랭킹 기준</h3>
+      <p class="info-modal-body">
+        월간 스트릭 수가 동일한 경우, 최장 연승 → 가장 빠른 달성 시각 순으로 순위를 정합니다.
+      </p>
+      <button class="modal-close" data-close>닫기</button>
+    </div>
+  </div>
+
+  <script type="module" src="./src/rank.js"></script>
+</body>
+</html>
