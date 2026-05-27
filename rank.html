@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>RORR · 랭킹</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" crossorigin />
+  <link rel="stylesheet" href="./src/tokens.css" />
+  <style>
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 14px;
+      right: 60px;
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--color-text-50);
+      transition: border-color 120ms, background 120ms;
+      z-index: 10;
+    }
+    .theme-toggle:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
+
+    /* Header */
+    .rank-header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--color-background-light);
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text-30);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 120ms, border-color 120ms;
+    }
+    .icon-btn:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
+    .rank-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text-0);
+    }
+
+    /* Month select */
+    .month-row {
+      padding: 14px 16px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .month-select {
+      appearance: none;
+      -webkit-appearance: none;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text-0);
+      padding: 8px 36px 8px 14px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: var(--font-family-base);
+      cursor: pointer;
+      background-image:
+        linear-gradient(45deg, transparent 50%, currentColor 50%),
+        linear-gradient(135deg, currentColor 50%, transparent 50%);
+      background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+    }
+    .month-select:focus { outline: 2px solid color-mix(in srgb, var(--color-primary) 25%, transparent); outline-offset: 2px; }
+
+    /* Main scroll area */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 8px 16px 24px;
+      gap: 16px;
+    }
+
+    .section-card {
+      background: var(--color-surface);
+      border-radius: 16px;
+      box-shadow: var(--shadow-light-surface);
+      overflow: hidden;
+    }
+
+    /* Top 5 card — Rive only */
+    .top5-card {
+      padding: 16px 14px 12px;
+    }
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-text-50);
+      padding: 0 4px 10px;
+    }
+    #rivCanvas {
+      width: 100%;
+      height: 280px;
+      display: block;
+    }
+
+    /* My ranking */
+    .my-rank-card {
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: 32px 44px 1fr auto;
+      grid-template-rows: auto auto;
+      align-items: center;
+      column-gap: 12px;
+      row-gap: 4px;
+      background: var(--color-surface);
+      border: 2px solid var(--color-primary);
+      border-radius: 16px;
+      box-shadow: var(--shadow-light-surface);
+      cursor: pointer;
+      transition: background 120ms;
+    }
+    .my-rank-card:hover { background: var(--color-surface2-alt); }
+    .my-rank-label {
+      grid-column: 1 / -1;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      margin-bottom: 4px;
+    }
+    .rank-num {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text-0);
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+    }
+    .rank-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-100);
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .rank-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .rank-nick {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-text-0);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      align-self: flex-start;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--color-text-100);
+    }
+    .rank-stats {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+    .rank-streak {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text-0);
+      font-variant-numeric: tabular-nums;
+    }
+    .rank-sub {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--color-text-50);
+      font-variant-numeric: tabular-nums;
+    }
+    .rank-reward {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-boost-icon);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Grade section */
+    .grade-section + .grade-section { margin-top: 4px; }
+    .grade-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .grade-header-left { display: flex; align-items: center; gap: 10px; }
+    .grade-chip {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      box-shadow:
+        inset 0 -2px 4px rgba(0,0,0,0.2),
+        0 2px 4px rgba(0,0,0,0.10);
+    }
+    .grade-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-text-0);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .grade-reward {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-boost-icon);
+      font-variant-numeric: tabular-nums;
+    }
+    .grade-reward small {
+      font-weight: 400;
+      color: var(--color-text-50);
+      margin-right: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .rank-row {
+      display: grid;
+      grid-template-columns: 32px 44px 1fr auto;
+      grid-template-rows: auto auto;
+      align-items: center;
+      column-gap: 12px;
+      row-gap: 2px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 120ms;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .rank-row:last-child { border-bottom: none; }
+    .rank-row:hover { background: var(--color-surface2-alt); }
+    .rank-row.is-me {
+      background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    }
+    .rank-row.is-me:hover {
+      background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+    }
+
+    /* Grade gradient backgrounds */
+    .grade-top5      { background: var(--gradient-top5); }
+    .grade-diamond   { background: var(--gradient-diamond); color: var(--color-text-0); }
+    .grade-platinum  { background: var(--gradient-platinum); color: var(--color-text-0); }
+    .grade-gold      { background: var(--gradient-gold); }
+    .grade-silver    { background: var(--gradient-silver); color: var(--color-text-0); }
+    .grade-bronze    { background: var(--gradient-bronze); }
+    .grade-participant { background: var(--gradient-participant); }
+
+    /* Modal */
+    .modal-scrim {
+      position: fixed;
+      inset: 0;
+      background: var(--color-background-b-30, #0000004d);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease;
+      z-index: 20;
+    }
+    .modal-scrim.open { opacity: 1; pointer-events: auto; }
+
+    .modal-sheet {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--color-surface);
+      border-radius: 20px 20px 0 0;
+      box-shadow: var(--floating-effect);
+      transform: translateY(100%);
+      transition: transform 240ms cubic-bezier(0.2, 0.9, 0.3, 1);
+      z-index: 21;
+      padding: 22px 22px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .modal-sheet.open { transform: translateY(0); }
+    .sheet-grabber {
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--color-surface-alt);
+      margin-bottom: 4px;
+    }
+    .modal-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-100);
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .modal-nick {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text-0);
+    }
+    .modal-badge { font-size: 11px; padding: 4px 12px; }
+
+    .modal-stats {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .modal-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 6px;
+      background: var(--color-surface2-alt);
+      border-radius: 12px;
+    }
+    .modal-stat-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-text-50);
+    }
+    .modal-stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text-0);
+    }
+    .modal-stat-value.reward { color: var(--color-boost-icon); }
+
+    .modal-close {
+      width: 100%;
+      margin-top: 8px;
+      background: var(--color-primary);
+      color: var(--color-text-100);
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 120ms;
+      font-family: var(--font-family-base);
+    }
+    .modal-close:hover { background: var(--color-primary-dark); }
+
+    /* Info modal — centered */
+    .info-modal {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.96);
+      opacity: 0;
+      pointer-events: none;
+      background: var(--color-surface);
+      border-radius: 16px;
+      box-shadow: var(--floating-effect);
+      padding: 22px;
+      width: min(92vw, 360px);
+      z-index: 22;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+    .info-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .info-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text-0);
+      margin-bottom: 10px;
+    }
+    .info-body {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--color-text-30);
+    }
+    .info-body ul { margin: 8px 0 0 18px; }
+    .info-body li { margin-bottom: 4px; }
+
+    footer {
+      text-align: center;
+      padding: 14px 20px;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--color-text-50);
+    }
+  </style>
+</head>
+<body>
+  <header class="rank-header">
+    <a href="./profile.html" class="icon-btn" aria-label="닫기">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </a>
+    <h1 class="rank-title">랭킹</h1>
+    <button class="icon-btn" id="infoBtn" aria-label="랭킹 기준 안내">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="16" x2="12" y2="12"/>
+        <line x1="12" y1="8" x2="12.01" y2="8"/>
+      </svg>
+    </button>
+  </header>
+
+  <button class="theme-toggle" id="themeToggle" aria-label="테마 전환">
+    <span id="themeIcon">☀️</span>
+  </button>
+
+  <div class="month-row">
+    <select class="month-select" id="monthSelect" aria-label="월 선택">
+      <option value="2026-05" selected>2026년 5월</option>
+      <option value="2026-04">2026년 4월</option>
+      <option value="2026-03">2026년 3월</option>
+      <option value="2026-02">2026년 2월</option>
+      <option value="2026-01">2026년 1월</option>
+    </select>
+  </div>
+
+  <main>
+    <section class="section-card top5-card" id="top5Card">
+      <div class="section-title">상위 5명</div>
+      <canvas id="rivCanvas"></canvas>
+    </section>
+
+    <section>
+      <div class="section-title" style="padding-left:4px;">내 랭킹</div>
+      <div class="my-rank-card" id="myRankCard" data-user-id="me"></div>
+    </section>
+
+    <section class="section-card grade-section">
+      <div class="grade-header">
+        <div class="grade-header-left">
+          <span class="grade-chip grade-diamond"></span>
+          <span class="grade-name">Diamond</span>
+        </div>
+        <div class="grade-reward"><small>Reward</small>+45 ⚡</div>
+      </div>
+      <div class="grade-list" data-grade="Diamond"></div>
+    </section>
+
+    <section class="section-card grade-section">
+      <div class="grade-header">
+        <div class="grade-header-left">
+          <span class="grade-chip grade-platinum"></span>
+          <span class="grade-name">Platinum</span>
+        </div>
+        <div class="grade-reward"><small>Reward</small>+30 ⚡</div>
+      </div>
+      <div class="grade-list" data-grade="Platinum"></div>
+    </section>
+
+    <section class="section-card grade-section">
+      <div class="grade-header">
+        <div class="grade-header-left">
+          <span class="grade-chip grade-gold"></span>
+          <span class="grade-name">Gold</span>
+        </div>
+        <div class="grade-reward"><small>Reward</small>+20 ⚡</div>
+      </div>
+      <div class="grade-list" data-grade="Gold"></div>
+    </section>
+
+    <section class="section-card grade-section">
+      <div class="grade-header">
+        <div class="grade-header-left">
+          <span class="grade-chip grade-silver"></span>
+          <span class="grade-name">Silver</span>
+        </div>
+        <div class="grade-reward"><small>Reward</small>+12 ⚡</div>
+      </div>
+      <div class="grade-list" data-grade="Silver"></div>
+    </section>
+
+    <section class="section-card grade-section">
+      <div class="grade-header">
+        <div class="grade-header-left">
+          <span class="grade-chip grade-bronze"></span>
+          <span class="grade-name">Bronze</span>
+        </div>
+        <div class="grade-reward"><small>Reward</small>+6 ⚡</div>
+      </div>
+      <div class="grade-list" data-grade="Bronze"></div>
+    </section>
+
+    <section class="section-card grade-section">
+      <div class="grade-header">
+        <div class="grade-header-left">
+          <span class="grade-chip grade-participant"></span>
+          <span class="grade-name">Participant</span>
+        </div>
+        <div class="grade-reward"><small>Reward</small>+2 ⚡</div>
+      </div>
+      <div class="grade-list" data-grade="Participant"></div>
+    </section>
+  </main>
+
+  <footer>ⓒPitch Interactive Co.,LTD. All rights reserved</footer>
+
+  <div class="modal-scrim" id="modalScrim"></div>
+
+  <div class="modal-sheet" id="userModal" role="dialog" aria-modal="true" aria-labelledby="userModalNick">
+    <div class="sheet-grabber"></div>
+    <div class="modal-avatar" id="userModalAvatar">?</div>
+    <div class="modal-nick" id="userModalNick">—</div>
+    <span class="rank-badge modal-badge" id="userModalBadge">—</span>
+    <div class="modal-stats">
+      <div class="modal-stat">
+        <span class="modal-stat-label">Current</span>
+        <span class="modal-stat-value" id="userModalCurrent">—</span>
+      </div>
+      <div class="modal-stat">
+        <span class="modal-stat-label">Longest</span>
+        <span class="modal-stat-value" id="userModalLongest">—</span>
+      </div>
+      <div class="modal-stat">
+        <span class="modal-stat-label">Reward</span>
+        <span class="modal-stat-value reward" id="userModalReward">—</span>
+      </div>
+    </div>
+    <button class="modal-close" id="userModalClose">닫기</button>
+  </div>
+
+  <div class="info-modal" id="infoModal" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+    <h2 class="info-title" id="infoTitle">랭킹 기준 안내</h2>
+    <div class="info-body">
+      월간 스트릭(Streak) 점수를 기준으로 랭킹이 결정됩니다.
+      <ul>
+        <li>1순위: 최장 스트릭 길이</li>
+        <li>2순위: 현재 진행 중인 스트릭 길이</li>
+        <li>3순위: 가장 최근에 스트릭을 달성한 시각</li>
+      </ul>
+      동점인 경우 위 순서대로 우선 순위가 결정됩니다.
+    </div>
+    <button class="modal-close" id="infoClose">확인</button>
+  </div>
+
+  <script type="module" src="./src/rank.js"></script>
+</body>
+</html>
