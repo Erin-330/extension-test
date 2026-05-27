@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>RORR</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" crossorigin />
+  <link rel="stylesheet" href="./src/tokens.css" />
+  <style>
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      position: relative;
+      z-index: 5;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .header-brand .emblem-sm {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+    .header-brand .brand-text {
+      font-size: 18px;
+      font-weight: 700;
+      background: var(--gradient-boosterwall);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--color-text-50);
+      transition: border-color 120ms, background 120ms;
+    }
+    .theme-toggle:hover {
+      background: var(--color-surface2-alt);
+      border-color: var(--color-primary);
+    }
+
+    .account-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1px solid var(--color-border);
+      background: var(--gradient-boosterwall);
+      color: var(--color-text-100);
+      font-family: var(--font-family-base);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: box-shadow 120ms, transform 120ms;
+      position: relative;
+    }
+    .account-btn:hover {
+      box-shadow: var(--shadow-light-surface-2);
+      transform: translateY(-1px);
+    }
+    .account-btn:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    .home-main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+    }
+    .home-card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      box-shadow: var(--shadow-light-surface);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 360px;
+    }
+    .home-card .emblem {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      margin-bottom: 14px;
+    }
+    .home-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--color-text-0);
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .home-sub {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--color-text-50);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* ---- Profile dropdown (Google-style) ---- */
+    .profile-overlay {
+      position: fixed;
+      inset: 0;
+      background: transparent;
+      z-index: 90;
+      display: none;
+    }
+    .profile-overlay.open { display: block; }
+
+    .profile-panel {
+      position: absolute;
+      top: 58px;
+      right: 16px;
+      width: 320px;
+      max-width: calc(100vw - 24px);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 20px;
+      box-shadow: var(--floating-effect);
+      padding: 18px 0 10px;
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+    }
+    .profile-panel.open { display: flex; }
+
+    .panel-email {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text-50);
+      margin-bottom: 14px;
+    }
+
+    .panel-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--gradient-boosterwall);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-100);
+      font-size: 30px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .panel-hello {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-text-0);
+      margin-bottom: 14px;
+    }
+
+    .panel-manage {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text-30);
+      font-family: var(--font-family-base);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 120ms, border-color 120ms;
+      margin-bottom: 18px;
+      text-decoration: none;
+    }
+    .panel-manage:hover {
+      background: var(--color-surface2-alt);
+      border-color: var(--color-primary);
+    }
+
+    .panel-divider {
+      width: 100%;
+      border: none;
+      border-top: 1px solid var(--color-border);
+      margin: 0 0 6px;
+    }
+
+    .panel-menu {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 4px 6px;
+    }
+    .panel-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-family-base);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text-30);
+      text-align: left;
+      transition: background 120ms;
+      text-decoration: none;
+    }
+    .panel-menu-item:hover {
+      background: var(--color-surface2-alt);
+    }
+    .panel-menu-item .menu-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-50);
+      font-size: 16px;
+    }
+
+    .panel-footer {
+      width: 100%;
+      padding: 8px 18px 6px;
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--color-text-50);
+      text-align: center;
+      border-top: 1px solid var(--color-border);
+      margin-top: 6px;
+    }
+    .panel-footer a {
+      color: var(--color-text-50);
+      text-decoration: none;
+    }
+    .panel-footer a:hover { color: var(--color-primary); }
+
+    footer {
+      text-align: center;
+      padding: 14px 20px;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--color-text-50);
+    }
+
+    @media (max-width: 380px) {
+      .profile-panel { right: 10px; width: calc(100vw - 20px); }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-brand">
+      <img
+        src="https://erin-bucket-team.s3.amazonaws.com/RORR%20EMBLEM.png"
+        alt="RORR 엠블럼"
+        class="emblem-sm"
+      />
+      <span class="brand-text">RORR</span>
+    </div>
+
+    <div class="header-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="테마 전환">
+        <span id="themeIcon">☀️</span>
+      </button>
+
+      <button
+        class="account-btn"
+        id="accountBtn"
+        aria-label="Google 계정"
+        aria-haspopup="dialog"
+        aria-expanded="false"
+        title="Google 계정: Minhui"
+      >M</button>
+    </div>
+  </header>
+
+  <main class="home-main">
+    <div class="home-card">
+      <img
+        src="https://erin-bucket-team.s3.amazonaws.com/RORR%20EMBLEM.png"
+        alt="RORR 엠블럼"
+        class="emblem"
+      />
+      <h1 class="home-title">환영합니다, Minhui 님</h1>
+      <p class="home-sub">우측 상단 프로필 아이콘을 눌러<br/>계정 정보를 확인하세요.</p>
+    </div>
+  </main>
+
+  <footer>ⓒPitch Interactive Co.,LTD. All rights reserved</footer>
+
+  <!-- Profile dropdown -->
+  <div class="profile-overlay" id="profileOverlay" aria-hidden="true"></div>
+
+  <div
+    class="profile-panel"
+    id="profilePanel"
+    role="dialog"
+    aria-modal="false"
+    aria-label="Google 계정"
+  >
+    <div class="panel-email" id="panelEmail">erin@rorr.club</div>
+    <div class="panel-avatar" id="panelAvatar">M</div>
+    <div class="panel-hello">안녕하세요, Minhui 님!</div>
+
+    <a href="#" class="panel-manage" id="manageAccount">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+      Google 계정 관리
+    </a>
+
+    <hr class="panel-divider" />
+
+    <nav class="panel-menu" aria-label="계정 메뉴">
+      <a href="#" class="panel-menu-item" id="addAccount">
+        <span class="menu-icon" aria-hidden="true">＋</span>
+        <span>다른 계정 추가</span>
+      </a>
+      <a href="profile.html" class="panel-menu-item" id="viewProfile">
+        <span class="menu-icon" aria-hidden="true">👤</span>
+        <span>내 프로필 보기</span>
+      </a>
+      <button type="button" class="panel-menu-item" id="signOutBtn">
+        <span class="menu-icon" aria-hidden="true">⎋</span>
+        <span>로그아웃</span>
+      </button>
+    </nav>
+
+    <div class="panel-footer">
+      <a href="#">개인정보처리방침</a> · <a href="#">이용약관</a>
+    </div>
+  </div>
+
+  <script type="module" src="./src/index.js"></script>
+</body>
+</html>
