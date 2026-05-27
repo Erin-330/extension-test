@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>RORR · 팔로우</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" crossorigin />
+  <style>
+    html, body { width: 100%; min-height: 100vh; }
+    body { display: flex; flex-direction: column; }
+
+    .follow-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 20px 96px;
+      gap: 14px;
+      max-width: 480px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 4px 0 4px;
+    }
+    .header .title {
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--color-text-0);
+    }
+    .header .close-btn {
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-50);
+      font-size: 18px;
+      text-decoration: none;
+      transition: background 120ms, border-color 120ms;
+    }
+    .header .close-btn:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      box-shadow: var(--shadow-light-surface-2);
+    }
+    .search-bar input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: var(--font-family-base);
+      font-size: 14px;
+      color: var(--color-text-0);
+    }
+    .search-bar input::placeholder { color: var(--color-text-50); }
+    .search-bar .search-icon { color: var(--color-text-50); }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: var(--color-surface);
+      border-radius: 16px;
+      box-shadow: var(--shadow-light-surface);
+      padding: 8px;
+      overflow-y: auto;
+      max-height: 58vh;
+    }
+
+    .card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 120ms, border-color 120ms;
+      border: 1px solid transparent;
+      background: var(--color-surface2-alt);
+      position: relative;
+    }
+    .card:hover { background: var(--color-surface-alt); }
+    .card.selected {
+      border-color: var(--color-selected);
+      background: var(--color-surface);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-selected) 25%, transparent);
+    }
+
+    .card .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-100);
+      font-weight: 700;
+      font-size: 14px;
+      background: var(--gradient-boosterwall);
+    }
+    .card .info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .card .name {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--color-text-0);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card .meta {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--color-text-50);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card .team-logo-mini {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--gradient-boost);
+      display: inline-block;
+    }
+
+    .badge-boost {
+      position: absolute;
+      top: 6px;
+      right: 36px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--color-text-100);
+      background: var(--gradient-boost);
+      padding: 2px 6px;
+      border-radius: 999px;
+    }
+
+    .order-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--color-selected);
+      color: var(--color-text-100);
+      font-size: 12px;
+      font-weight: 700;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .card.selected .order-num { display: flex; }
+
+    .empty-state {
+      padding: 32px 16px;
+      text-align: center;
+      color: var(--color-text-50);
+      font-size: 14px;
+    }
+
+    .step-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--color-surface-floating);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: var(--floating-effect);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 10;
+    }
+    .step-bar .nav-btn {
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-family: var(--font-family-base);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--color-border);
+      background: transparent;
+      color: var(--color-text-30);
+      transition: background 120ms, border-color 120ms;
+    }
+    .step-bar .nav-btn:hover:not(:disabled) {
+      background: var(--color-surface2-alt);
+      border-color: var(--color-primary);
+    }
+    .step-bar .nav-btn.primary {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-text-100);
+    }
+    .step-bar .nav-btn.primary:hover:not(:disabled) {
+      background: var(--color-primary-dark);
+      border-color: var(--color-primary-dark);
+    }
+    .step-bar .nav-btn:disabled {
+      background: var(--color-button-disable);
+      border-color: var(--color-button-disable);
+      color: var(--color-text-100);
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .dots { display: flex; gap: 6px; }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-border);
+    }
+    .dot.active { background: var(--color-primary); }
+    .step-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--color-text-50);
+    }
+
+    footer {
+      text-align: center;
+      padding: 14px 20px;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--color-text-50);
+    }
+  </style>
+  <script type="module" crossorigin src="/assets/follow-CwaDtMkd.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/tokens-g_pl08HU.js">
+  <link rel="stylesheet" crossorigin href="/assets/tokens-B2fCUAyR.css">
+</head>
+<body>
+  <main class="follow-main">
+    <div class="header">
+      <h1 class="title" id="headerTitle">Back Your League</h1>
+      <a class="close-btn" href="./profile.html" aria-label="닫기">✕</a>
+    </div>
+
+    <div class="search-bar">
+      <span class="search-icon" aria-hidden="true">🔍</span>
+      <input type="text" id="searchInput" placeholder="이름으로 검색" autocomplete="off" />
+    </div>
+
+    <div class="list" id="list"></div>
+  </main>
+
+  <nav class="step-bar">
+    <button class="nav-btn" id="prevBtn">← 이전</button>
+    <div class="indicator">
+      <div class="dots">
+        <span class="dot" data-step="1"></span>
+        <span class="dot" data-step="2"></span>
+        <span class="dot" data-step="3"></span>
+      </div>
+      <span class="step-label" id="stepLabel">리그</span>
+    </div>
+    <button class="nav-btn primary" id="nextBtn">다음 →</button>
+  </nav>
+
+</body>
+</html>
