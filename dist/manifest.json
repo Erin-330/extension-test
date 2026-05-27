@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "RORR",
+  "version": "1.0.0",
+  "description": "스포츠를 더 즐겁게, 함께",
+  "permissions": ["sidePanel"],
+  "side_panel": {
+    "default_path": "login.html"
+  },
+  "action": {
+    "default_title": "RORR 열기"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
