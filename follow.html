@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>RORR · 팔로우</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" crossorigin />
+  <link rel="stylesheet" href="./src/tokens.css" />
+  <style>
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      font-family: var(--font-family-base);
+      background: var(--color-background-light);
+      color: var(--color-text-30-sub-text-dark);
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--color-text-50);
+      transition: border-color 120ms, background 120ms;
+      z-index: 10;
+    }
+    .theme-toggle:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
+
+    .follow-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 0 20px 100px;
+      gap: 16px;
+    }
+
+    .follow-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0 4px;
+      gap: 12px;
+    }
+    .back-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: none;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-50);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: background 120ms, border-color 120ms;
+    }
+    .back-btn:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
+    .header-title {
+      flex: 1;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--color-text-30-sub-text-dark);
+    }
+    .header-spacer { width: 34px; }
+
+    .search-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .search-input {
+      width: 100%;
+      padding: 12px 14px 12px 40px;
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      background: var(--color-surface);
+      font-family: var(--font-family-base);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--color-text-30-sub-text-dark);
+      outline: none;
+      transition: border-color 120ms, box-shadow 120ms;
+    }
+    .search-input::placeholder { color: var(--color-text-50); }
+    .search-input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 25%, transparent);
+    }
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      color: var(--color-text-50);
+      pointer-events: none;
+    }
+
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .item-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--color-surface);
+      border-radius: 14px;
+      border: 1px solid transparent;
+      box-shadow: var(--shadow-light-surface-2);
+      cursor: pointer;
+      transition: border-color 120ms, background 120ms;
+    }
+    .item-card:hover {
+      border-color: var(--color-border);
+      background: var(--color-surface2-alt);
+    }
+    .item-card.selected {
+      border-color: var(--color-primary);
+      background: color-mix(in srgb, var(--color-primary) 6%, var(--color-surface));
+    }
+
+    .item-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--gradient-boosterwall);
+      color: var(--color-text-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+    }
+    .item-logo.team-l { background: var(--color-team-color-left); }
+    .item-logo.team-r { background: var(--color-team-color-right); }
+    .item-logo.team-g { background: var(--gradient-grade-gold); }
+    .item-logo.team-d { background: var(--gradient-grade-diamond); color: var(--color-text-30-sub-text-dark); }
+
+    .item-body {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .item-name {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--color-text-30-sub-text-dark);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .item-sub {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--color-text-50);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .item-sub-logo {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--color-item-color);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .item-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .boost-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--color-text-100);
+      background: var(--gradient-boost-energy-4-bg);
+    }
+
+    .order-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      color: var(--color-text-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+
+    .empty-state {
+      padding: 32px 14px;
+      text-align: center;
+      color: var(--color-text-50);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .step-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--color-surface-floating);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--color-border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 5;
+    }
+
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .step-dot {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--color-text-50);
+    }
+    .step-dot .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-surface-alt);
+      transition: background 120ms;
+    }
+    .step-dot.active .dot { background: var(--color-primary); }
+    .step-dot.done .dot { background: var(--color-success); }
+    .step-dot.active { color: var(--color-primary); font-weight: 700; }
+
+    .step-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-family: var(--font-family-base);
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.2;
+      cursor: pointer;
+      transition: background 120ms, border-color 120ms;
+      border: 1px solid transparent;
+    }
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--color-border);
+      color: var(--color-text-30-sub-text-dark);
+    }
+    .btn-ghost:hover { background: var(--color-surface2-alt); }
+    .btn-ghost:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .btn-primary {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: var(--color-text-100);
+    }
+    .btn-primary:hover { background: var(--color-primary-dark); border-color: var(--color-primary-dark); }
+    .btn-primary:disabled {
+      background: var(--color-button-disable);
+      border-color: var(--color-button-disable);
+      cursor: not-allowed;
+    }
+
+    .step-screen { display: none; flex-direction: column; gap: 12px; flex: 1; }
+    .step-screen.active { display: flex; }
+
+    .step-meta {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--color-text-50);
+      padding: 0 2px;
+    }
+    .step-meta strong { color: var(--color-primary); font-weight: 700; font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="themeToggle" aria-label="테마 전환">
+    <span id="themeIcon">☀️</span>
+  </button>
+
+  <main class="follow-main">
+    <header class="follow-header">
+      <a class="back-btn" id="backBtn" href="./profile.html" aria-label="뒤로">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </a>
+      <div class="header-title" id="headerTitle">Back Your League</div>
+      <div class="header-spacer"></div>
+    </header>
+
+    <div class="search-wrap">
+      <span class="search-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </span>
+      <input class="search-input" id="searchInput" type="text" placeholder="검색" autocomplete="off" />
+    </div>
+
+    <div class="step-meta" id="stepMeta"></div>
+
+    <section class="step-screen active" id="screen-league">
+      <div class="item-list" id="list-league"></div>
+    </section>
+    <section class="step-screen" id="screen-team">
+      <div class="item-list" id="list-team"></div>
+    </section>
+    <section class="step-screen" id="screen-player">
+      <div class="item-list" id="list-player"></div>
+    </section>
+  </main>
+
+  <nav class="step-bar">
+    <div class="step-indicator">
+      <div class="step-dot active" data-step="league">
+        <span class="dot"></span>
+        <span>리그</span>
+      </div>
+      <div class="step-dot" data-step="team">
+        <span class="dot"></span>
+        <span>팀</span>
+      </div>
+      <div class="step-dot" data-step="player">
+        <span class="dot"></span>
+        <span>선수</span>
+      </div>
+    </div>
+    <div class="step-actions">
+      <button class="btn btn-ghost" id="prevBtn">이전</button>
+      <button class="btn btn-primary" id="nextBtn">다음</button>
+    </div>
+  </nav>
+
+  <script type="module" src="./src/follow.js"></script>
+</body>
+</html>

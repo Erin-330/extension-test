@@ -9,6 +9,8 @@ export default defineConfig({
       input: {
         login: resolve(__dirname, 'login.html'),
         profile: resolve(__dirname, 'profile.html'),
+        follow: resolve(__dirname, 'follow.html'),
+        rank: resolve(__dirname, 'rank.html'),
       },
     },
   },
