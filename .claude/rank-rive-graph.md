@@ -38,6 +38,20 @@
 
 ---
 
+## HTML 구조
+
+> **⚠️ 절대 HTML/CSS div 막대로 구현하지 말 것 — 반드시 `<canvas>` 요소 하나만 사용할 것**
+
+Top 5 섹션에는 `<canvas>` 하나만 넣는다. div·span 막대 구조 금지.
+
+```html
+<canvas id="rivCanvas" style="width:100%;height:280px;display:block;"></canvas>
+```
+
+카드 래퍼가 필요하면 `<div id="top5Card">` 안에 위 canvas만 배치할 것. bar, streak, nick 등 HTML 요소 추가 금지.
+
+---
+
 ## 캔버스
 
 - CSS height: `280px`

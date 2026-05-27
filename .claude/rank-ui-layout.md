@@ -66,7 +66,8 @@
 ## 상위 5명 섹션
 
 - **Rive 그래프(`rank-rive-graph`)만 표시** — 포디움 아이템 목록 없음
-- 구현 상세(Rive 파일 URL, Artboard, State Machine, 데이터 바인딩 등) → `.claude/rank-rive-graph.md` 참고
+- **⚠️ HTML/CSS div 막대(bar) 절대 사용 금지** — `<canvas>` 하나로 Rive가 렌더링
+- 구현 상세(Rive 파일 URL, Artboard, State Machine, HTML 구조, 데이터 바인딩 등) → `.claude/rank-rive-graph.md` 참고
 
 ---
 

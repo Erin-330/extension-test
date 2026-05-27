@@ -946,6 +946,22 @@ module.exports = {
 };
 ```
 
+### 9.3.5 Page layout rules
+
+모든 페이지(html 파일)에 적용되는 기본 레이아웃 규칙.
+
+```css
+html, body {
+  width: 100%;
+  min-height: 100vh;
+}
+```
+
+- **메인 컨테이너**: `width: 100%` — `max-width` 제한 금지
+- 내부 콘텐츠 정렬이 필요하면 `padding`으로 처리할 것. `max-width: 480px; margin: 0 auto` 패턴 사용 금지
+
+---
+
 ### 9.4 Suggested implementation order
 
 1. Install Pretendard Variable.
