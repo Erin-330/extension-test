@@ -116,3 +116,90 @@ Top 5 섹션에는 `<canvas>` 하나만 넣는다. div·span 막대 구조 금�
 - containerW > 360: `graphWidth = containerW`
 - containerW ≤ 360: `graphWidth = containerW + max(0, 280 - containerH)`
 - ResizeObserver에서도 동일하게 재계산 후 업데이트
+
+---
+
+## 전체 구현 예시 (이 패턴 그대로 쓸 것)
+
+> **⚠️ 아래 코드를 그대로 사용할 것. 임의로 생략하거나 HTML/CSS 대체 구현 금지.**
+
+```js
+import { Rive, decodeFont } from '@rive-app/canvas'
+
+const GRAPH_WIDTH_THRESHOLD = 360
+const REF_HEIGHT_PX = 280
+
+function initRiveGraph(top5Users) {
+  const canvas = document.getElementById('rivCanvas')
+  const container = canvas.parentElement
+
+  function calcGraphWidth() {
+    const w = container.offsetWidth
+    const h = container.offsetHeight || REF_HEIGHT_PX
+    return w > GRAPH_WIDTH_THRESHOLD ? w : w + Math.max(0, REF_HEIGHT_PX - h)
+  }
+
+  const r = new Rive({
+    src: 'https://erin-bucket-team.s3.us-east-1.amazonaws.com/streak-ranking-graph.riv',
+    canvas,
+    artboard: 'StreakRankingGraph',
+    stateMachines: 'State Machine 1',
+    autoBind: true,
+    autoplay: true,
+    assetLoader(asset, bytes) {
+      if (
+        asset.isFont &&
+        ['Pretendard Variable', 'PretendardVariable', 'Pretendard']
+          .some(n => asset.name.toLowerCase().includes(n.toLowerCase()))
+      ) {
+        fetch('https://erin-bucket-team.s3.us-east-1.amazonaws.com/fonts/PretendardVariable-3557044.ttf')
+          .then(res => res.arrayBuffer())
+          .then(buf => decodeFont(new Uint8Array(buf)))
+          .then(font => asset.setFont(font))
+        return true
+      }
+      return false
+    },
+    onLoad() {
+      r.resizeDrawingSurfaceToCanvas()
+
+      requestAnimationFrame(() => {
+        const vm = r.viewModelInstance
+
+        // graphWidth
+        const gw = vm.number('graphWidth')
+        if (gw) gw.value = calcGraphWidth()
+
+        // isNoData
+        const allZero = top5Users.every(u => u.longest === 0)
+        const isNoData = r.stateMachineInputs('State Machine 1')
+          ?.find(i => i.name === 'isNoData')
+        if (isNoData) isNoData.value = allZero
+
+        // 막대 5개 바인딩
+        const denom = top5Users[0]?.longest || Math.max(...top5Users.map(u => u.longest), 1)
+        top5Users.forEach((u, i) => {
+          const n = i + 1
+          const rate = denom > 0 ? Math.min(100, Math.max(0, (u.longest / denom) * 100)) : 0
+
+          const cs = vm.string(`rankingBar${n}/currentStreak`)
+          const sl = vm.number(`rankingBar${n}/streakLong`)
+          const sr = vm.number(`rankingBar${n}/streakRate`)
+          const un = vm.string(`rankingBar${n}/userName`)
+
+          if (cs) cs.value = `W${u.cur}`
+          if (sl) sl.value = u.longest
+          if (sr) sr.value = n === 1 && denom > 0 ? 100 : rate
+          if (un) un.value = u.nick
+        })
+      })
+    },
+  })
+
+  new ResizeObserver(() => {
+    r.resizeDrawingSurfaceToCanvas()
+    const gw = r.viewModelInstance?.number('graphWidth')
+    if (gw) gw.value = calcGraphWidth()
+  }).observe(container)
+}
+```
