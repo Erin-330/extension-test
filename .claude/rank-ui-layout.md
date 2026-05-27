@@ -1,5 +1,10 @@
 # 랭킹 화면 UI 레이아웃
 
+> ## ⛔ 랭킹 페이지 작업 전 필독
+>
+> **이 파일과 함께 반드시 `.claude/rank-rive-graph.md`를 먼저 읽을 것.**
+> TOP 5 섹션은 Rive 애니메이션 파일로만 구현한다. HTML/CSS 막대 구현 절대 금지.
+
 월간 스트릭 기준으로 전체 사용자의 순위를 보여주는 화면. 내 순위 확인, 상위 5명 포디움, 등급별 랭킹 목록 순으로 구성된다. 항목 클릭 시 해당 사용자의 상세 정보를 모달로 볼 수 있다.
 
 ---
@@ -65,9 +70,11 @@
 
 ## 상위 5명 섹션
 
-- **Rive 그래프(`rank-rive-graph`)만 표시** — 포디움 아이템 목록 없음
-- **⚠️ HTML/CSS div 막대(bar) 절대 사용 금지** — `<canvas>` 하나로 Rive가 렌더링
-- 구현 상세(Rive 파일 URL, Artboard, State Machine, HTML 구조, 데이터 바인딩 등) → `.claude/rank-rive-graph.md` 참고
+> ⛔ **TOP 5는 반드시 Rive 애니메이션으로 구현한다. HTML/CSS 막대 절대 금지.**
+> 구현 방법은 `.claude/rank-rive-graph.md`의 전체 구현 예시 코드를 그대로 사용할 것.
+
+- HTML에는 `<canvas id="rivCanvas">` 하나만 배치 — div·span 막대 구조 추가 금지
+- Rive `.riv` 파일 URL, Artboard, 데이터 바인딩 등 모든 상세 → `.claude/rank-rive-graph.md`
 
 ---
 
