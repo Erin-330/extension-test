@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>RORR · 프로필</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" crossorigin />
+  <style>
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--color-text-50);
+      transition: border-color 120ms, background 120ms;
+      z-index: 10;
+    }
+    .theme-toggle:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 20px;
+    }
+    .profile-header .back-btn {
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--color-text-30);
+      transition: border-color 120ms, background 120ms;
+    }
+    .profile-header .back-btn:hover { background: var(--color-surface2-alt); border-color: var(--color-primary); }
+    .profile-header .page-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-text-0);
+    }
+
+    .profile-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 20px 24px;
+      gap: 16px;
+    }
+
+    .profile-card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      box-shadow: var(--shadow-light-surface);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: var(--gradient-boosterwall);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-100);
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .display-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-text-0);
+      margin-bottom: 4px;
+    }
+
+    .email {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--color-text-50);
+      margin-bottom: 18px;
+    }
+
+    .tier-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: var(--gradient-gold);
+      color: var(--color-text-100);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .stats-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      background: var(--color-surface);
+      border-radius: 16px;
+      box-shadow: var(--shadow-light-surface);
+      padding: 18px 12px;
+    }
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text-0);
+      line-height: 1.2;
+    }
+    .stat-label {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--color-text-50);
+      line-height: 1.2;
+    }
+
+    .menu-list {
+      width: 100%;
+      background: var(--color-surface);
+      border-radius: 16px;
+      box-shadow: var(--shadow-light-surface);
+      overflow: hidden;
+    }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text-30);
+      cursor: pointer;
+      transition: background 120ms;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item:hover { background: var(--color-surface2-alt); }
+    .menu-item .chev {
+      color: var(--color-text-50);
+      font-size: 14px;
+    }
+
+    .signout-btn {
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text-30);
+      font-family: var(--font-family-base);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 120ms, border-color 120ms, color 120ms;
+    }
+    .signout-btn:hover {
+      background: var(--color-surface2-alt);
+      border-color: var(--color-error);
+      color: var(--color-error);
+    }
+
+    footer {
+      text-align: center;
+      padding: 14px 20px;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--color-text-50);
+    }
+  </style>
+  <script type="module" crossorigin src="/assets/profile-b6YAkMgZ.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/tokens-g_pl08HU.js">
+  <link rel="stylesheet" crossorigin href="/assets/tokens-B2fCUAyR.css">
+</head>
+<body>
+  <button class="theme-toggle" id="themeToggle" aria-label="테마 전환">
+    <span id="themeIcon">☀️</span>
+  </button>
+
+  <header class="profile-header">
+    <button class="back-btn" id="backBtn" aria-label="뒤로 가기">←</button>
+    <span class="page-title">프로필</span>
+  </header>
+
+  <main class="profile-main">
+    <div class="profile-card">
+      <div class="avatar" id="avatar">E</div>
+      <div class="display-name" id="displayName">Erin</div>
+      <div class="email" id="email">erin@rorr.club</div>
+      <span class="tier-badge">⭐ Gold Tier</span>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-item">
+        <span class="stat-value">128</span>
+        <span class="stat-label">부스트</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">42</span>
+        <span class="stat-label">퀴즈</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">7</span>
+        <span class="stat-label">팔로잉</span>
+      </div>
+    </div>
+
+    <div class="menu-list">
+      <div class="menu-item">
+        <span>내 활동</span>
+        <span class="chev">›</span>
+      </div>
+      <div class="menu-item">
+        <span>관심 팀</span>
+        <span class="chev">›</span>
+      </div>
+      <div class="menu-item">
+        <span>알림 설정</span>
+        <span class="chev">›</span>
+      </div>
+      <div class="menu-item">
+        <span>도움말</span>
+        <span class="chev">›</span>
+      </div>
+    </div>
+
+    <button class="signout-btn" id="signOutBtn">로그아웃</button>
+  </main>
+
+  <footer>ⓒPitch Interactive Co.,LTD. All rights reserved</footer>
+
+</body>
+</html>
