@@ -100,6 +100,25 @@ function initRiveGraph(top5Users) {
 
 ---
 
+## Chrome 익스텐션 필수 설정 (없으면 Rive 렌더링 안 됨)
+
+이 프로젝트는 Chrome 익스텐션(Manifest V3)이다. Rive가 내부적으로 **WebAssembly**를 사용하고, `.riv`·폰트를 **외부 S3**에서 fetch하기 때문에 아래 두 항목이 `manifest.json`에 반드시 있어야 한다.
+
+```json
+"host_permissions": [
+  "https://erin-bucket-team.s3.amazonaws.com/*",
+  "https://erin-bucket-team.s3.us-east-1.amazonaws.com/*"
+],
+"content_security_policy": {
+  "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+}
+```
+
+- `wasm-unsafe-eval` 없으면 → Rive WASM 로드 실패, 빈 canvas
+- `host_permissions` 없으면 → S3 fetch 차단, `.riv` 파일·폰트 로드 실패
+
+---
+
 ## 파일 / Rive 설정
 
 | 항목 | 값 |
