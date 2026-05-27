@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>RORR · 팔로우</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" crossorigin />
+  <link rel="stylesheet" href="./src/tokens.css" />
+  <style>
+    html, body { width: 100%; min-height: 100vh; }
+    body {
+      display: flex;
+      flex-direction: column;
+      background: var(--color-background-light);
+      font-family: var(--font-family-base);
+    }
+
+    .follow-app {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 560px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 16px 20px 96px;
+      gap: 16px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .top-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-text-30-sub-text-dark);
+      line-height: 1.2;
+    }
+    .icon-btn {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--color-text-50);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 120ms, border-color 120ms;
+    }
+    .icon-btn:hover {
+      background: var(--color-surface2-alt);
+      border-color: var(--color-primary);
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text-30-sub-text-dark);
+      font-family: var(--font-family-base);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      outline: none;
+      transition: border-color 120ms, box-shadow 120ms;
+    }
+    .search-box:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 25%, transparent);
+    }
+
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .item-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: var(--color-surface);
+      box-shadow: var(--shadow-light-surface);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: border-color 120ms, background 120ms;
+      position: relative;
+    }
+    .item-card:hover { background: var(--color-surface2-alt); }
+    .item-card.selected { border-color: var(--color-selected); }
+
+    .item-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--gradient-boosterwall);
+      color: var(--color-text-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .item-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .item-name {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 20px;
+      color: var(--color-text-30-sub-text-dark);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .item-sub {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--color-text-50);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .team-mini {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--color-item-color);
+    }
+
+    .badge-boost {
+      position: absolute;
+      top: 6px;
+      right: 44px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: var(--gradient-boost-energy-4-bg);
+      color: var(--color-text-100);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .order-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-selected);
+      color: var(--color-text-100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+    .order-placeholder {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--color-text-50);
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .step-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 20px;
+      background: var(--color-surface-floating);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--color-border);
+    }
+    .step-bar-inner {
+      max-width: 560px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .step-btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      border: 1px solid var(--color-button-border);
+      background: var(--color-button);
+      color: var(--color-text-100);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 120ms;
+      min-width: 88px;
+    }
+    .step-btn:hover { background: var(--color-button-hover); }
+    .step-btn:disabled {
+      background: var(--color-button-disable);
+      cursor: not-allowed;
+    }
+    .step-btn.primary {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+    .step-btn.primary:hover { background: var(--color-primary-dark); }
+    .step-btn.primary:disabled {
+      background: var(--color-button-disable);
+      border-color: var(--color-button-disable);
+    }
+
+    .step-dots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .step-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-border);
+      transition: background 120ms;
+    }
+    .step-dot.active { background: var(--color-primary); }
+    .step-dot.done { background: var(--color-selected); }
+
+    .step-meta {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--color-text-50);
+      line-height: 1.2;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="follow-app">
+    <div class="topbar">
+      <a class="icon-btn" id="backBtn" href="./profile.html" aria-label="뒤로가기">‹</a>
+      <div class="top-title" id="stepTitle">Back Your League</div>
+      <a class="icon-btn" href="./profile.html" aria-label="닫기">✕</a>
+    </div>
+
+    <input
+      type="text"
+      class="search-box"
+      id="searchBox"
+      placeholder="검색"
+      autocomplete="off"
+    />
+
+    <div class="item-list" id="itemList"></div>
+  </div>
+
+  <div class="step-bar">
+    <div class="step-bar-inner">
+      <button class="step-btn" id="prevBtn">이전</button>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+        <div class="step-dots">
+          <span class="step-dot" data-step="0"></span>
+          <span class="step-dot" data-step="1"></span>
+          <span class="step-dot" data-step="2"></span>
+        </div>
+        <div class="step-meta" id="stepMeta">리그</div>
+      </div>
+      <button class="step-btn primary" id="nextBtn">다음</button>
+    </div>
+  </div>
+
+  <script type="module" src="./src/follow.js"></script>
+</body>
+</html>
