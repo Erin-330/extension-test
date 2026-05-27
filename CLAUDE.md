@@ -17,6 +17,11 @@
   - Always reference this URL for the RORR emblem in web pages
   - Local file `RORR EMBLEM.png` exists in the project root for offline reference only
 
+## 스타일 규칙
+
+- 모든 색상·타이포그래피·이펙트는 반드시 `Design System.md`의 토큰을 사용할 것
+- 토큰의 용도(Use 컬럼)를 확인하고 의미에 맞게 사용할 것 — 임의로 비슷한 토큰으로 대체하지 말 것
+
 ## Login Page Rules
 - Authentication: Google OAuth only — no email/password fields
 - Below the Google Sign-In button, include two links: **Terms of Use** and **Privacy Policy**
