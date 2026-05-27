@@ -22,6 +22,11 @@
 - `import { Rive, decodeFont } from '@rive-app/canvas'`
 - `import Rive from '@rive-app/canvas'` (default import) 하면 `Rive is not a constructor` 오류 발생
 
+> **⚠️ CDN(esm.sh, unpkg 등) 사용 금지**
+> `@rive-app/canvas`는 이 프로젝트에 **npm으로 이미 설치되어 있다** (`node_modules/@rive-app/canvas`, v2.37.8).
+> Vite가 모듈 해석을 담당하므로 반드시 `'@rive-app/canvas'` 그대로 import할 것.
+> CDN URL(`https://esm.sh/...` 등)로 바꾸면 버전 불일치 또는 API 차이로 Rive가 렌더링되지 않는다.
+
 ---
 
 ## 폰트
