@@ -136,6 +136,19 @@
       color: var(--color-text-50);
       font-size: 14px;
     }
+    .menu-item .label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .menu-icon {
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-50);
+    }
 
     footer {
       text-align: center;
@@ -170,28 +183,43 @@
     </div>
 
     <div class="menu-list">
-      <a class="menu-item" href="#">
-        <span>Follow Team &amp; Player</span>
+      <a class="menu-item" href="./rank.html">
+        <span class="label">
+          <span class="menu-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 21h8"/>
+              <path d="M12 17v4"/>
+              <path d="M7 4h10v5a5 5 0 0 1-10 0V4z"/>
+              <path d="M17 5h3v3a3 3 0 0 1-3 3"/>
+              <path d="M7 5H4v3a3 3 0 0 0 3 3"/>
+            </svg>
+          </span>
+          <span>Ranking</span>
+        </span>
         <span class="chev">›</span>
       </a>
       <a class="menu-item" href="#">
-        <span>Purchase List</span>
+        <span class="label"><span>Follow Team &amp; Player</span></span>
         <span class="chev">›</span>
       </a>
       <a class="menu-item" href="#">
-        <span>Boost List</span>
+        <span class="label"><span>Purchase List</span></span>
+        <span class="chev">›</span>
+      </a>
+      <a class="menu-item" href="#">
+        <span class="label"><span>Boost List</span></span>
         <span class="chev">›</span>
       </a>
       <a class="menu-item" href="https://dev-app.rorr.club" target="_blank" rel="noopener noreferrer">
-        <span>dev-app.rorr.club</span>
+        <span class="label"><span>dev-app.rorr.club</span></span>
         <span class="chev">↗</span>
       </a>
       <a class="menu-item" href="#">
-        <span>Terms of Use</span>
+        <span class="label"><span>Terms of Use</span></span>
         <span class="chev">›</span>
       </a>
       <a class="menu-item" href="#">
-        <span>Privacy Policy</span>
+        <span class="label"><span>Privacy Policy</span></span>
         <span class="chev">›</span>
       </a>
     </div>
