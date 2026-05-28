@@ -2,12 +2,15 @@
 
 ## Spec Files (읽기 규칙)
 - **프로젝트 최초 구성 / 빌드 환경 세팅 시** → `.claude/infrastructure.md` 먼저 읽을 것 (package.json, vite.config.js, manifest.json, background.js, build.yml, .gitignore, tokens.css 전체 내용 포함)
+- **로딩 영역 / 로딩 스피너 / 초기 로딩 / 무한 스크롤 로딩이 포함된 모든 페이지·컴포넌트 작업 시** → `.claude/loading-rive.md` 반드시 읽을 것; **Rive 사용 필수** — CSS 스피너·정적 이미지로 대체 불가, 반드시 `@rive-app/canvas` 와 `loading-page.riv` 로 구현할 것
 - `login.html` 관련 작업 시 → `.claude/login.md` 먼저 읽을 것
 - `profile.html` 관련 작업 시 → `.claude/profile.md` 먼저 읽을 것
 - `follow.html` / 팔로우 관련 작업 시 → `.claude/follow-ui-layout.md` 먼저 읽을 것
 - `rank.html` / 랭킹 관련 작업 시 → `.claude/rank-ui-layout.md` 와 `.claude/rank-rive-graph.md` 모두 먼저 읽을 것
 - `streak-history.html` / 스트릭 히스토리 / 스트릭 기록 / streak history 관련 작업 시 (페이지 생성 요청 포함) → `.claude/streak-history.md` 와 `.claude/streak-status-fire-rive.md` 모두 먼저 읽을 것 (Rive 파일 URL, 아트보드명, 이벤트명 등 모두 이 파일 기준으로 구현할 것); **Rive 사용 필수** — 반드시 `@rive-app/canvas` 로 애니메이션 구현, 정적 대체 불가
 - `splash.html` / 스플래시 관련 작업 시 → `.claude/splash-screen.md` 먼저 읽을 것 (Rive 파일 URL, 아트보드명, 이벤트명 등 모두 이 파일 기준으로 구현할 것)
+- 부스트 내역 / 부스트 목록 / boost list / boost history 관련 작업 시 → `.claude/boost-list.md` 와 `.claude/loading-rive.md` 모두 먼저 읽을 것; **Rive 사용 필수** — 로딩·빈 상태·좋아요 버튼 모두 Rive로 구현, 정적 대체 불가
+- 구매 내역 / 구매 목록 / purchase list / purchase history 관련 작업 시 → `.claude/purchase-list.md` 와 `.claude/loading-rive.md` 모두 먼저 읽을 것; **Rive 사용 필수** — 로딩 영역은 반드시 `loading-page.riv` 로 구현
 - 디자인/스타일 작업 시 → `.claude/Design System.md` 참고할 것
 
 ## Service
