@@ -11,6 +11,8 @@ export default defineConfig({
         follow:         resolve(__dirname, 'follow.html'),
         rank:           resolve(__dirname, 'rank.html'),
         streakHistory:  resolve(__dirname, 'streak-history.html'),
+        boostList:      resolve(__dirname, 'boost-list.html'),
+        purchaseList:   resolve(__dirname, 'purchase-list.html'),
       },
     },
   },
