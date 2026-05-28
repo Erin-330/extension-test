@@ -1,0 +1,1 @@
+import"./tokens-g_pl08HU.js";const e="splash-shown",s=2e3,t=1e3,o="login.html";sessionStorage.getItem(e)?window.location.replace(o):window.addEventListener("load",()=>{setTimeout(()=>{document.body.classList.add("is-leaving"),setTimeout(()=>{sessionStorage.setItem(e,"1"),window.location.replace(o)},t)},s)});
