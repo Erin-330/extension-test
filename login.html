@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RORR — 로그인</title>
+  <link rel="stylesheet" href="./src/tokens.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      font-family: var(--font-family-base);
+      background-color: var(--color-background-light);
+      color: var(--color-text-0);
+      transition: background-color 200ms ease, color 200ms ease;
+    }
+    [data-theme="dark"] body { color: var(--color-text-100); }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text-30-sub-text-dark);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-light-surface-2);
+      transition: background 120ms, border-color 120ms;
+    }
+    [data-theme="dark"] .theme-toggle { color: var(--color-text-90); }
+    .theme-toggle:hover { border-color: var(--color-primary); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .theme-toggle .sun { display: none; }
+    [data-theme="dark"] .theme-toggle .sun { display: block; }
+    [data-theme="dark"] .theme-toggle .moon { display: none; }
+
+    main {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px 24px;
+    }
+
+    .card {
+      width: 100%;
+      background: var(--color-surface);
+      border-radius: 16px;
+      padding: 32px 24px;
+      box-shadow: var(--shadow-light-surface);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .emblem {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+    }
+
+    .brand-title {
+      font-weight: 700;
+      font-size: 32px;
+      letter-spacing: 0;
+      background: var(--gradient-boosterwall);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      line-height: 1.1;
+    }
+
+    .tagline {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--color-text-50);
+      text-align: center;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--color-border);
+      margin: 8px 0;
+    }
+
+    .google-btn {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text-0);
+      font-family: var(--font-family-base);
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 20px;
+      cursor: pointer;
+      transition: background 120ms, border-color 120ms;
+    }
+    [data-theme="dark"] .google-btn { color: var(--color-text-100); }
+    .google-btn:hover {
+      background: var(--color-surface2-alt);
+      border-color: var(--color-primary);
+    }
+    .google-btn:active { transform: translateY(1px); }
+    .google-btn svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .legal {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .legal a {
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 1.2;
+      color: var(--color-text-50);
+      text-decoration: none;
+      transition: color 120ms;
+    }
+    .legal a:hover { color: var(--color-primary); }
+    .legal .sep {
+      width: 1px;
+      height: 10px;
+      background: var(--color-border);
+    }
+
+    footer {
+      width: 100%;
+      padding: 16px 24px 24px;
+      text-align: center;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 1.2;
+      color: var(--color-text-50);
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="theme-toggle" aria-label="테마 전환">
+    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  </button>
+
+  <main>
+    <div class="card">
+      <img class="emblem" src="https://erin-bucket-team.s3.amazonaws.com/RORR%20EMBLEM.png" alt="RORR" />
+      <h1 class="brand-title">RORR</h1>
+      <p class="tagline">스포츠를 더 즐겁게, 함께</p>
+
+      <div class="divider"></div>
+
+      <button class="google-btn" id="google-signin">
+        <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>
+          <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>
+          <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>
+          <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.087 5.571.001-.001.002-.001.003-.002l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>
+        </svg>
+        Google로 계속하기
+      </button>
+
+      <div class="legal">
+        <a href="#" id="terms">이용약관</a>
+        <span class="sep" aria-hidden="true"></span>
+        <a href="#" id="privacy">개인정보처리방침</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>ⓒPitch Interactive Co.,LTD. All rights reserved</footer>
+
+  <script type="module" src="./src/login.js"></script>
+</body>
+</html>
