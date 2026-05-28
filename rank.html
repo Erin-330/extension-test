@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RORR — 랭킹</title>
+  <link rel="stylesheet" href="./src/tokens.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      font-family: var(--font-family-base);
+      background-color: var(--color-background-light);
+      color: var(--color-text-0);
+      transition: background-color 200ms ease, color 200ms ease;
+    }
+    [data-theme="dark"] body { color: var(--color-text-100); background-color: var(--color-background-dark); }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header.top {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: 36px 1fr 36px;
+      align-items: center;
+      padding: 14px 16px;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+    }
+    [data-theme="dark"] header.top {
+      background: var(--color-surface-dark);
+      border-bottom-color: var(--color-border-dark);
+    }
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text-30-sub-text-dark);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: background 120ms, border-color 120ms;
+    }
+    [data-theme="dark"] .icon-btn {
+      color: var(--color-text-90);
+      border-color: var(--color-border-dark);
+      background: var(--color-surface-dark);
+    }
+    .icon-btn:hover { border-color: var(--color-primary); }
+    .icon-btn svg { width: 18px; height: 18px; }
+    h1.title {
+      text-align: center;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    /* Month picker */
+    .month-wrap {
+      padding: 12px 16px;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+    }
+    [data-theme="dark"] .month-wrap {
+      background: var(--color-surface-dark);
+      border-bottom-color: var(--color-border-dark);
+    }
+    .month-select {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      border-radius: 12px;
+      border: 1px solid var(--color-border);
+      background: var(--color-background-light);
+      color: var(--color-text-0);
+      font-family: var(--font-family-base);
+      font-size: 14px;
+      font-weight: 700;
+      outline: none;
+      cursor: pointer;
+    }
+    [data-theme="dark"] .month-select {
+      color: var(--color-text-100);
+      background-color: var(--color-surface-alt-dark);
+      border-color: var(--color-border-dark);
+    }
+
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Top 5 / Rive graph */
+    .top5-card {
+      background: var(--color-surface);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: var(--shadow-light-surface);
+      overflow: hidden;
+    }
+    [data-theme="dark"] .top5-card { background: var(--color-surface-alt-dark); }
+    .top5-card .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 4px 8px;
+    }
+    .top5-card .section-head .label {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--color-text-50);
+      letter-spacing: 0.06em;
+    }
+    .top5-card .section-head .accent {
+      font-weight: 700;
+      font-size: 12px;
+      background: var(--gradient-grade-top-5);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* My rank card */
+    .my-rank-card {
+      background: var(--gradient-boosterwall);
+      color: var(--color-text-100);
+      border-radius: 16px;
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 36px 44px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      box-shadow: var(--shadow-light-surface);
+    }
+    .my-rank-card .rank-num {
+      font-weight: 700;
+      font-size: 22px;
+      font-variant-numeric: tabular-nums;
+      text-align: center;
+    }
+    .my-rank-card .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--color-surface-floating);
+      color: var(--color-primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .my-rank-card .meta { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .my-rank-card .nick { font-weight: 700; font-size: 15px; line-height: 1.2; }
+    .my-rank-card .grade-badge {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 10px;
+      background: var(--gradient-grade-diamond);
+      color: var(--color-text-30-sub-text-dark);
+    }
+    .my-rank-card .stats {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .my-rank-card .stats .cur { font-weight: 700; font-size: 18px; }
+    .my-rank-card .stats .sub {
+      font-weight: 400;
+      font-size: 11px;
+      opacity: 0.85;
+    }
+
+    /* Grade section */
+    .grade-section {
+      background: var(--color-surface);
+      border-radius: 16px;
+      padding: 8px;
+      box-shadow: var(--shadow-light-surface);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    [data-theme="dark"] .grade-section { background: var(--color-surface-alt-dark); }
+    .grade-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 10px 8px;
+    }
+    .grade-head .grade {
+      font-weight: 700;
+      font-size: 14px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      color: var(--color-text-100);
+    }
+    .grade-head .reward {
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--color-boost-energy-4-icon);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* User row */
+    .user-row {
+      display: grid;
+      grid-template-columns: 28px 36px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 120ms;
+      border: 1px solid transparent;
+    }
+    .user-row:hover { background: var(--color-surface2-alt); }
+    [data-theme="dark"] .user-row:hover { background: var(--color-surface-dark); }
+    .user-row.me {
+      background: var(--color-success-surface);
+      border-color: var(--color-primary);
+    }
+    [data-theme="dark"] .user-row.me {
+      background: var(--color-surface-dark);
+      border-color: var(--color-primary-dark);
+    }
+    .user-row .rank-num {
+      font-weight: 700;
+      font-size: 14px;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text-50);
+      text-align: center;
+    }
+    .user-row .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--gradient-quiz-color);
+      color: var(--color-text-100);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .user-row .meta { display: flex; align-items: center; gap: 6px; min-width: 0; }
+    .user-row .nick {
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.2;
+      color: var(--color-text-0);
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    [data-theme="dark"] .user-row .nick { color: var(--color-text-100); }
+    .user-row .badge {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 10px;
+      color: var(--color-text-100);
+    }
+    .user-row .stats {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .user-row .stats .cur {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--color-text-0);
+    }
+    [data-theme="dark"] .user-row .stats .cur { color: var(--color-text-100); }
+    .user-row .stats .sub { font-size: 11px; color: var(--color-text-50); }
+
+    /* Grade colors */
+    .grade-bg-diamond     { background: var(--gradient-grade-diamond); color: var(--color-text-30-sub-text-dark); }
+    .grade-bg-platinum    { background: var(--gradient-grade-platinum); color: var(--color-text-30-sub-text-dark); }
+    .grade-bg-gold        { background: var(--gradient-grade-gold); }
+    .grade-bg-silver      { background: var(--gradient-grade-silver); }
+    .grade-bg-bronze      { background: var(--gradient-grade-bronze); }
+    .grade-bg-participant { background: var(--gradient-grade-participant); }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: var(--color-background-b-30);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 100;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      width: 100%;
+      max-width: 480px;
+      background: var(--color-surface);
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      animation: slide-up 200ms ease;
+    }
+    [data-theme="dark"] .modal { background: var(--color-surface-dark); }
+    @keyframes slide-up {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+    .modal .grip {
+      width: 36px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--color-text-80-sub-text-light);
+      margin-bottom: 8px;
+    }
+    .modal .avatar-lg {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--gradient-quiz-color);
+      color: var(--color-text-100);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 28px;
+    }
+    .modal .nick {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--color-text-0);
+    }
+    [data-theme="dark"] .modal .nick { color: var(--color-text-100); }
+    .modal .stats-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .modal .stat-box {
+      padding: 10px;
+      border-radius: 12px;
+      background: var(--color-surface2-alt);
+      text-align: center;
+    }
+    [data-theme="dark"] .modal .stat-box { background: var(--color-surface-alt-dark); }
+    .modal .stat-box .v {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--color-text-0);
+      font-variant-numeric: tabular-nums;
+    }
+    [data-theme="dark"] .modal .stat-box .v { color: var(--color-text-100); }
+    .modal .stat-box .k {
+      font-size: 11px;
+      color: var(--color-text-50);
+      margin-top: 2px;
+    }
+    .modal .close-btn {
+      width: 100%;
+      height: 44px;
+      border-radius: 12px;
+      border: none;
+      background: var(--gradient-boosterwall);
+      color: var(--color-text-100);
+      font-family: var(--font-family-base);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .info-modal {
+      max-width: 360px;
+      border-radius: 16px;
+      padding: 24px;
+      background: var(--color-surface);
+    }
+    [data-theme="dark"] .info-modal { background: var(--color-surface-dark); }
+    .info-modal h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text-0);
+      margin-bottom: 8px;
+    }
+    [data-theme="dark"] .info-modal h2 { color: var(--color-text-100); }
+    .info-modal p {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--color-text-30-sub-text-dark);
+    }
+    [data-theme="dark"] .info-modal p { color: var(--color-text-90); }
+    .info-backdrop {
+      position: fixed; inset: 0;
+      background: var(--color-background-b-30);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .info-backdrop.open { display: flex; }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <a class="icon-btn" href="profile.html" aria-label="닫기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </a>
+    <h1 class="title">랭킹</h1>
+    <button class="icon-btn" id="info-btn" aria-label="랭킹 기준 안내">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    </button>
+  </header>
+
+  <div class="month-wrap">
+    <select class="month-select" id="month-select">
+      <option value="2026-05">2026년 5월</option>
+      <option value="2026-04">2026년 4월</option>
+      <option value="2026-03">2026년 3월</option>
+      <option value="2026-02">2026년 2월</option>
+      <option value="2026-01">2026년 1월</option>
+    </select>
+  </div>
+
+  <main>
+    <section class="top5-card">
+      <div class="section-head">
+        <span class="label">TOP 5</span>
+        <span class="accent">월간 스트릭</span>
+      </div>
+      <canvas id="rivCanvas" style="width:100%;height:280px;display:block;"></canvas>
+    </section>
+
+    <section id="my-rank"></section>
+
+    <section id="grade-list"></section>
+  </main>
+
+  <div class="modal-backdrop" id="detail-modal">
+    <div class="modal" id="detail-modal-content">
+      <span class="grip"></span>
+      <div class="avatar-lg" id="d-avatar">U</div>
+      <div class="nick" id="d-nick">User</div>
+      <span class="badge" id="d-grade">DIAMOND</span>
+      <div class="stats-grid">
+        <div class="stat-box"><div class="v" id="d-cur">0</div><div class="k">현재 스트릭</div></div>
+        <div class="stat-box"><div class="v" id="d-longest">0</div><div class="k">최장 스트릭</div></div>
+        <div class="stat-box"><div class="v" id="d-reward">0</div><div class="k">예상 보상</div></div>
+      </div>
+      <button class="close-btn" id="d-close">닫기</button>
+    </div>
+  </div>
+
+  <div class="info-backdrop" id="info-modal">
+    <div class="info-modal">
+      <h2>랭킹 기준 안내</h2>
+      <p>월간 최장 연승 스트릭이 가장 긴 사용자가 상위에 표시됩니다. 동점인 경우 ① 현재 진행 중인 스트릭이 더 긴 사용자, ② 그래도 동점이면 먼저 도달한 사용자가 상위 순위입니다.</p>
+      <button class="close-btn" id="info-close" style="margin-top:16px;">확인</button>
+    </div>
+  </div>
+
+  <script type="module" src="./src/rank.js"></script>
+</body>
+</html>
