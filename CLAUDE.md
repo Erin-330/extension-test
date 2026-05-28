@@ -25,6 +25,7 @@
 ## 스타일 규칙
 - 모든 색상·타이포그래피·이펙트는 반드시 `Design System.md`의 토큰을 사용할 것
 - 토큰의 용도(Use 컬럼)를 확인하고 의미에 맞게 사용할 것 — 임의로 비슷한 토큰으로 대체하지 말 것
+- 리스트(`ul`, `li` 등)가 있는 경우 항목 간 `gap: 4px` 적용할 것
 
 ## Login Page Rules
 - Authentication: Google OAuth only — no email/password fields
