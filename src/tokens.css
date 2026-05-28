@@ -109,7 +109,7 @@
 
 body {
   font-family: var(--font-family-base);
-  background: var(--color-background-light);
-  color: var(--color-text-0);
+  background-color: #1a1a2e;
+  color: #e0e0e0;
   transition: background 200ms ease, color 200ms ease;
 }
