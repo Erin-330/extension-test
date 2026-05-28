@@ -1,6 +1,7 @@
 # RORR — Project Context
 
 ## Spec Files (읽기 규칙)
+- **프로젝트 최초 구성 / 빌드 환경 세팅 시** → `.claude/infrastructure.md` 먼저 읽을 것 (package.json, vite.config.js, manifest.json, background.js, build.yml, .gitignore, tokens.css 전체 내용 포함)
 - `login.html` 관련 작업 시 → `.claude/login.md` 먼저 읽을 것
 - `profile.html` 관련 작업 시 → `.claude/profile.md` 먼저 읽을 것
 - `follow.html` / 팔로우 관련 작업 시 → `.claude/follow-ui-layout.md` 먼저 읽을 것
@@ -54,3 +55,4 @@ package.json        — @rive-app/canvas, vite
 - `npm run build` → `dist/` 생성
 - `develop` 브랜치 push → GitHub Actions가 자동 빌드 후 `dist/` 전체를 `rorr-extension.zip`으로 압축해 Artifact 업로드
 - Actions 탭 → 워크플로우 실행 → **Artifacts**에서 zip 다운로드 → Chrome 확장 프로그램 페이지에서 압축 해제 후 로드
+
