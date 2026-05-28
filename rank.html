@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RORR · 랭킹</title>
+  <link rel="stylesheet" href="src/tokens.css" />
+  <style>
+    .page {
+      padding: 16px 16px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Month dropdown */
+    .month-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .month-select {
+      appearance: none;
+      -webkit-appearance: none;
+      padding: 8px 36px 8px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      background: var(--color-surface);
+      color: var(--color-text-30-sub-text-dark);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23757b90' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px 16px;
+    }
+    [data-theme="dark"] .month-select { color: var(--color-text-90); }
+    .info-text {
+      font-size: 12px;
+      color: var(--color-text-50);
+    }
+
+    /* Podium for top 3 */
+    .podium {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      align-items: end;
+      gap: 8px;
+      padding: 20px 12px 12px;
+      background: var(--color-surface);
+      border-radius: 20px;
+      box-shadow: var(--shadow-light-surface);
+    }
+    .podium-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .podium-rank {
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--color-text-50);
+      text-transform: uppercase;
+    }
+    .podium-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--color-text-100);
+      font-weight: 700;
+      font-size: 24px;
+      box-shadow: var(--shadow-light-surface);
+    }
+    .podium-name {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--color-text-30-sub-text-dark);
+      text-align: center;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    [data-theme="dark"] .podium-name { color: var(--color-text-100); }
+    .podium-score {
+      font-weight: 700;
+      font-size: 14px;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-primary);
+    }
+    .podium-bar {
+      width: 100%;
+      border-radius: 12px 12px 0 0;
+      display: grid;
+      place-items: center;
+      color: var(--color-text-100);
+      font-weight: 700;
+      font-size: 28px;
+      font-variant-numeric: tabular-nums;
+      padding: 12px 0;
+    }
+    .podium-bar.gold   { height: 90px; background: var(--gradient-grade-gold); }
+    .podium-bar.silver { height: 70px; background: var(--gradient-grade-silver); }
+    .podium-bar.bronze { height: 56px; background: var(--gradient-grade-bronze); }
+
+    /* My rank highlight */
+    .my-rank-card {
+      background: var(--color-surface);
+      border-radius: 16px;
+      padding: 14px 14px;
+      box-shadow: var(--shadow-live-card);
+      border: 1px solid var(--color-primary);
+      display: grid;
+      grid-template-columns: 36px 44px 1fr auto;
+      align-items: center;
+      gap: 12px;
+    }
+    .my-tag {
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-text-50);
+      margin-bottom: 4px;
+    }
+
+    /* Section header */
+    .section-h {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+      padding: 0 4px;
+    }
+    .section-h .title {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--color-text-30-sub-text-dark);
+    }
+    [data-theme="dark"] .section-h .title { color: var(--color-text-90); }
+    .section-h .reward {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-accent);
+    }
+
+    /* Rank rows */
+    .rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .rank-row {
+      display: grid;
+      grid-template-columns: 32px 40px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--color-surface);
+      border-radius: 12px;
+      box-shadow: var(--shadow-light-surface-2);
+    }
+    .rank-row.is-me { border: 1px solid var(--color-primary); }
+    .rk-num {
+      font-weight: 700;
+      font-size: 15px;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text-50);
+      text-align: center;
+    }
+    .rk-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--color-text-100);
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .rk-meta {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .rk-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--color-text-30-sub-text-dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    [data-theme="dark"] .rk-name { color: var(--color-text-100); }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--color-text-100);
+      width: fit-content;
+    }
+    .badge.diamond     { background: var(--gradient-grade-diamond); color: var(--color-text-30-sub-text-dark); }
+    .badge.platinum    { background: var(--gradient-grade-platinum); color: var(--color-text-30-sub-text-dark); }
+    .badge.gold        { background: var(--gradient-grade-gold); }
+    .badge.silver      { background: var(--gradient-grade-silver); }
+    .badge.bronze      { background: var(--gradient-grade-bronze); }
+    .badge.participant { background: var(--gradient-grade-participant); }
+
+    .rk-right {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+    .rk-score {
+      font-weight: 700;
+      font-size: 16px;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-primary);
+    }
+    .rk-sub {
+      font-size: 11px;
+      color: var(--color-text-50);
+    }
+
+    /* Avatar colors */
+    .av-1 { background: linear-gradient(135deg, #2f9cfc, #6f4cff); }
+    .av-2 { background: linear-gradient(135deg, #ff6f00, #ffb400); }
+    .av-3 { background: linear-gradient(135deg, #11c72d, #00b395); }
+    .av-4 { background: linear-gradient(135deg, #fe2054, #ffb400); }
+    .av-5 { background: linear-gradient(135deg, #6f4cff, #8c6eff); }
+    .av-6 { background: linear-gradient(135deg, #2d39b4, #209fee); }
+
+    /* Modal */
+    .modal-back {
+      position: fixed;
+      inset: 0;
+      background: var(--color-background-b-30);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 200;
+    }
+    .modal-back.open { display: flex; }
+    .modal {
+      width: 100%;
+      max-width: 520px;
+      background: var(--color-surface);
+      border-radius: 24px 24px 0 0;
+      padding: 24px 20px 32px;
+      animation: slideUp 220ms ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    @keyframes slideUp { from { transform: translateY(20%); opacity: 0; } to { transform: none; opacity: 1; } }
+    .modal .big-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--color-text-100);
+      font-weight: 700;
+      font-size: 32px;
+    }
+    .modal .nick {
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--color-text-30-sub-text-dark);
+    }
+    [data-theme="dark"] .modal .nick { color: var(--color-text-100); }
+    .modal .stats {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .modal .stat {
+      background: var(--color-surface2-alt);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+    }
+    .modal .stat .v {
+      font-weight: 700;
+      font-size: 18px;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text-30-sub-text-dark);
+    }
+    [data-theme="dark"] .modal .stat .v { color: var(--color-text-100); }
+    .modal .stat .l {
+      font-size: 11px;
+      color: var(--color-text-50);
+      margin-top: 2px;
+    }
+    .modal .close-btn {
+      margin-top: 12px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <button class="icon-btn" onclick="window.location.href='profile.html'" aria-label="닫기">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+      <div class="h-title">랭킹</div>
+      <button class="icon-btn" id="info-btn" aria-label="랭킹 기준 안내">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 16v-4M12 8h.01"/>
+        </svg>
+      </button>
+    </header>
+
+    <main class="page">
+      <div class="month-row">
+        <select class="month-select" id="month-select" aria-label="월 선택">
+          <option>2026.05</option>
+          <option>2026.04</option>
+          <option>2026.03</option>
+          <option>2026.02</option>
+        </select>
+        <span class="info-text">월간 스트릭 기준</span>
+      </div>
+
+      <!-- TOP 3 PODIUM -->
+      <section class="podium" id="podium"></section>
+
+      <div>
+        <div class="my-tag">내 랭킹</div>
+        <div class="my-rank-card" id="my-rank-card"></div>
+      </div>
+
+      <div class="section-h">
+        <div class="title">전체 랭킹</div>
+        <div class="reward">예상 보상 · 에너지 100</div>
+      </div>
+      <div class="rank-list" id="rank-list"></div>
+    </main>
+
+    <nav class="bottom-nav" aria-label="하단 네비게이션">
+      <a href="profile.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        프로필
+      </a>
+      <a href="follow.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+        팔로우
+      </a>
+      <a href="rank.html" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4z"/>
+        </svg>
+        랭킹
+      </a>
+      <a href="login.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06A1.65 1.65 0 0015 19.4a1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09A1.65 1.65 0 0015 4.6a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+        </svg>
+        설정
+      </a>
+    </nav>
+  </div>
+
+  <!-- Detail modal -->
+  <div class="modal-back" id="modal-back" role="dialog" aria-modal="true" aria-labelledby="modal-nick">
+    <div class="modal" id="modal">
+      <div class="big-avatar" id="m-avatar">A</div>
+      <div class="nick" id="modal-nick">—</div>
+      <div class="badge" id="m-badge">—</div>
+      <div class="stats">
+        <div class="stat"><div class="v" id="m-cur">—</div><div class="l">현재 스트릭</div></div>
+        <div class="stat"><div class="v" id="m-long">—</div><div class="l">최장 연승</div></div>
+        <div class="stat"><div class="v" id="m-reward">—</div><div class="l">예상 보상</div></div>
+      </div>
+      <button class="btn-primary close-btn" id="modal-close" type="button">닫기</button>
+    </div>
+  </div>
+
+  <script>
+    // Theme
+    const root = document.documentElement;
+    if (localStorage.getItem('theme') === 'dark') root.dataset.theme = 'dark';
+
+    // Sample data
+    const ranks = [
+      { rank: 1, name: 'soccer_mary', cur: 31, longest: 31, grade: 'gold',        reward: 320, cls: 'av-2', initial: 'M' },
+      { rank: 2, name: '박서연',       cur: 28, longest: 30, grade: 'gold',        reward: 280, cls: 'av-3', initial: '박' },
+      { rank: 3, name: 'hoops_lee',   cur: 25, longest: 28, grade: 'silver',      reward: 220, cls: 'av-4', initial: 'L' },
+      { rank: 4, name: '김지훈',       cur: 22, longest: 25, grade: 'silver',      reward: 180, cls: 'av-1', initial: '김' },
+      { rank: 5, name: 'pitch_dev',   cur: 21, longest: 24, grade: 'silver',      reward: 160, cls: 'av-5', initial: 'P' },
+      { rank: 6, name: '이도윤',       cur: 18, longest: 20, grade: 'bronze',      reward: 120, cls: 'av-6', initial: '이' },
+      { rank: 7, name: '한지유',       cur: 16, longest: 18, grade: 'bronze',      reward: 100, cls: 'av-2', initial: '한' },
+      { rank: 8, name: 'lcs_watcher', cur: 14, longest: 16, grade: 'bronze',      reward: 80,  cls: 'av-3', initial: 'L' },
+      { rank: 9, name: '정민서',       cur: 12, longest: 14, grade: 'participant', reward: 60,  cls: 'av-1', initial: '정' },
+      { rank: 10,name: '윤하늘',       cur: 11, longest: 13, grade: 'participant', reward: 50,  cls: 'av-5', initial: '윤' },
+      { rank: 11,name: '오세훈',       cur: 9,  longest: 12, grade: 'participant', reward: 40,  cls: 'av-4', initial: '오' },
+      { rank: 12,name: 'sara_x',      cur: 8,  longest: 10, grade: 'participant', reward: 30,  cls: 'av-6', initial: 'S' },
+    ];
+    const me = { rank: 42, name: 'Erin Kim', cur: 7, longest: 12, grade: 'bronze', reward: 50, cls: 'av-2', initial: 'E' };
+    const gradeLabel = {
+      gold: 'GOLD', silver: 'SILVER', bronze: 'BRONZE',
+      diamond: 'DIAMOND', platinum: 'PLATINUM', participant: 'PARTICIPANT'
+    };
+
+    // Render podium (TOP 3 — index 0..2)
+    const podiumEl = document.getElementById('podium');
+    const order = [
+      { idx: 1, label: '2', cls: 'silver' },
+      { idx: 0, label: '1', cls: 'gold' },
+      { idx: 2, label: '3', cls: 'bronze' },
+    ];
+    podiumEl.innerHTML = order.map(o => {
+      const u = ranks[o.idx];
+      return `
+        <div class="podium-col">
+          <div class="podium-rank">RANK</div>
+          <div class="podium-avatar ${u.cls}">${u.initial}</div>
+          <div class="podium-name">${u.name}</div>
+          <div class="podium-score">W${u.cur}</div>
+          <div class="podium-bar ${o.cls}">${o.label}</div>
+        </div>
+      `;
+    }).join('');
+
+    // My rank card
+    document.getElementById('my-rank-card').innerHTML = `
+      <div class="rk-num">#${me.rank}</div>
+      <div class="rk-avatar ${me.cls}">${me.initial}</div>
+      <div class="rk-meta">
+        <div class="rk-name">${me.name} <span style="font-size:11px;color:var(--color-primary);font-weight:700;">· 나</span></div>
+        <span class="badge ${me.grade}">${gradeLabel[me.grade]}</span>
+      </div>
+      <div class="rk-right">
+        <div class="rk-score">W${me.cur}</div>
+        <div class="rk-sub">최장 ${me.longest} · +${me.reward}E</div>
+      </div>
+    `;
+
+    // Render list (full)
+    const listEl = document.getElementById('rank-list');
+    listEl.innerHTML = ranks.map((u) => `
+      <button class="rank-row ${u.name === me.name ? 'is-me' : ''}" data-name="${u.name}">
+        <div class="rk-num">${u.rank}</div>
+        <div class="rk-avatar ${u.cls}">${u.initial}</div>
+        <div class="rk-meta">
+          <div class="rk-name">${u.name}</div>
+          <span class="badge ${u.grade}">${gradeLabel[u.grade]}</span>
+        </div>
+        <div class="rk-right">
+          <div class="rk-score">W${u.cur}</div>
+          <div class="rk-sub">최장 ${u.longest} · +${u.reward}E</div>
+        </div>
+      </button>
+    `).join('');
+
+    // Modal
+    const modalBack = document.getElementById('modal-back');
+    function openModal(u) {
+      document.getElementById('m-avatar').className = `big-avatar ${u.cls}`;
+      document.getElementById('m-avatar').textContent = u.initial;
+      document.getElementById('modal-nick').textContent = u.name;
+      const b = document.getElementById('m-badge');
+      b.className = `badge ${u.grade}`;
+      b.textContent = gradeLabel[u.grade];
+      document.getElementById('m-cur').textContent = `W${u.cur}`;
+      document.getElementById('m-long').textContent = u.longest;
+      document.getElementById('m-reward').textContent = `+${u.reward}E`;
+      modalBack.classList.add('open');
+    }
+    function closeModal() { modalBack.classList.remove('open'); }
+    listEl.querySelectorAll('.rank-row').forEach(r => {
+      r.addEventListener('click', () => {
+        const u = ranks.find(x => x.name === r.dataset.name);
+        if (u) openModal(u);
+      });
+    });
+    modalBack.addEventListener('click', (e) => { if (e.target === modalBack) closeModal(); });
+    document.getElementById('modal-close').addEventListener('click', closeModal);
+
+    // Info button → reuse modal with simple text
+    document.getElementById('info-btn').addEventListener('click', () => {
+      document.getElementById('m-avatar').className = 'big-avatar av-5';
+      document.getElementById('m-avatar').textContent = 'i';
+      document.getElementById('modal-nick').textContent = '랭킹 기준 안내';
+      const b = document.getElementById('m-badge');
+      b.className = 'badge participant';
+      b.textContent = 'INFO';
+      document.getElementById('m-cur').textContent = '월간';
+      document.getElementById('m-long').textContent = '스트릭';
+      document.getElementById('m-reward').textContent = '동점 시 최장';
+      modalBack.classList.add('open');
+    });
+  </script>
+</body>
+</html>

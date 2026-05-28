@@ -1,0 +1,269 @@
+/* =============================================================
+   RORR Design tokens — CSS custom properties.
+   Dark mode is applied automatically when [data-theme="dark"]
+   is set on <html> or <body>.
+   ============================================================= */
+
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css");
+
+:root {
+  /* ---- Brand ---- */
+  --color-primary: #2d39b4;
+  --color-primary-dark: #4d57d9;
+  --color-secondary: #6f4cff;
+  --color-secondary-dark: #8c6eff;
+  --color-accent: #ff6f00;
+  --color-accent-dark: #ffb400;
+  --color-selected: #209fee;
+  --color-selected-dark: #4db2f1;
+
+  /* ---- Status ---- */
+  --color-success: #11c72d;
+  --color-success-dark: #2fd948;
+  --color-success-surface: #c3c7ef;
+  --color-error: #860000;
+  --color-status-color-upcoming: #5618da;
+  --color-status-color-live: #c10f0f;
+  --color-score-color: #9ca3f1;
+  --color-score-color-dark: #555b83;
+
+  /* ---- Surface ---- */
+  --color-surface: #ffffff;
+  --color-surface-alt: #dce2eb;
+  --color-surface2-alt: #e9eef4;
+  --color-surface-floating: #ffffffb2;
+  --color-surface-dark: #161c26;
+  --color-surface-alt-dark: #202a38;
+  --color-surface2-alt-dark: #1e2630;
+  --color-surface-floating-dark: #24282d99;
+  --color-surface-border-in-dark-mode: #191f28;
+
+  /* ---- Background ---- */
+  --color-background-light: #f0f2f5;
+  --color-background-light-half: #f0f2f580;
+  --color-background-dark: #0e1116;
+  --color-background-dark-half: #0e111680;
+  --color-background-b-30: #0000004d;
+
+  /* ---- Border ---- */
+  --color-border: #ced6e6;
+  --color-border-dark: #282f3d;
+
+  /* ---- Text ---- */
+  --color-text-0: #000000;
+  --color-text-30-sub-text-dark: #44494e;
+  --color-text-50: #757b90;
+  --color-text-80-sub-text-light: #bbbfd0;
+  --color-text-90: #e6eaf0;
+  --color-text-100: #ffffff;
+
+  /* ---- Button (light) ---- */
+  --color-button: #969cda;
+  --color-button-border: #c1c5ec;
+  --color-button-hover: #afb5ea;
+  --color-button-press: #c1c5ec;
+  --color-button-disable: #b2bac3;
+
+  /* ---- Button (dark) ---- */
+  --color-button-dark: #3c5bff;
+  --color-button-dark-border: #637cff;
+  --color-button-disable-dark: #30353b;
+
+  /* ---- Team — Left ---- */
+  --color-team-color-left: #2f9cfc;
+  --color-team-color-left-50: #c0e1fe;
+
+  /* ---- Team — Right ---- */
+  --color-team-color-right: #fe2054;
+  --color-team-color-right-50: #ffbccb;
+
+  /* ---- AI Companion ---- */
+  --color-ai-companion-bg: #1d2333;
+
+  /* ---- Boost Energy ---- */
+  --color-boost-energy-4-icon: #00b395;
+
+  /* ---- Misc ---- */
+  --color-item-color: #a7c1e1;
+
+  /* ---- Typography ---- */
+  --font-family-base: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, sans-serif;
+
+  /* ---- Effects ---- */
+  --shadow-light-surface:   0px 2px 4px 0px rgba(0, 0, 0, 0.08);
+  --shadow-light-surface-2: 0px 1px 4px 0px rgba(0, 0, 0, 0.10);
+  --shadow-dark-surface:    0px 2px 4px 0px rgba(255, 255, 255, 0.06);
+  --shadow-live-card:       0px 2px 4px 0px rgba(86, 24, 218, 0.20);
+  --floating-effect:        0px 2px 6px 0px rgba(0, 0, 0, 0.15);
+
+  /* ---- Gradients ---- */
+  --gradient-spark-color:        linear-gradient(135deg, #ff6f00 0%, #ffb400 100%);
+  --gradient-quiz-color:         linear-gradient(135deg, #6f4cff 0%, #8c6eff 100%);
+  --gradient-boosterwall:        linear-gradient(135deg, #2d39b4 0%, #6f4cff 100%);
+  --gradient-grade-top-5:        linear-gradient(135deg, #ff6f00 0%, #ffb400 45%, #6f4cff 100%);
+  --gradient-grade-diamond:      linear-gradient(135deg, #4db2f1 0%, #c0e1fe 50%, #e6eaf0 100%);
+  --gradient-grade-platinum:     linear-gradient(135deg, #bbbfd0 0%, #e6eaf0 100%);
+  --gradient-grade-gold:         linear-gradient(135deg, #ff6f00 0%, #ffb400 100%);
+  --gradient-grade-silver:       linear-gradient(135deg, #757b90 0%, #bbbfd0 100%);
+  --gradient-grade-bronze:       linear-gradient(135deg, #860000 0%, #ff6f00 100%);
+  --gradient-grade-participant:  linear-gradient(135deg, #44494e 0%, #757b90 100%);
+  --gradient-ai-profile-border:  linear-gradient(135deg, #2562b2 0%, #3991c0 50%, #6f4cff 100%);
+}
+
+[data-theme="dark"] {
+  --color-primary:           #4d57d9;
+  --color-secondary:         #8c6eff;
+  --color-accent:            #ffb400;
+  --color-selected:          #4db2f1;
+  --color-success:           #2fd948;
+  --color-surface:           #161c26;
+  --color-surface-alt:       #202a38;
+  --color-surface2-alt:      #1e2630;
+  --color-surface-floating:  #24282d99;
+  --color-border:            #282f3d;
+  --color-button:            #3c5bff;
+  --color-button-border:     #637cff;
+  --color-button-disable:    #30353b;
+  --color-score-color:       #555b83;
+  --color-background-light:  #0e1116;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  font-family: var(--font-family-base);
+  background-color: var(--color-background-light);
+  color: var(--color-text-30-sub-text-dark);
+  transition: background-color 200ms ease, color 200ms ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+img { display: block; max-width: 100%; }
+
+/* ---- Text style utilities ---- */
+.text-title           { font-weight: 700; font-size: 32px; letter-spacing: 0; }
+.text-header          { font-weight: 600; font-size: 28px; line-height: 1.5; }
+.text-sub-title       { font-weight: 600; font-size: 24px; line-height: 1.5; }
+.text-teamname        { font-weight: 700; font-size: 20px; }
+.text-chat            { font-weight: 400; font-size: 14px; line-height: 20px; }
+.text-description     { font-weight: 300; font-size: 14px; line-height: 20px; }
+.text-description-16  { font-weight: 400; font-size: 16px; line-height: 20px; }
+.text-description-2   { font-weight: 700; font-size: 16px; line-height: 20px; }
+.text-description-focused {
+  font-weight: 700; font-size: 16px; line-height: 1.2;
+  text-transform: uppercase;
+}
+.text-annotation      { font-weight: 400; font-size: 12px; line-height: 1.2; }
+.text-annotation-bold { font-weight: 700; font-size: 12px; line-height: 1.2; }
+
+/* ---- Theme toggle (shared) ---- */
+.theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-light-surface-2);
+  z-index: 100;
+  transition: background 120ms;
+}
+.theme-toggle:hover { background: var(--color-surface2-alt); }
+.theme-toggle svg { width: 18px; height: 18px; color: var(--color-text-30-sub-text-dark); }
+
+/* ---- Shared App shell ---- */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+.app-header .h-title {
+  text-align: center;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--color-text-30-sub-text-dark);
+}
+[data-theme="dark"] .app-header .h-title { color: var(--color-text-90); }
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: var(--color-text-30-sub-text-dark);
+  transition: background 120ms;
+}
+[data-theme="dark"] .icon-btn { color: var(--color-text-90); }
+.icon-btn:hover { background: var(--color-surface2-alt); }
+.icon-btn svg { width: 22px; height: 22px; }
+
+/* ---- Bottom nav (shared) ---- */
+.bottom-nav {
+  position: sticky;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding: 8px 4px calc(8px + env(safe-area-inset-bottom, 0px));
+  z-index: 50;
+}
+.bottom-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 4px;
+  color: var(--color-text-50);
+  font-weight: 600;
+  font-size: 11px;
+  border-radius: 8px;
+  transition: color 120ms;
+}
+.bottom-nav a.active { color: var(--color-primary); }
+.bottom-nav a:hover { color: var(--color-primary); }
+.bottom-nav svg { width: 22px; height: 22px; }
+
+/* ---- Primary buttons ---- */
+.btn-primary {
+  font-size: 16px; font-weight: 700;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: var(--color-primary);
+  color: var(--color-text-100);
+  border: 1px solid var(--color-primary);
+  transition: background 120ms, transform 80ms;
+}
+.btn-primary:hover  { background: var(--color-primary-dark); }
+.btn-primary:active { transform: translateY(1px); }
+.btn-primary[disabled] { background: var(--color-button-disable); border-color: var(--color-button-disable); cursor: not-allowed; }
+.btn-ghost {
+  font-size: 14px; font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-primary);
+  transition: background 120ms;
+}
+.btn-ghost:hover { background: var(--color-surface2-alt); }
