@@ -6,6 +6,7 @@
 - `profile.html` 관련 작업 시 → `.claude/profile.md` 먼저 읽을 것
 - `follow.html` / 팔로우 관련 작업 시 → `.claude/follow-ui-layout.md` 먼저 읽을 것
 - `rank.html` / 랭킹 관련 작업 시 → `.claude/rank-ui-layout.md` 와 `.claude/rank-rive-graph.md` 모두 먼저 읽을 것
+- `streak-history.html` / 스트릭 히스토리 / 스트릭 기록 / streak history 관련 작업 시 (페이지 생성 요청 포함) → `.claude/streak-history.md` 와 `.claude/streak-status-fire-rive.md` 모두 먼저 읽을 것 (Rive 파일 URL, 아트보드명, 이벤트명 등 모두 이 파일 기준으로 구현할 것); **Rive 사용 필수** — 반드시 `@rive-app/canvas` 로 애니메이션 구현, 정적 대체 불가
 - `splash.html` / 스플래시 관련 작업 시 → `.claude/splash-screen.md` 먼저 읽을 것 (Rive 파일 URL, 아트보드명, 이벤트명 등 모두 이 파일 기준으로 구현할 것)
 - 디자인/스타일 작업 시 → `.claude/Design System.md` 참고할 것
 
