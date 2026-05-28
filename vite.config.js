@@ -5,11 +5,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        splash:  resolve(__dirname, 'splash.html'),
-        login:   resolve(__dirname, 'login.html'),
-        profile: resolve(__dirname, 'profile.html'),
-        follow:  resolve(__dirname, 'follow.html'),
-        rank:    resolve(__dirname, 'rank.html'),
+        splash:         resolve(__dirname, 'splash.html'),
+        login:          resolve(__dirname, 'login.html'),
+        profile:        resolve(__dirname, 'profile.html'),
+        follow:         resolve(__dirname, 'follow.html'),
+        rank:           resolve(__dirname, 'rank.html'),
+        streakHistory:  resolve(__dirname, 'streak-history.html'),
       },
     },
   },
