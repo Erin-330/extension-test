@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>RORR</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" crossorigin />
+  <style>
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    body {
+      background: var(--gradient-boosterwall);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body.is-leaving {
+      background: var(--color-background-dark);
+      transition: background 1000ms ease-out;
+    }
+
+    .splash {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 24px;
+      transition: opacity 1000ms ease-out, transform 1000ms ease-out;
+      opacity: 0;
+      transform: scale(0.92);
+      animation: splash-in 600ms ease-out 80ms forwards;
+    }
+
+    body.is-leaving .splash {
+      opacity: 0;
+      transform: scale(1.04);
+      animation: none;
+    }
+
+    @keyframes splash-in {
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .emblem-wrap {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .emblem-glow {
+      position: absolute;
+      inset: -12px;
+      border-radius: 50%;
+      background: radial-gradient(closest-side, rgba(255,255,255,0.35), rgba(255,255,255,0) 70%);
+      animation: pulse-glow 1800ms ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .emblem {
+      width: 96px;
+      height: 96px;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.25));
+      animation: emblem-float 2400ms ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.55; transform: scale(0.96); }
+      50%      { opacity: 1;    transform: scale(1.08); }
+    }
+
+    @keyframes emblem-float {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+
+    .brand-title {
+      font-family: var(--font-family-base);
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      line-height: 1;
+      color: var(--color-text-100);
+      text-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    }
+
+    .tagline {
+      font-family: var(--font-family-base);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      color: rgba(255, 255, 255, 0.85);
+      margin-top: -8px;
+    }
+
+    .loader {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .loader .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--color-text-100);
+      opacity: 0.4;
+      animation: dot-bounce 1200ms ease-in-out infinite;
+    }
+
+    .loader .dot:nth-child(2) { animation-delay: 160ms; }
+    .loader .dot:nth-child(3) { animation-delay: 320ms; }
+
+    @keyframes dot-bounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40%           { transform: translateY(-6px); opacity: 1; }
+    }
+
+    footer {
+      position: absolute;
+      bottom: 16px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-family: var(--font-family-base);
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.2;
+      color: rgba(255, 255, 255, 0.7);
+    }
+  </style>
+  <script type="module" crossorigin src="/assets/splash-gr4lqws7.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/tokens-g_pl08HU.js">
+  <link rel="stylesheet" crossorigin href="/assets/tokens-B2fCUAyR.css">
+</head>
+<body>
+  <div class="splash" role="presentation" aria-hidden="true">
+    <div class="emblem-wrap">
+      <div class="emblem-glow"></div>
+      <img
+        src="https://erin-bucket-team.s3.amazonaws.com/RORR%20EMBLEM.png"
+        alt=""
+        class="emblem"
+      />
+    </div>
+    <h1 class="brand-title">RORR</h1>
+    <p class="tagline">스포츠를 더 즐겁게, 함께</p>
+    <div class="loader" aria-label="로딩 중">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </div>
+
+  <footer>ⓒPitch Interactive Co.,LTD. All rights reserved</footer>
+
+</body>
+</html>
