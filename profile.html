@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RORR · 프로필</title>
+  <link rel="stylesheet" href="src/tokens.css" />
+  <style>
+    .page {
+      padding: 24px 20px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .profile-hero {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: var(--shadow-light-surface);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+    }
+    .avatar-wrap {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      padding: 3px;
+      background: var(--gradient-ai-profile-border);
+    }
+    .avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--color-surface2-alt);
+      object-fit: cover;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 32px;
+      color: var(--color-primary);
+    }
+    .name {
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--color-text-30-sub-text-dark);
+    }
+    [data-theme="dark"] .name { color: var(--color-text-100); }
+    .email {
+      font-size: 14px;
+      color: var(--color-text-50);
+    }
+    .bio {
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--color-text-30-sub-text-dark);
+      max-width: 360px;
+      margin-top: 4px;
+    }
+    [data-theme="dark"] .bio { color: var(--color-text-90); }
+
+    /* Follow counts row + rank icon */
+    .stats-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      width: 100%;
+      max-width: 360px;
+    }
+    .stat-btn {
+      flex: 1;
+      background: var(--color-surface2-alt);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      transition: background 120ms;
+    }
+    .stat-btn:hover { background: var(--color-surface-alt); }
+    .stat-num {
+      font-weight: 700;
+      font-size: 20px;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-text-30-sub-text-dark);
+    }
+    [data-theme="dark"] .stat-num { color: var(--color-text-100); }
+    .stat-label {
+      font-size: 12px;
+      color: var(--color-text-50);
+    }
+    .rank-btn {
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: var(--gradient-grade-gold);
+      display: grid;
+      place-items: center;
+      color: var(--color-text-100);
+      box-shadow: var(--shadow-light-surface);
+      transition: transform 120ms, filter 120ms;
+    }
+    .rank-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    .rank-btn:active { transform: translateY(0); }
+    .rank-btn svg { width: 26px; height: 26px; }
+
+    .edit-btn {
+      margin-top: 4px;
+    }
+
+    /* Menu list */
+    .menu-card {
+      background: var(--color-surface);
+      border-radius: 20px;
+      padding: 8px 4px;
+      box-shadow: var(--shadow-light-surface);
+      overflow: hidden;
+    }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 120ms;
+      width: 100%;
+      text-align: left;
+    }
+    .menu-item:hover { background: var(--color-surface2-alt); }
+    .menu-item .icon-wrap {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--color-surface2-alt);
+      display: grid;
+      place-items: center;
+      color: var(--color-primary);
+    }
+    .menu-item .icon-wrap svg { width: 18px; height: 18px; }
+    .menu-item .label {
+      flex: 1;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--color-text-30-sub-text-dark);
+    }
+    [data-theme="dark"] .menu-item .label { color: var(--color-text-90); }
+    .menu-item .chev { color: var(--color-text-50); }
+    .menu-item .chev svg { width: 18px; height: 18px; }
+
+    /* Energy / Boost cards */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .info-card {
+      background: var(--color-surface);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: var(--shadow-light-surface-2);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .info-card .lbl {
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-text-50);
+    }
+    .info-card .val {
+      font-weight: 700;
+      font-size: 24px;
+      font-variant-numeric: tabular-nums;
+    }
+    .energy .val { color: var(--color-boost-energy-4-icon); }
+    .boost .val { color: var(--color-secondary); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <button class="icon-btn" onclick="window.location.href='login.html'" aria-label="뒤로">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+      <div class="h-title">프로필</div>
+      <button class="icon-btn" id="theme-toggle" aria-label="테마">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+        </svg>
+      </button>
+    </header>
+
+    <main class="page">
+      <section class="profile-hero">
+        <div class="avatar-wrap">
+          <div class="avatar">E</div>
+        </div>
+        <div class="name">Erin Kim</div>
+        <div class="email">erin@rorr.club</div>
+        <div class="bio">스포츠를 사랑하는 RORR 빌더 ⚽️🏀<br/>매일의 스트릭을 함께 만들어가요.</div>
+
+        <div class="stats-row">
+          <a class="stat-btn" href="follow.html?tab=followers" aria-label="팔로워 보기">
+            <span class="stat-num">1,248</span>
+            <span class="stat-label">팔로워</span>
+          </a>
+          <a class="stat-btn" href="follow.html?tab=following" aria-label="팔로잉 보기">
+            <span class="stat-num">312</span>
+            <span class="stat-label">팔로잉</span>
+          </a>
+          <a class="rank-btn" href="rank.html" aria-label="랭킹 보기" title="랭킹 보기">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4z"/>
+              <path d="M17 4h3v3a3 3 0 01-3 3M7 4H4v3a3 3 0 003 3"/>
+            </svg>
+          </a>
+        </div>
+
+        <button class="btn-ghost edit-btn" type="button">프로필 편집</button>
+      </section>
+
+      <section class="stat-grid">
+        <div class="info-card energy">
+          <div class="lbl">ENERGY</div>
+          <div class="val">1,420</div>
+        </div>
+        <div class="info-card boost">
+          <div class="lbl">BOOST</div>
+          <div class="val">87</div>
+        </div>
+      </section>
+
+      <section class="menu-card">
+        <a class="menu-item" href="follow.html">
+          <span class="icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+          </span>
+          <span class="label">팔로우 관리</span>
+          <span class="chev">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </span>
+        </a>
+        <a class="menu-item" href="rank.html">
+          <span class="icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4z"/>
+            </svg>
+          </span>
+          <span class="label">랭킹 보기</span>
+          <span class="chev">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </span>
+        </a>
+        <button class="menu-item" type="button">
+          <span class="icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="6" width="18" height="13" rx="2"/>
+              <path d="M3 10h18"/>
+            </svg>
+          </span>
+          <span class="label">구매 내역</span>
+          <span class="chev">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </span>
+        </button>
+        <button class="menu-item" type="button">
+          <span class="icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/>
+            </svg>
+          </span>
+          <span class="label">부스트 내역</span>
+          <span class="chev">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </span>
+        </button>
+        <button class="menu-item" type="button" onclick="window.location.href='login.html'">
+          <span class="icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+            </svg>
+          </span>
+          <span class="label">로그아웃</span>
+          <span class="chev">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </span>
+        </button>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="하단 네비게이션">
+      <a href="profile.html" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        프로필
+      </a>
+      <a href="follow.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+        </svg>
+        팔로우
+      </a>
+      <a href="rank.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 01-10 0V4z"/>
+        </svg>
+        랭킹
+      </a>
+      <a href="login.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06A1.65 1.65 0 0015 19.4a1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09A1.65 1.65 0 0015 4.6a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+        </svg>
+        설정
+      </a>
+    </nav>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    if (localStorage.getItem('theme') === 'dark') root.dataset.theme = 'dark';
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      if (next === 'dark') root.dataset.theme = 'dark';
+      else delete root.dataset.theme;
+      localStorage.setItem('theme', next);
+    });
+  </script>
+</body>
+</html>
