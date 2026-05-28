@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>RORR</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" crossorigin />
+  <link rel="stylesheet" href="./src/tokens.css" />
+  <style>
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gradient-boosterwall);
+      transition: opacity 400ms ease-out;
+    }
+
+    body.fade-out {
+      opacity: 0;
+    }
+
+    .splash {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      animation: splash-in 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .splash-emblem {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.25));
+    }
+
+    .splash-title {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      color: var(--color-text-100);
+    }
+
+    .splash-tagline {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--color-text-90);
+      opacity: 0.9;
+    }
+
+    @keyframes splash-in {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .splash { animation: none; }
+      body { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="splash" role="presentation" aria-hidden="true">
+    <img
+      src="https://erin-bucket-team.s3.amazonaws.com/RORR%20EMBLEM.png"
+      alt=""
+      class="splash-emblem"
+    />
+    <h1 class="splash-title">RORR</h1>
+    <p class="splash-tagline">스포츠를 더 즐겁게, 함께</p>
+  </div>
+
+  <script type="module" src="./src/splash.js"></script>
+</body>
+</html>
