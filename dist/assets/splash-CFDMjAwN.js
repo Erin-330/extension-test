@@ -1,1 +1,0 @@
-import"./tokens-g_pl08HU.js";const e=document.documentElement,t=localStorage.getItem("theme"),o=window.matchMedia("(prefers-color-scheme: dark)").matches;e.dataset.theme=t??(o?"dark":"light");const a=1800;window.setTimeout(()=>{window.location.replace("login.html")},a);

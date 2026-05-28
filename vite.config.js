@@ -7,7 +7,6 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        splash: resolve(__dirname, 'splash.html'),
         login: resolve(__dirname, 'login.html'),
         profile: resolve(__dirname, 'profile.html'),
         follow: resolve(__dirname, 'follow.html'),
