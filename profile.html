@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RORR — 프로필</title>
+  <link rel="stylesheet" href="./src/tokens.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      font-family: var(--font-family-base);
+      background-color: var(--color-background-light);
+      color: var(--color-text-0);
+      transition: background-color 200ms ease, color 200ms ease;
+    }
+    [data-theme="dark"] body { color: var(--color-text-100); }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text-30-sub-text-dark);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-light-surface-2);
+      z-index: 10;
+      transition: background 120ms, border-color 120ms;
+    }
+    [data-theme="dark"] .theme-toggle { color: var(--color-text-90); }
+    .theme-toggle:hover { border-color: var(--color-primary); }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .theme-toggle .sun { display: none; }
+    [data-theme="dark"] .theme-toggle .sun { display: block; }
+    [data-theme="dark"] .theme-toggle .moon { display: none; }
+
+    main {
+      width: 100%;
+      padding: 56px 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .identity {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0 4px;
+    }
+    .avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--gradient-boosterwall);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-100);
+      font-weight: 700;
+      font-size: 28px;
+      letter-spacing: 0;
+      box-shadow: var(--shadow-light-surface);
+      overflow: hidden;
+    }
+    .name {
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+    .email {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--color-text-50);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .stat-card {
+      border-radius: 14px;
+      padding: 16px;
+      color: var(--color-text-100);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: var(--shadow-light-surface);
+    }
+    .stat-card .label {
+      font-weight: 700;
+      font-size: 12px;
+      line-height: 1.2;
+      letter-spacing: 0.08em;
+      opacity: 0.85;
+    }
+    .stat-card .value {
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 1.2;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-card.energy { background: var(--gradient-boost-energy-4-bg); }
+    .stat-card.boost  { background: var(--gradient-quiz-color); }
+
+    .menu {
+      background: var(--color-surface);
+      border-radius: 14px;
+      box-shadow: var(--shadow-light-surface);
+      overflow: hidden;
+    }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      font-family: var(--font-family-base);
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 20px;
+      color: var(--color-text-0);
+      text-decoration: none;
+      transition: background 120ms;
+    }
+    [data-theme="dark"] .menu-item { color: var(--color-text-100); }
+    .menu-item + .menu-item {
+      border-top: 1px solid var(--color-border);
+    }
+    .menu-item:hover { background: var(--color-surface2-alt); }
+    .menu-item .chev {
+      width: 16px;
+      height: 16px;
+      color: var(--color-text-50);
+      flex-shrink: 0;
+    }
+    .menu-item .ext {
+      font-size: 12px;
+      color: var(--color-text-50);
+    }
+
+    footer {
+      margin-top: auto;
+      padding: 16px 24px 24px;
+      text-align: center;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 1.2;
+      color: var(--color-text-50);
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="theme-toggle" aria-label="테마 전환">
+    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  </button>
+
+  <main>
+    <section class="identity">
+      <div class="avatar" id="avatar">R</div>
+      <div class="name" id="name">Erin</div>
+      <div class="email" id="email">erin@rorr.club</div>
+    </section>
+
+    <section class="cards">
+      <div class="stat-card energy">
+        <span class="label">ENERGY</span>
+        <span class="value" id="energy-value">1,240</span>
+      </div>
+      <div class="stat-card boost">
+        <span class="label">BOOST</span>
+        <span class="value" id="boost-value">320</span>
+      </div>
+    </section>
+
+    <nav class="menu">
+      <a class="menu-item" href="follow.html">
+        <span>Follow Team &amp; Player</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a class="menu-item" href="#purchase">
+        <span>Purchase List</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a class="menu-item" href="#boost-list">
+        <span>Boost List</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a class="menu-item" href="https://dev-app.rorr.club" target="_blank" rel="noopener noreferrer">
+        <span>dev-app.rorr.club</span>
+        <span class="ext">↗</span>
+      </a>
+      <a class="menu-item" href="#terms">
+        <span>Terms of Use</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+      <a class="menu-item" href="#privacy">
+        <span>Privacy Policy</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </nav>
+  </main>
+
+  <footer>ⓒPitch Interactive Co.,LTD. All rights reserved</footer>
+
+  <script type="module" src="./src/profile.js"></script>
+</body>
+</html>
