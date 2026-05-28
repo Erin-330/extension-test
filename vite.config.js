@@ -11,6 +11,7 @@ export default defineConfig({
         profile: resolve(__dirname, 'profile.html'),
         follow: resolve(__dirname, 'follow.html'),
         rank: resolve(__dirname, 'rank.html'),
+        splash: resolve(__dirname, 'splash.html'),
       },
     },
   },
