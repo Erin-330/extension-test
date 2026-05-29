@@ -13,6 +13,7 @@ export default defineConfig({
         streakHistory:  resolve(__dirname, 'streak-history.html'),
         boostList:      resolve(__dirname, 'boost-list.html'),
         purchaseList:   resolve(__dirname, 'purchase-list.html'),
+        schedule:       resolve(__dirname, 'schedule.html'),
       },
     },
   },
