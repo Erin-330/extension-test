@@ -13,6 +13,7 @@
 - 구매 내역 / 구매 목록 / purchase list / purchase history 관련 작업 시 → `.claude/purchase-list.md` 와 `.claude/loading-rive.md` 모두 먼저 읽을 것; **Rive 사용 필수** — 로딩 영역은 반드시 `loading-page.riv` 로 구현
 - 스트릭 퀴즈 / 퀴즈 창 / streak quiz / QuizWindow / StreakWindowQuiz 관련 작업 시 → `.claude/streak-quiz.md` 먼저 읽을 것 (Rive 파일 URL, 아트보드명, 뷰모델 바인딩, 이벤트명 등 모두 이 파일 기준으로 구현할 것); **Rive 사용 필수**
 - 스트릭 이벤트 / 이벤트 창 / streak event / EventWindow / StreakWindowEvent 관련 작업 시 → `.claude/streak-event.md` 먼저 읽을 것 (Rive 파일 URL, 아트보드명, 뷰모델 바인딩, 이벤트명 등 모두 이 파일 기준으로 구현할 것); **Rive 사용 필수**
+- 스케줄 / 경기 일정 / schedule / SchedulePage / ScheduleDetailPage / LeagueFilterPage 관련 작업 시 → `.claude/schedule.md` 먼저 읽을 것
 - 디자인/스타일 작업 시 → `.claude/Design System.md` 참고할 것
 
 ## Service
