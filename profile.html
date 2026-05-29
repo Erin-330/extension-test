@@ -42,8 +42,9 @@
       align-items: center;
       justify-content: center;
       box-shadow: var(--shadow-light-surface-2);
-      transition: background 120ms, border-color 120ms;
+      transition: background 120ms, border-color 120ms, filter 120ms;
       text-decoration: none;
+      padding: 0;
     }
     [data-theme="dark"] .icon-btn { color: var(--color-text-90); }
     .icon-btn:hover { border-color: var(--color-primary); }
@@ -55,6 +56,38 @@
     }
     .icon-btn.streak-btn:hover { filter: brightness(1.05); border-color: transparent; }
     [data-theme="dark"] .icon-btn.streak-btn { color: var(--color-text-100); }
+
+    .icon-btn.quiz-btn {
+      background: var(--gradient-quiz-color);
+      border-color: transparent;
+      color: var(--color-text-100);
+    }
+    .icon-btn.quiz-btn:hover { filter: brightness(1.05); border-color: transparent; }
+    [data-theme="dark"] .icon-btn.quiz-btn { color: var(--color-text-100); }
+
+    .icon-btn.event-btn {
+      background: var(--color-status-color-live);
+      border-color: transparent;
+      color: var(--color-text-100);
+      position: relative;
+    }
+    .icon-btn.event-btn::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 999px;
+      box-shadow: 0 0 0 0 rgba(193, 15, 15, 0.55);
+      animation: live-pulse 1.6s ease-out infinite;
+      pointer-events: none;
+    }
+    @keyframes live-pulse {
+      0%   { box-shadow: 0 0 0 0 rgba(193, 15, 15, 0.55); }
+      70%  { box-shadow: 0 0 0 8px rgba(193, 15, 15, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(193, 15, 15, 0); }
+    }
+    .icon-btn.event-btn:hover { filter: brightness(1.05); border-color: transparent; }
+    [data-theme="dark"] .icon-btn.event-btn { color: var(--color-text-100); }
+
     .theme-toggle .sun { display: none; }
     [data-theme="dark"] .theme-toggle .sun { display: block; }
     [data-theme="dark"] .theme-toggle .moon { display: none; }
@@ -181,6 +214,82 @@
       line-height: 1.2;
       color: var(--color-text-50);
     }
+
+    /* ---- Modal overlay (Quiz / Event Live) ---- */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: var(--color-background-b-30);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal.open { display: flex; }
+    .modal-card {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .modal-close {
+      align-self: flex-end;
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: none;
+      background: var(--color-surface-floating);
+      color: var(--color-text-0);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-light-surface-2);
+    }
+    [data-theme="dark"] .modal-close {
+      background: var(--color-surface-floating-dark);
+      color: var(--color-text-100);
+    }
+    .modal-close:hover { filter: brightness(1.05); }
+    .modal-close svg { width: 16px; height: 16px; }
+
+    .quiz-canvas-wrap {
+      width: 100%;
+      height: 456px;
+      position: relative;
+    }
+    .event-canvas-wrap {
+      width: 100%;
+      aspect-ratio: 360 / 173;
+      position: relative;
+    }
+    .modal canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .modal-fallback {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--color-surface);
+      border-radius: 14px;
+      color: var(--color-text-30-sub-text-dark);
+      font-size: 14px;
+      text-align: center;
+      padding: 16px;
+    }
+    [data-theme="dark"] .modal-fallback {
+      background: var(--color-surface-dark);
+      color: var(--color-text-90);
+    }
   </style>
 </head>
 <body>
@@ -191,6 +300,12 @@
     <a class="icon-btn" href="rank.html" aria-label="랭킹">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 9a6 6 0 0 0 12 0"/><path d="M9 22h6"/><path d="M12 15v7"/></svg>
     </a>
+    <button class="icon-btn quiz-btn" id="quiz-open" aria-label="라이브 퀴즈 열기" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/><circle cx="12" cy="12" r="10"/></svg>
+    </button>
+    <button class="icon-btn event-btn" id="event-open" aria-label="라이브 이벤트 열기" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.93 19.07a10 10 0 0 1 0-14.14"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M7.76 16.24a6 6 0 0 1 0-8.48"/><path d="M16.24 7.76a6 6 0 0 1 0 8.48"/><circle cx="12" cy="12" r="2"/></svg>
+    </button>
     <button class="icon-btn theme-toggle" id="theme-toggle" aria-label="테마 전환">
       <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
@@ -244,6 +359,30 @@
   </main>
 
   <footer>ⓒPitch Interactive Co.,LTD. All rights reserved</footer>
+
+  <!-- Quiz Modal -->
+  <div class="modal" id="quiz-modal" role="dialog" aria-modal="true" aria-label="라이브 퀴즈">
+    <div class="modal-card">
+      <button class="modal-close" id="quiz-close" type="button" aria-label="닫기">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="quiz-canvas-wrap" id="quiz-canvas-wrap">
+        <canvas id="quiz-canvas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Event Live Modal -->
+  <div class="modal" id="event-modal" role="dialog" aria-modal="true" aria-label="라이브 이벤트">
+    <div class="modal-card">
+      <button class="modal-close" id="event-close" type="button" aria-label="닫기">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="event-canvas-wrap" id="event-canvas-wrap">
+        <canvas id="event-canvas"></canvas>
+      </div>
+    </div>
+  </div>
 
   <script type="module" src="./src/profile.js"></script>
 </body>
