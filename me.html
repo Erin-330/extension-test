@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RORR — My Account</title>
+    <link rel="stylesheet" href="./src/tokens.css" />
+    <link rel="stylesheet" href="./src/me/me.css" />
+  </head>
+  <body>
+    <header class="me-header">
+      <button id="back-btn" class="icon-btn" type="button" aria-label="뒤로 가기">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="M15 6 9 12l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </button>
+      <a class="brand-link" href="main.html" aria-label="RORR 홈">
+        <img
+          class="brand-mark"
+          src="https://erin-bucket-team.s3.amazonaws.com/RORR%20EMBLEM.png"
+          alt="RORR"
+        />
+        <span class="brand-name">RORR</span>
+      </a>
+      <button id="close-btn" class="icon-btn" type="button" aria-label="닫기">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+    </header>
+
+    <main class="me-page">
+      <section class="profile-card">
+        <div id="avatar" class="avatar">
+          <span id="avatar-initial" class="avatar-initial"></span>
+        </div>
+        <h1 id="profile-name" class="profile-name">이름</h1>
+        <p id="profile-email" class="profile-email">email@example.com</p>
+        <span class="plan-badge" id="plan-badge">Free plan</span>
+      </section>
+
+      <section class="stats-row" aria-label="응원 현황">
+        <button class="stat-tile" data-target="follow-league" type="button">
+          <span class="stat-value" id="stat-leagues">0</span>
+          <span class="stat-label">Backed Leagues</span>
+        </button>
+        <button class="stat-tile" data-target="follow-team" type="button">
+          <span class="stat-value" id="stat-teams">0</span>
+          <span class="stat-label">Backed Teams</span>
+        </button>
+        <button class="stat-tile" data-target="follow-player" type="button">
+          <span class="stat-value" id="stat-players">0</span>
+          <span class="stat-label">Backed Players</span>
+        </button>
+      </section>
+
+      <section class="section-card">
+        <h2 class="section-title">Account</h2>
+        <ul class="info-list">
+          <li><span class="info-label">Name</span><span id="info-name" class="info-value">—</span></li>
+          <li><span class="info-label">Email</span><span id="info-email" class="info-value">—</span></li>
+          <li><span class="info-label">Joined</span><span id="info-joined" class="info-value">—</span></li>
+          <li><span class="info-label">Plan</span><span id="info-plan" class="info-value">Free</span></li>
+        </ul>
+      </section>
+
+      <section class="section-card">
+        <h2 class="section-title">My Backs</h2>
+        <ul class="link-list">
+          <li>
+            <button class="link-row" data-target="follow-league" type="button">
+              <span class="link-label">Leagues</span>
+              <span class="link-meta"><span id="row-leagues">0</span><span class="chev" aria-hidden="true">›</span></span>
+            </button>
+          </li>
+          <li>
+            <button class="link-row" data-target="follow-team" type="button">
+              <span class="link-label">Teams</span>
+              <span class="link-meta"><span id="row-teams">0</span><span class="chev" aria-hidden="true">›</span></span>
+            </button>
+          </li>
+          <li>
+            <button class="link-row" data-target="follow-player" type="button">
+              <span class="link-label">Players</span>
+              <span class="link-meta"><span id="row-players">0</span><span class="chev" aria-hidden="true">›</span></span>
+            </button>
+          </li>
+        </ul>
+      </section>
+
+      <section class="section-card">
+        <h2 class="section-title">Notifications</h2>
+        <ul class="toggle-list">
+          <li>
+            <div class="toggle-text">
+              <span class="toggle-label">Push 알림</span>
+              <span class="toggle-sub">중요 알림을 사이드 패널에서 받아요</span>
+            </div>
+            <label class="switch">
+              <input id="toggle-push" type="checkbox" />
+              <span class="slider" aria-hidden="true"></span>
+            </label>
+          </li>
+          <li>
+            <div class="toggle-text">
+              <span class="toggle-label">Email 다이제스트</span>
+              <span class="toggle-sub">주간 요약을 이메일로 받아요</span>
+            </div>
+            <label class="switch">
+              <input id="toggle-email" type="checkbox" />
+              <span class="slider" aria-hidden="true"></span>
+            </label>
+          </li>
+        </ul>
+      </section>
+
+      <button id="signout-btn" class="signout-btn" type="button">Sign out</button>
+    </main>
+
+    <script type="module" src="./src/me/main.js"></script>
+  </body>
+</html>

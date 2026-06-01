@@ -1,0 +1,108 @@
+.app-header {
+  width: 100%;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--color-text-30-sub-text-dark);
+}
+
+.brand-mark {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.brand-name {
+  font-size: var(--font-size-description-2);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.04em;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.my-account-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--color-surface2-alt);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-30-sub-text-dark);
+  font-size: var(--font-size-annotation);
+  font-weight: var(--font-weight-bold);
+  transition: background 120ms;
+}
+
+.my-account-btn:hover { background: var(--color-surface-alt); }
+.my-account-btn:active { transform: translateY(1px); }
+.my-account-btn .icon { font-size: 14px; }
+
+.main-content {
+  width: 100%;
+  padding: 24px 20px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hero-title {
+  margin: 0;
+  font-size: var(--font-size-sub-title);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-30-sub-text-dark);
+}
+
+.hero-sub {
+  margin: 0;
+  font-size: var(--font-size-chat);
+  color: var(--color-text-50);
+}
+
+.signed-out-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-light-surface-2);
+}
+
+.signed-out-cta p {
+  margin: 0;
+  font-size: var(--font-size-chat);
+  color: var(--color-text-30-sub-text-dark);
+}
+
+.signin-link {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-description-16);
+  text-decoration: none;
+}

@@ -1,0 +1,29 @@
+.redirect-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+}
+.emblem { width: 72px; height: 72px; object-fit: contain; }
+.status-icon {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--color-text-100);
+  font-weight: 700;
+}
+.status-icon.spinner {
+  border: 3px solid var(--color-surface2-alt);
+  border-top-color: var(--color-primary);
+  animation: spin 700ms linear infinite;
+}
+.status-icon.success { background: var(--color-success); }
+.status-icon.error { background: var(--color-error); }
+.status-message { font-size: var(--font-size-description-16); color: var(--color-text-30-sub-text-dark); margin: 0; }
+.hint { font-size: var(--font-size-annotation); color: var(--color-text-50); margin: 0; }
+@keyframes spin { to { transform: rotate(360deg); } }

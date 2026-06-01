@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RORR</title>
+    <link rel="stylesheet" href="./src/tokens.css" />
+    <link rel="stylesheet" href="./src/main/main.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <a class="brand-link" href="#/" aria-label="홈으로">
+        <img
+          class="brand-mark"
+          src="https://erin-bucket-team.s3.amazonaws.com/RORR%20EMBLEM.png"
+          alt="RORR"
+        />
+        <span class="brand-name">RORR</span>
+      </a>
+      <div class="header-actions">
+        <button id="my-account-btn" class="my-account-btn" type="button" hidden>
+          <span class="icon" aria-hidden="true">👤</span>
+          <span>My Account</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="hero">
+        <h1 class="hero-title">스포츠를 더 즐겁게, 함께</h1>
+        <p class="hero-sub">팔로우한 리그·팀·선수의 소식과 응원을 한 곳에서.</p>
+      </section>
+
+      <section id="signed-out-cta" class="signed-out-cta" hidden>
+        <p>아직 로그인하지 않았어요.</p>
+        <a class="signin-link" href="login.html">로그인하러 가기 →</a>
+      </section>
+    </main>
+
+    <script type="module" src="./src/main/main.js"></script>
+  </body>
+</html>
