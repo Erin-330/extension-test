@@ -196,9 +196,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true
   }
 
+  if (request.type === 'auth/chromeLogin') {
+    chrome.identity.getAuthToken({ interactive: true }, (token) => {
+      if (chrome.runtime.lastError || !token) {
+        sendResponse({
+          code: 401,
+          message: 'fail',
+          data: { error: chrome.runtime.lastError?.message || 'OAuth 토큰 발급 실패' },
+        })
+      } else {
+        sendResponse({ code: 200, message: 'success', data: { token } })
+      }
+    })
+    return true
+  }
+
   if (request.type) {
-    // auth/* 요청은 Auth 모듈이 번들된 경우에만 처리 가능
-    // webpack 번들 프로젝트에서는 import Auth from './auth.ts' 후 auth.callRequest(request, sender) 호출
     if (request.type.split('/')[0] === 'auth') {
       sendResponse({ code: 501, message: 'auth module not bundled', data: {} })
       return true
