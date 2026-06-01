@@ -133,3 +133,4 @@ curl -s "[Swagger URL]/api-docs/swagger-ui-init.js"
 |---------|------------|------|
 | `login.md` | `login.html` | Google OAuth 로그인 및 JWT 발급, Chrome Extension 사이드 패널 진입점 |
 | `redirect.md` | `redirect.html` | OAuth 리다이렉트 콜백 처리, 인증 결과를 background에 전달 후 탭 자동 닫기 |
+| `profile.md` | `profile.html` | 로그인 후 프로필·Spark·에너지 잔액 표시 및 메뉴 내비게이션 |

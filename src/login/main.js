@@ -67,22 +67,7 @@ async function loginToBackend(googleToken) {
 }
 
 async function routeAfterLogin(jwt) {
-  try {
-    const res = await fetch(`${API_BASE}/users/me`, {
-      headers: { Authorization: `Bearer ${jwt}` },
-    })
-    if (res.ok) {
-      const me = await res.json()
-      const followOnboardingYn = me?.follow_onboarding_yn ?? me?.data?.follow_onboarding_yn
-      if (followOnboardingYn === true || followOnboardingYn === 1 || followOnboardingYn === 'Y') {
-        window.location.href = 'home.html'
-        return
-      }
-    }
-  } catch (e) {
-    /* fall through */
-  }
-  window.location.href = 'follow-league.html'
+  window.location.href = 'profile.html'
 }
 
 async function handleGoogleLogin() {

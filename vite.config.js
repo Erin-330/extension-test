@@ -7,6 +7,7 @@ export default defineConfig({
       input: {
         login: resolve(__dirname, 'login.html'),
         redirect: resolve(__dirname, 'redirect.html'),
+        profile: resolve(__dirname, 'profile.html'),
       },
     },
   },
