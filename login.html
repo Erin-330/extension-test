@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RORR — 로그인</title>
+    <link rel="stylesheet" href="./src/tokens.css" />
+    <link rel="stylesheet" href="./src/login/main.css" />
+  </head>
+  <body>
+    <main class="login-page">
+      <section class="brand">
+        <img
+          class="emblem"
+          src="https://erin-bucket-team.s3.amazonaws.com/RORR%20EMBLEM.png"
+          alt="RORR"
+        />
+        <p class="brand-desc">스포츠를 더 즐겁게, 함께</p>
+      </section>
+
+      <section class="form">
+        <button id="google-login-btn" class="google-btn" type="button">
+          <svg class="google-icon" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+            <path
+              fill="#4285F4"
+              d="M19.6 10.23c0-.68-.06-1.36-.18-2.02H10v3.83h5.4a4.62 4.62 0 0 1-2 3.03v2.51h3.23c1.9-1.74 2.97-4.31 2.97-7.35z"
+            />
+            <path
+              fill="#34A853"
+              d="M10 20c2.7 0 4.97-.89 6.62-2.42l-3.23-2.51c-.9.6-2.04.95-3.39.95-2.6 0-4.81-1.76-5.6-4.13H1.07v2.6A10 10 0 0 0 10 20z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M4.4 11.9a6 6 0 0 1 0-3.8V5.5H1.07a10 10 0 0 0 0 9l3.33-2.6z"
+            />
+            <path
+              fill="#EA4335"
+              d="M10 3.96c1.47 0 2.79.51 3.83 1.5l2.87-2.86A10 10 0 0 0 1.07 5.5L4.4 8.1C5.19 5.72 7.4 3.96 10 3.96z"
+            />
+          </svg>
+          <span class="google-btn-label">Google로 계속하기</span>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+
+        <p id="login-message" class="login-message" role="status" aria-live="polite"></p>
+      </section>
+
+      <footer class="login-footer">
+        <p class="footer-text">
+          로그인하면 RORR의 <a href="#" class="link">서비스 약관</a> 및
+          <a href="#" class="link">개인정보 처리방침</a>에 동의하게 됩니다.
+        </p>
+      </footer>
+    </main>
+
+    <script type="module" src="./src/login/main.js"></script>
+  </body>
+</html>
