@@ -7,7 +7,7 @@
 
 ## 개요
 
-사용자가 Google OAuth를 통해 RORR 서비스에 로그인한다. Chrome Extension과 Web 양쪽에서 동일 계정 기반으로 포인트·팔로우·Boost·Like·Quiz 데이터가 공유된다. 최초 로그인 시 RORR 사용자 계정이 자동 생성된다.
+사용자가 이메일과 비밀번호를 입력하여 RORR 서비스에 로그인한다. 폼 유효성 검사를 통해 잘못된 입력은 사전에 차단하고, 인증 성공 시 JWT를 `localStorage`에 저장한 뒤 다음 페이지로 이동한다.
 
 ---
 
@@ -15,14 +15,29 @@
 
 ```
 ┌─────────────────────────────────────┐
-│  [RORR 엠블럼 이미지]               │  ← 브랜드 영역, 세로 중앙 정렬
-│  [서비스 설명 문구]                  │
+│                                     │
+│  [RORR 엠블럼 이미지]                │  ← 브랜드 영역, 세로 중앙 정렬
+│  [RORR]                              │  ← 서비스 타이틀
+│  [스포츠를 더 즐겁게, 함께]           │  ← 서비스 설명
 │                                     │
 │  ┌─────────────────────────────┐    │
-│  │  G  Google로 계속하기       │    │  ← Google OAuth 버튼
+│  │ Email                       │    │  ← 입력 라벨
+│  │ [____________________]      │    │  ← 이메일 입력 필드
+│  │ [에러 메시지]                │    │  ← 검증 실패 시
+│  │                             │    │
+│  │ Password                    │    │
+│  │ [____________________]      │    │  ← 비밀번호 입력 필드
+│  │ [에러 메시지]                │    │
+│  │                             │    │
+│  │ [전역 에러 메시지]            │    │  ← 서버 에러
+│  │                             │    │
+│  │ ┌─────────────────────────┐ │    │
+│  │ │       로그인             │ │    │  ← 로그인 버튼 (Primary CTA)
+│  │ └─────────────────────────┘ │    │
 │  └─────────────────────────────┘    │
 │                                     │
-│  [하단 안내 문구]                   │
+│  [계정이 없으신가요? 회원가입]        │  ← 하단 안내 문구
+│                                     │
 └─────────────────────────────────────┘
 ```
 
@@ -46,11 +61,36 @@ SVG 인라인 또는 gradient div 사용 금지. 반드시 위 `<img>` 태그 �
 
 | 상태 | 표시 |
 |------|------|
-| 기본 | Google 로그인 버튼 활성 |
-| 로딩 | 버튼 비활성화 + 스피너 + "로그인 중..." |
-| OAuth 취소 | "Google 로그인이 취소되었습니다." |
-| 오류 | `authResult.data.error` 값을 그대로 표시 |
-| 세션 만료 진입 (`?expired=1`) | "세션이 만료되었습니다. 다시 로그인해 주세요." |
+| 기본 | 로그인 버튼 활성, 에러 메시지 숨김 |
+| 입력 중 (포커스) | 해당 입력 필드 border `primary`, 2px outline `primary @ 25%` |
+| 검증 실패 | 해당 입력 필드 border `error`, 필드 아래 12px/700 에러 텍스트 표시 |
+| 로딩 (제출 중) | 버튼 비활성화 + 텍스트 "로그인 중..." |
+| 서버 오류 | 폼 하단에 전역 에러 메시지 (`error` 색) 표시 |
+| 세션 만료 진입 (`?expired=1`) | "세션이 만료되었습니다. 다시 로그인해 주세요." 전역 메시지 |
+
+---
+
+## 폼 유효성 검사 규칙
+
+### 이메일
+
+| 조건 | 에러 메시지 |
+|------|------------|
+| 빈 값 | "이메일을 입력해 주세요." |
+| 이메일 형식 아님 (`/^[^\s@]+@[^\s@]+\.[^\s@]+$/`) | "올바른 이메일 형식이 아닙니다." |
+
+### 비밀번호
+
+| 조건 | 에러 메시지 |
+|------|------------|
+| 빈 값 | "비밀번호를 입력해 주세요." |
+| 8자 미만 | "비밀번호는 8자 이상이어야 합니다." |
+
+### 검증 시점
+
+- 각 입력 필드의 `blur` 이벤트에서 1차 검증
+- 제출(`submit`) 시 모든 필드 재검증
+- 검증 실패 시 첫 번째 오류 필드에 포커스
 
 ---
 
@@ -64,44 +104,16 @@ SVG 인라인 또는 gradient div 사용 금지. 반드시 위 `<img>` 태그 �
 
 ```
 login.html          ← <script type="module" src="./src/login/main.js">
-src/login/main.js   ← 모든 로직 (addEventListener, handleGoogleLogin 등)
+src/login/main.js   ← 모든 로직 (addEventListener, validation 등)
 ```
 
 `vite.config.js` input에 `login: resolve(__dirname, 'login.html')` 등록 필수.
 
 ---
 
-## Chrome Extension OAuth 플로우
-
-> **⚠️ `chrome.identity.getAuthToken()`은 side panel 페이지에서 직접 호출하지 않는다.**
-> **반드시 `chrome.runtime.sendMessage`를 통해 background service worker가 호출하도록 한다.**
-
-### Step 1 — background로 Google OAuth 토큰 요청
-
-```js
-const authResult = await chrome.runtime.sendMessage({ type: 'auth/chromeLogin' })
-```
-
-background(`public/background.js`)가 처리:
-1. `chrome.identity.clearAllCachedAuthTokens()` — 캐시 초기화 필수
-2. `chrome.identity.getAuthToken({ interactive: true })` — scopes 파라미터 생략, manifest 기본값 사용
-3. 응답 형식: `{ code, message: 'success'|'fail', data: { token } }`
-
-Google OAuth 토큰은 `authResult.data.token`.
-
-### Step 2 — 백엔드 로그인 API 호출
-
-성공 응답(`authResult.message === 'success'`) 시 `POST /users/login` 호출.
-
-### Step 3 — JWT 저장 및 이동
-
-`result.data.jwt`를 `localStorage.setItem('pie-u-wt', jwt)`로 저장 후 다음 페이지로 이동.
-
----
-
 ## API
 
-### POST /users/login — Google OAuth 로그인 및 JWT 발급
+### POST /users/login — 이메일/비밀번호 로그인 및 JWT 발급
 
 **인증**: 없음
 
@@ -109,29 +121,26 @@ Google OAuth 토큰은 `authResult.data.token`.
 
 | 필드 | 타입 | 필수 | 설명 |
 |------|------|:----:|------|
-| `platformType` | `string` | O | `'google'` 고정 (❌ `'EXTENSION'`) |
-| `token` | `string` | O | `authResult.data.token` — Step 1에서 받은 Google OAuth 토큰 |
+| `email` | `string` | O | 사용자 이메일 |
+| `password` | `string` | O | 사용자 비밀번호 |
 
 #### Response Body
 
 | 필드 | 타입 | 설명 |
 |------|------|------|
 | `resultCode` | `string` | `'0000'` = 성공, 그 외 = 실패 |
-| `resultMsg` | `string` | 오류 메시지 |
-| `data.jwt` | `string` | JWT — `localStorage.setItem('pie-u-wt', jwt)`로 저장 (❌ `data.token`) |
+| `resultMsg` | `string` | 오류 메시지 (UI에 그대로 표시) |
+| `data.jwt` | `string` | JWT — `localStorage.setItem('pie-u-wt', jwt)`로 저장 |
 | `data.id` | `string` | 사용자 ID |
 | `data.email` | `string` | 이메일 |
 | `data.name` | `string` | 이름 |
-| `data.picture` | `string` | 프로필 이미지 URL |
-| `data.boost` | `number` | Boost 수치 |
-| `data.given_name` | `string` | 이름(given) |
-| `data.payments` | `object` | `{ xsollaUseYN, tossUseYN }` |
 
 #### 에러
 
 | resultCode | 설명 |
-|------------|------|
-| `GOOGLE_API_ERROR` | OAuth 토큰 무효 또는 Google API 오류 |
+|-----------|------|
+| `INVALID_CREDENTIALS` | 이메일 또는 비밀번호가 일치하지 않음 |
+| `USER_NOT_FOUND` | 존재하지 않는 계정 |
 
 #### 성공 판별
 
@@ -143,14 +152,28 @@ localStorage.setItem('pie-u-wt', jwt)
 
 ---
 
-## 로그인 후 라우팅
+## 컴포넌트 상세
 
-JWT payload의 `follow_onboarding_yn` 필드로 이동 페이지 결정:
+### 입력 필드 (라벨 + input + 에러)
 
-| 조건 | 이동 |
-|------|------|
-| `follow_onboarding_yn === true` | `home.html` (메인) |
-| `follow_onboarding_yn` 없거나 `false` | `follow-league.html` (팔로우 온보딩) |
+| 부분 | 스타일 |
+|------|--------|
+| 라벨 | `text-annotation-bold` (12/700), `text-30-sub-text-dark` |
+| input | `border: 1px solid var(--color-border)`, `border-radius: 10px`, padding `10px 14px`, `text-chat` (14/400) |
+| input:focus | border `primary`, outline `2px primary @ 25%`, offset `0` |
+| input.invalid | border `error` |
+| 에러 텍스트 | `text-annotation` (12/400), `color: var(--color-error)`, 표시 시 `margin-top: 6px` |
+
+### 로그인 버튼 (Primary CTA)
+
+| 상태 | 스타일 |
+|------|--------|
+| Default | bg `primary`, color `text-100`, border `primary`, `border-radius: 10px`, padding `12px 18px`, `text-description-2` |
+| Hover | bg `primary-dark` |
+| Active | `transform: translateY(1px)` |
+| Disabled | bg `button-disable`, cursor `not-allowed` |
+
+`width: 100%`로 폼 전체 너비를 차지한다.
 
 ---
 
@@ -158,8 +181,9 @@ JWT payload의 `follow_onboarding_yn` 필드로 이동 페이지 결정:
 
 | 항목 | 올바른 값 | 흔한 실수 |
 |------|-----------|-----------|
-| `platformType` | `'google'` | `'EXTENSION'` |
-| JWT 필드 | `result.data.jwt` | `result.data.token` |
-| 성공 판별 | `resultCode === '0000'` | `message === 'success'` |
-| OAuth 토큰 출처 | `authResult.data.token` (sendMessage 응답) | `chrome.identity` 직접 호출 |
-| `getAuthToken` scopes | 파라미터 생략 (manifest 기본값) | `['email', 'profile']` 단축형 |
+| 토큰 사용 | `var(--color-*)` | 하드코딩 hex |
+| 폰트 | Pretendard Variable | system-ui 직접 사용 |
+| 레이아웃 | `width: 100%`, padding으로 정렬 | `max-width: 480px; margin: 0 auto` |
+| 스크립트 | 외부 `.js` 파일 (CSP 필수) | 인라인 `<script>` |
+| 이벤트 | `addEventListener` | `onclick="..."` |
+| JWT 키 | `'pie-u-wt'` | `'token'` |
