@@ -1,0 +1,212 @@
+html,
+body {
+  width: 100%;
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-base);
+  background-color: var(--color-background-light);
+  color: var(--color-text-30-sub-text-dark);
+  -webkit-font-smoothing: antialiased;
+}
+
+.login-root {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  min-height: 100vh;
+  padding: 40px 24px;
+  box-sizing: border-box;
+  gap: 32px;
+}
+
+/* ---- Brand ---- */
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 16px;
+  text-align: center;
+}
+
+.emblem {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  filter: drop-shadow(var(--shadow-light-surface));
+}
+
+.brand-title {
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-weight: 700;
+  font-size: 32px;
+  letter-spacing: 0;
+  color: var(--color-primary);
+}
+
+.brand-tagline {
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--color-text-50);
+}
+
+/* ---- Actions ---- */
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.status-message {
+  font-family: var(--font-family-base);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--color-error);
+  background: color-mix(in srgb, var(--color-error) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-error) 24%, transparent);
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-align: center;
+}
+
+.status-message.info {
+  color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  border-color: color-mix(in srgb, var(--color-primary) 24%, transparent);
+}
+
+/* ---- Google button ---- */
+.google-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: 10px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-30-sub-text-dark);
+  font-family: var(--font-family-base);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: background 120ms linear, border-color 120ms linear, box-shadow 120ms linear;
+  box-shadow: var(--shadow-light-surface-2);
+}
+
+.google-btn:hover:not([disabled]) {
+  background: var(--color-surface2-alt);
+}
+
+.google-btn:active:not([disabled]) {
+  transform: translateY(1px);
+  background: var(--color-surface-alt);
+}
+
+.google-btn:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
+  outline-offset: 2px;
+  border-color: var(--color-primary);
+}
+
+.google-btn[disabled] {
+  cursor: not-allowed;
+  color: var(--color-text-50);
+  background: var(--color-surface2-alt);
+}
+
+.google-icon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+}
+
+.google-btn[data-loading="true"] .google-icon {
+  display: none;
+}
+
+.google-label {
+  white-space: nowrap;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  animation: spin 700ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---- Legal ---- */
+.legal {
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-text-50);
+  text-align: center;
+}
+
+.legal-link {
+  color: var(--color-text-30-sub-text-dark);
+  text-decoration: underline;
+}
+
+.legal-link:hover {
+  color: var(--color-primary);
+}
+
+/* ---- Dark mode ---- */
+[data-theme="dark"] body {
+  background-color: var(--color-background-light);
+  color: var(--color-text-90);
+}
+
+[data-theme="dark"] .brand-title {
+  color: var(--color-text-100);
+}
+
+[data-theme="dark"] .brand-tagline {
+  color: var(--color-text-80-sub-text-light);
+}
+
+[data-theme="dark"] .google-btn {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-90);
+}
+
+[data-theme="dark"] .google-btn:hover:not([disabled]) {
+  background: var(--color-surface-alt);
+}
+
+[data-theme="dark"] .legal-link {
+  color: var(--color-text-90);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}

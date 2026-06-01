@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RORR — 로그인</title>
+    <link rel="stylesheet" href="./src/tokens.css" />
+    <link rel="stylesheet" href="./src/login/main.css" />
+  </head>
+  <body>
+    <main class="login-root">
+      <section class="brand">
+        <img
+          class="emblem"
+          src="https://erin-bucket-team.s3.amazonaws.com/RORR%20EMBLEM.png"
+          alt="RORR"
+        />
+        <h1 class="brand-title">RORR</h1>
+        <p class="brand-tagline">스포츠를 더 즐겁게, 함께</p>
+      </section>
+
+      <section class="actions">
+        <div id="status-message" class="status-message" hidden></div>
+
+        <button id="google-login" type="button" class="google-btn">
+          <span class="google-icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+              <path d="M17.64 9.2045c0-.6381-.0573-1.2518-.1636-1.8409H9v3.4814h4.8436c-.2086 1.125-.8427 2.0782-1.7959 2.7164v2.2581h2.9082c1.7018-1.5668 2.6841-3.874 2.6841-6.615z" fill="#4285F4"/>
+              <path d="M9 18c2.43 0 4.4673-.806 5.9564-2.1805l-2.9082-2.2581c-.806.54-1.8368.8595-3.0482.8595-2.344 0-4.3282-1.5831-5.036-3.71H.9573v2.3318C2.4382 15.9831 5.4818 18 9 18z" fill="#34A853"/>
+              <path d="M3.964 10.71c-.18-.54-.2822-1.1168-.2822-1.71s.1023-1.17.2823-1.71V4.9582H.9573C.3477 6.1731 0 7.5477 0 9c0 1.4523.3477 2.8268.9573 4.0418L3.964 10.71z" fill="#FBBC05"/>
+              <path d="M9 3.5795c1.3214 0 2.5077.4541 3.4405 1.346l2.5813-2.5814C13.4632.8917 11.426 0 9 0 5.4818 0 2.4382 2.0168.9573 4.9582L3.964 7.29C4.6718 5.1627 6.656 3.5795 9 3.5795z" fill="#EA4335"/>
+            </svg>
+          </span>
+          <span class="google-label">Google로 계속하기</span>
+          <span class="spinner" hidden aria-hidden="true"></span>
+        </button>
+
+        <p class="legal">
+          계속 진행하면 RORR의 <a href="#" class="legal-link">서비스 이용약관</a> 및
+          <a href="#" class="legal-link">개인정보 처리방침</a>에 동의하는 것으로 간주됩니다.
+        </p>
+      </section>
+    </main>
+
+    <script type="module" src="./src/login/main.js"></script>
+  </body>
+</html>
