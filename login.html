@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RORR · 로그인</title>
+    <link rel="stylesheet" href="./src/tokens.css" />
+    <link rel="stylesheet" href="./src/login/login.css" />
+  </head>
+  <body>
+    <main class="login-page">
+      <section class="brand">
+        <img
+          class="emblem"
+          src="https://erin-bucket-team.s3.amazonaws.com/RORR%20EMBLEM.png"
+          alt="RORR"
+        />
+        <h1 class="brand-title">RORR</h1>
+        <p class="brand-description">스포츠를 더 즐겁게, 함께</p>
+      </section>
+
+      <form class="login-form" id="login-form" novalidate>
+        <div class="field">
+          <label class="field-label" for="email">이메일</label>
+          <input
+            class="field-input"
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            required
+          />
+          <p class="field-error" id="email-error" aria-live="polite"></p>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="password">비밀번호</label>
+          <input
+            class="field-input"
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="비밀번호 (8자 이상)"
+            required
+          />
+          <p class="field-error" id="password-error" aria-live="polite"></p>
+        </div>
+
+        <p class="form-error" id="form-error" aria-live="polite"></p>
+
+        <button class="submit-btn" id="submit-btn" type="submit">로그인</button>
+      </form>
+
+      <p class="footer-note">
+        계정이 없으신가요? <a class="footer-link" href="#">회원가입</a>
+      </p>
+    </main>
+
+    <script type="module" src="./src/login/main.js"></script>
+  </body>
+</html>
