@@ -1,66 +1,100 @@
-# RORR — Project Context
+# CLAUDE.md — 프로젝트 규칙
 
-## Spec Files (읽기 규칙)
-- **프로젝트 최초 구성 / 빌드 환경 세팅 시** → `.claude/infrastructure.md` 먼저 읽을 것 (package.json, vite.config.js, manifest.json, background.js, build.yml, .gitignore, tokens.css 전체 내용 포함)
-- **로딩 영역 / 로딩 스피너 / 초기 로딩 / 무한 스크롤 로딩이 포함된 모든 페이지·컴포넌트 작업 시** → `.claude/loading-rive.md` 반드시 읽을 것; **Rive 사용 필수** — CSS 스피너·정적 이미지로 대체 불가, 반드시 `@rive-app/canvas` 와 `loading-page.riv` 로 구현할 것
-- `login.html` 관련 작업 시 → `.claude/login.md` 먼저 읽을 것
-- `profile.html` 관련 작업 시 → `.claude/profile.md` 먼저 읽을 것
-- `follow.html` / 팔로우 관련 작업 시 → `.claude/follow-ui-layout.md` 먼저 읽을 것
-- `rank.html` / 랭킹 관련 작업 시 → `.claude/rank-ui-layout.md` 와 `.claude/rank-rive-graph.md` 모두 먼저 읽을 것
-- `streak-history.html` / 스트릭 히스토리 / 스트릭 기록 / streak history 관련 작업 시 (페이지 생성 요청 포함) → `.claude/streak-history.md` 와 `.claude/streak-status-fire-rive.md` 모두 먼저 읽을 것 (Rive 파일 URL, 아트보드명, 이벤트명 등 모두 이 파일 기준으로 구현할 것); **Rive 사용 필수** — 반드시 `@rive-app/canvas` 로 애니메이션 구현, 정적 대체 불가
-- `splash.html` / 스플래시 관련 작업 시 → `.claude/splash-screen.md` 먼저 읽을 것 (Rive 파일 URL, 아트보드명, 이벤트명 등 모두 이 파일 기준으로 구현할 것)
-- 부스트 내역 / 부스트 목록 / boost list / boost history 관련 작업 시 → `.claude/boost-list.md` 와 `.claude/loading-rive.md` 모두 먼저 읽을 것; **Rive 사용 필수** — 로딩·빈 상태·좋아요 버튼 모두 Rive로 구현, 정적 대체 불가
-- 구매 내역 / 구매 목록 / purchase list / purchase history 관련 작업 시 → `.claude/purchase-list.md` 와 `.claude/loading-rive.md` 모두 먼저 읽을 것; **Rive 사용 필수** — 로딩 영역은 반드시 `loading-page.riv` 로 구현
-- 스트릭 퀴즈 / 퀴즈 창 / streak quiz / QuizWindow / StreakWindowQuiz 관련 작업 시 → `.claude/streak-quiz.md` 먼저 읽을 것 (Rive 파일 URL, 아트보드명, 뷰모델 바인딩, 이벤트명 등 모두 이 파일 기준으로 구현할 것); **Rive 사용 필수**
-- 스트릭 이벤트 / 이벤트 창 / streak event / EventWindow / StreakWindowEvent 관련 작업 시 → `.claude/streak-event.md` 먼저 읽을 것 (Rive 파일 URL, 아트보드명, 뷰모델 바인딩, 이벤트명 등 모두 이 파일 기준으로 구현할 것); **Rive 사용 필수**
-- 스케줄 / 경기 일정 / schedule / SchedulePage / ScheduleDetailPage / LeagueFilterPage 관련 작업 시 → `.claude/schedule.md` 먼저 읽을 것
-- 디자인/스타일 작업 시 → `.claude/Design System.md` 참고할 것
+## 프로젝트 세팅 플로우
 
-## Service
-- **Service name:** RORR
-- **Design system:** `Design System.md` (single source of truth for all tokens, typography, components)
+"프로젝트 세팅", "초기 세팅", "세팅해줘", "처음부터 만들어줘" 등의 요청이 오면 **반드시 아래 순서를 따른다.**
 
-## Assets
-- **Logo / emblem:** hosted on S3 at `https://erin-bucket-team.s3.amazonaws.com/RORR%20EMBLEM.png`
-  - Always reference this URL for the RORR emblem in web pages
-  - Local file `RORR EMBLEM.png` exists in the project root for offline reference only
-
-## 스타일 규칙
-- 모든 색상·타이포그래피·이펙트는 반드시 `Design System.md`의 토큰을 사용할 것
-- 토큰의 용도(Use 컬럼)를 확인하고 의미에 맞게 사용할 것 — 임의로 비슷한 토큰으로 대체하지 말 것
-- 리스트(`ul`, `li` 등)가 있는 경우 항목 간 `gap: 4px` 적용할 것
-
-## Login Page Rules
-- Authentication: Google OAuth only — no email/password fields
-- Below the Google Sign-In button, include two links: **Terms of Use** and **Privacy Policy**
-- Footer must always include: ⓒPitch Interactive Co.,LTD. All rights reserved
+1. `.claude/infrastructure.md` 읽기
+2. 파일 목록의 모든 파일을 코드 블록 내용 그대로 생성한다. 임의로 변경하지 않는다.
+3. `npm install` 실행
 
 ---
 
-## Chrome Extension 아키텍처
+## 필수 참조 파일
 
-이 프로젝트는 **Chrome Extension Manifest V3 — Side Panel** 앱이다. 코드를 생성할 때 반드시 이 구조를 따른다.
+| 파일 | 경로 | 언제 읽는가 |
+|------|------|------------|
+| Design System | `.claude/Design System.md` | 페이지(HTML) 또는 컴포넌트를 만들거나 수정할 때 **항상** |
+| Spec Template | `.claude/spec-template.md` | MD 명세 파일을 만들거나 수정할 때 **항상** |
 
-### 핵심 규칙
-- 번들러: **Vite** — 각 HTML 파일이 독립적인 entry point
-- Rive 사용 시: `@rive-app/canvas` 패키지, CSP에 `wasm-unsafe-eval` 필수
-- 툴바 아이콘 클릭 → `background.js`가 `chrome.sidePanel.open()` 호출
+---
 
-### 파일 구조
+## 기능명세서 → UI 자동 플로우
+
+기능명세서(이미지 또는 텍스트)가 입력으로 오면 **아래 순서를 반드시 따른다.** 단계를 건너뛰지 않는다.
+
+### Step 1 — 참조 파일 읽기
+
+두 파일을 순서대로 읽는다.
+
+1. `.claude/spec-template.md` 읽기
+2. `.claude/Design System.md` 읽기
+
+### Step 2 — Swagger fetch (조건부 — Swagger URL이 함께 제공된 경우)
+
+Swagger URL에서 OpenAPI 스펙을 fetch해 페이지에서 사용할 엔드포인트를 파악한다.
+
+> **⚠️ WebFetch 툴은 HTTP URL을 HTTPS로 자동 업그레이드하므로 HTTP 서버에 접근 불가.**
+> **반드시 Bash 툴의 curl 명령어를 사용한다.**
+
+```bash
+curl -s "[Swagger URL]/api-docs/swagger-ui-init.js"
 ```
-public/
-  manifest.json     — Manifest V3, sidePanel 권한, background service worker
-  background.js     — chrome.sidePanel.open() 처리
-src/
-  tokens.css        — Design System.md 기반 CSS 변수 (모든 페이지가 import)
-  [page].js         — 각 페이지 로직
-[page].html         — 각 페이지 entry (src/tokens.css + src/[page].js import)
-vite.config.js      — 각 HTML을 rollupOptions.input에 등록
-package.json        — @rive-app/canvas, vite
+
+- 위 경로로 전체 OpenAPI 스펙(swaggerDoc)을 가져온다.
+- `/api-docs/swagger-ui-init.js` 가 없으면 `/api-docs-json`, `/openapi.json` 순으로 시도한다.
+- 이 페이지의 기능과 관계없는 엔드포인트는 제외한다.
+- fetch 결과는 Step 3의 **API 섹션**에만 반영한다. 별도 파일로 저장하지 않는다.
+
+### Step 3 — MD 명세 파일 작성
+
+`spec-template.md`의 구조를 따라 MD 파일을 작성한다.
+
+- 저장 위치: `.claude/pages/[페이지명].md`
+- 파일명은 spec-template의 "파일명 규칙" 섹션을 따른다.
+- 필수 섹션은 모두 작성, 조건부 섹션은 해당 기능이 없으면 생략한다.
+- 기능명세서 이미지가 입력으로 오면 spec-template의 "기능명세서 이미지에서 추출해야 할 정보" 표를 참고해 정보를 추출한다.
+- Swagger를 fetch했다면 spec-template의 API 섹션 형식대로 Request/Response 표를 채운다.
+
+### Step 4 — CLAUDE.md 매핑 업데이트
+
+이 파일(CLAUDE.md) 아래 "Spec Files 매핑" 표에 새 행을 추가한다.
+
+```
+| [생성한 MD 파일명] | [생성한 HTML 파일명] | [한 줄 설명] |
 ```
 
-### 빌드 & 배포
-- `npm run build` → `dist/` 생성
-- `develop` 브랜치 push → GitHub Actions가 자동 빌드 후 `dist/` 전체를 `rorr-extension.zip`으로 압축해 Artifact 업로드
-- Actions 탭 → 워크플로우 실행 → **Artifacts**에서 zip 다운로드 → Chrome 확장 프로그램 페이지에서 압축 해제 후 로드
+### Step 5 — HTML 페이지 구현
 
+> **Chrome Extension JS 작성 규칙**
+> - `chrome.runtime.sendMessage` 응답 형식: `{ code, message: 'success'|'fail', data: { ... } }`
+> - OAuth 토큰: `result.data.token` (❌ `result.token`)
+> - 에러 판별: `result.message === 'fail'` (❌ `!result.token`)
+> - JWT 저장: `localStorage.setItem('pie-u-wt', jwt)`
+> - `chrome.identity.getAuthToken()`은 manifest에 `identity` 권한과 `oauth2` 설정이 있어야 동작한다 → infrastructure.md 참조
+>
+> **CSP 필수 규칙 (MV3) — 위반 시 스크립트 전체 차단됨**
+> - `<script>` 인라인 코드 **절대 금지** → 반드시 외부 `.js` 파일로 분리
+> - `onclick="..."` 등 인라인 이벤트 핸들러 **절대 금지** → `addEventListener`로 교체
+> - HTML에는 `<script type="module" src="./src/[페이지명]/main.js"></script>` 형태로만 연결
+> - Vite가 `src/[페이지명]/main.js`를 번들링해 `dist/assets/`에 출력함
+> - `vite.config.js`의 `input`에 HTML 파일 경로를 추가해야 빌드됨
+
+`Design System.md`를 참고해 UI를 구현한다. 아래 제약은 예외 없이 지킨다.
+
+- 색상: `var(--color-*)` 토큰만 사용. 하드코딩 hex 금지.
+- 폰트: Pretendard Variable만 사용.
+- 레이아웃: `width: 100%`, `max-width` 제한 금지, 정렬은 `padding`으로 처리.
+- 다크모드: `[data-theme="dark"]` 토큰 스왑 방식.
+- Step 3에서 작성한 MD의 레이아웃·상태·컴포넌트 명세를 그대로 구현한다.
+
+---
+
+## Spec Files 매핑
+
+> MD 명세 파일이 추가될 때마다 Step 4에서 이 표를 업데이트한다.
+
+| Spec MD | HTML 페이지 | 설명 |
+|---------|------------|------|
+| `login.md` | `login.html` | Google OAuth 로그인 및 JWT 발급, Chrome Extension 사이드 패널 진입점 |
+| `redirect.md` | `redirect.html` | OAuth 리다이렉트 콜백 처리, 인증 결과를 background에 전달 후 탭 자동 닫기 |

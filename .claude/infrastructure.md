@@ -44,6 +44,8 @@
 
 ## vite.config.js
 
+> 새 페이지를 추가할 때마다 `input`에 항목을 추가하고, `public/manifest.json`의 `side_panel.default_path`도 함께 업데이트한다.
+
 ```js
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
@@ -52,11 +54,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        splash:  resolve(__dirname, 'splash.html'),
-        login:   resolve(__dirname, 'login.html'),
-        profile: resolve(__dirname, 'profile.html'),
-        follow:  resolve(__dirname, 'follow.html'),
-        rank:    resolve(__dirname, 'rank.html'),
+        // 페이지 추가 시 여기에 항목 추가
+        // [페이지명]: resolve(__dirname, '[페이지명].html'),
       },
     },
   },
@@ -67,16 +66,28 @@ export default defineConfig({
 
 ## public/manifest.json
 
+> `key` 필드는 익스텐션 ID를 고정한다. Google Cloud Console의 oauth2 client_id에 등록된 ID와 일치해야 `chrome.identity.getAuthToken()`이 동작한다. 절대 변경하지 말 것.
+> 새 API 서버가 추가되면 `host_permissions`에 도메인을 추가한다.
+
 ```json
 {
   "manifest_version": 3,
   "name": "RORR",
   "version": "1.0.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlJcVL5AJz8x8PTboD2mqMgKVzN44Fk4f31LUgL0KEksQ6WjYLexND7OJBHPnajQ2oz31INREkpUAMq5w9JgxLGp7DH9cQLrX4A8WflS7zxRDUEAuqIjA234iU8D4b+7xG3G18vSrNem5COybIckz/IjlNzWDnYzdvo5xj8UHcUicRzgUqNfGDwrKo+4l+46qTStE1xJuSvIdToEIavVetagk0CE54iQh7ygWPPUwBTtYyMQqL2GsAcrk8wxdY6NH/Q08vZSb8Av2XdUPx6xL6c3qX6wmSdQgpOoSpm2ks3uC4bi70H9sUDrY3d4artItkN1o6CKhnB0165jzaTRgGwIDAQAB",
   "description": "스포츠를 더 즐겁게, 함께",
-  "permissions": ["sidePanel"],
+  "permissions": ["sidePanel", "storage", "tabs", "identity"],
+  "oauth2": {
+    "client_id": "536646396894-cua1t88l7vb58lnr95np1smk0fairs69.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/userinfo.profile"
+    ]
+  },
   "host_permissions": [
     "https://erin-bucket-team.s3.amazonaws.com/*",
-    "https://erin-bucket-team.s3.us-east-1.amazonaws.com/*"
+    "https://erin-bucket-team.s3.us-east-1.amazonaws.com/*",
+    "http://mcp-agents-staging-alb-249976027.us-east-1.elb.amazonaws.com/*"
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
@@ -85,7 +96,7 @@ export default defineConfig({
     "default_title": "RORR"
   },
   "side_panel": {
-    "default_path": "splash.html"
+    "default_path": "login.html"
   },
   "background": {
     "service_worker": "background.js"
@@ -97,9 +108,165 @@ export default defineConfig({
 
 ## public/background.js
 
+> `storage`, `tabs` permission이 manifest에 있어야 동작한다.
+> auth 모듈(`src/background/auth.ts`)이 있는 경우 webpack/babel로 번들링하여 사용할 것.
+> 이 파일은 auth 모듈 없이 동작하는 standalone 버전이다.
+
 ```js
-chrome.action.onClicked.addListener((tab) => {
-  chrome.sidePanel.open({ tabId: tab.id })
+'use strict'
+
+// 사이드 패널 열림 상태 추적 (tabId별로)
+const sidePanelState = new Map()
+// 닫혀 있다가 열릴 때 전달할 pending slide-on 메시지 (sidePanel/ready 수신 시 전송)
+let pendingSlideOnMessage = null
+
+chrome.action.onClicked.addListener(async function (tab) {
+  const isOpen = sidePanelState.get(tab.id) || false
+  if (isOpen) {
+    chrome.runtime.sendMessage({ type: 'sidePanel/close' })
+    sidePanelState.set(tab.id, false)
+  } else {
+    chrome.sidePanel.open({ tabId: tab.id })
+    sidePanelState.set(tab.id, true)
+  }
+})
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request?.type === 'sidePanel/consumedSlideOnMessage') {
+    const navRequestId = request?.navRequestId
+    if (navRequestId && pendingSlideOnMessage?.navRequestId === navRequestId) {
+      pendingSlideOnMessage = null
+    }
+    chrome.storage.local.remove('sidePanel/pendingSlideOnMessage', () => {})
+    sendResponse(true)
+    return true
+  }
+
+  if (request.type === 'sidePanel/opened') {
+    if (sender.tab?.id) {
+      sidePanelState.set(sender.tab.id, true)
+    }
+    sendResponse(true)
+    return true
+  }
+
+  if (request.type === 'sidePanel/closed') {
+    if (sender.tab?.id) {
+      sidePanelState.set(sender.tab.id, false)
+    }
+    sendResponse(true)
+    return true
+  }
+
+  if (request.type === 'sidePanel/ready') {
+    if (pendingSlideOnMessage) {
+      chrome.runtime
+        .sendMessage({ type: 'sidePanel/pendingSlideOnMessage', payload: pendingSlideOnMessage })
+        .catch(() => {})
+      pendingSlideOnMessage = null
+      sendResponse(true)
+      return true
+    }
+  }
+
+  if (request.type === 'charge/complete') {
+    console.log('[RORR] 충전 완료', request.data ?? {})
+    chrome.runtime.sendMessage({ type: 'charge/complete', data: request.data }).catch(() => {})
+    sendResponse(true)
+    return true
+  }
+
+  if (request.type === 'charge/closeTab') {
+    if (sender.tab?.id) {
+      chrome.tabs.remove(sender.tab.id)
+    }
+    sendResponse(true)
+    return true
+  }
+
+  if (request.type === 'auth/loginSuccess') {
+    chrome.tabs.query({}, (tabs) => {
+      tabs
+        .filter(
+          (tab) => tab.id != null && tab.url && (tab.url.includes('twitch.tv') || tab.url.includes('youtube.com')),
+        )
+        .forEach((tab) => chrome.tabs.reload(tab.id))
+    })
+    sendResponse(true)
+    return true
+  }
+
+  if (request.type) {
+    // auth/* 요청은 Auth 모듈이 번들된 경우에만 처리 가능
+    // webpack 번들 프로젝트에서는 import Auth from './auth.ts' 후 auth.callRequest(request, sender) 호출
+    if (request.type.split('/')[0] === 'auth') {
+      sendResponse({ code: 501, message: 'auth module not bundled', data: {} })
+      return true
+    }
+
+    if (request.type.split('/')[0] === 'page') {
+      if (request.type === 'page/action/slideon') {
+        const tabId = sender.tab?.id
+        const navRequestId = `${Date.now()}-${Math.random().toString(16).slice(2)}`
+        const requestWithId = { ...request, navRequestId }
+        if (tabId) {
+          if (requestWithId.data) {
+            chrome.tabs.sendMessage(tabId, {
+              type: 'slide/action/on',
+              page: requestWithId.page,
+              data: requestWithId.data,
+            })
+          } else {
+            chrome.tabs.sendMessage(tabId, { type: 'slide/action/on', page: requestWithId.page })
+          }
+        }
+        chrome.storage.local.set({ 'sidePanel/pendingSlideOnMessage': requestWithId }, () => {
+          if (tabId) {
+            pendingSlideOnMessage = requestWithId
+            chrome.sidePanel.open({ tabId })
+          }
+        })
+        chrome.runtime.sendMessage(requestWithId).catch(() => {})
+        sendResponse(true)
+      }
+      return true
+    }
+  }
+
+  if (request.action === 'open-side-panel') {
+    chrome.sidePanel.open({ tabId: sender.tab?.id })
+    sendResponse(true)
+    return true
+  }
+
+  if (request.type === 'open-slide-panel') {
+    const getTabId = async () => {
+      if (sender.tab?.id) {
+        return sender.tab.id
+      }
+      const tabs = await chrome.tabs.query({ active: true, currentWindow: true })
+      return tabs[0]?.id
+    }
+
+    getTabId().then((tabId) => {
+      if (tabId) {
+        chrome.tabs.sendMessage(tabId, { type: 'slide/action/on', page: request.page, data: request.data })
+      }
+    })
+
+    sendResponse(true)
+    return true
+  }
+
+  if (request.action === 'moveToChatPageWithState') {
+    if (request.data) {
+      chrome.tabs.sendMessage(sender.tab?.id, { type: 'state', page: request.page, data: request.data })
+    } else {
+      chrome.tabs.sendMessage(sender.tab?.id, { type: 'state', page: request.page })
+    }
+    sendResponse(true)
+    return true
+  }
 })
 ```
 
