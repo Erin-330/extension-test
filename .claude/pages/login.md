@@ -101,51 +101,17 @@ Google OAuth 토큰은 `authResult.data.token`.
 
 ## API
 
-### POST /users/login — Google OAuth 로그인 및 JWT 발급
+**Swagger**: `http://mcp-agents-staging-alb-249976027.us-east-1.elb.amazonaws.com:5012/api-docs/swagger-ui-init.js`
 
-**인증**: 없음
-
-#### Request Body
-
-| 필드 | 타입 | 필수 | 설명 |
-|------|------|:----:|------|
-| `platformType` | `string` | O | `'google'` 고정 (❌ `'EXTENSION'`) |
-| `token` | `string` | O | `authResult.data.token` — Step 1에서 받은 Google OAuth 토큰 |
-
-#### Response Body
-
-| 필드 | 타입 | 설명 |
-|------|------|------|
-| `resultCode` | `string` | `'0000'` = 성공, 그 외 = 실패 |
-| `resultMsg` | `string` | 오류 메시지 |
-| `data.jwt` | `string` | JWT — `localStorage.setItem('pie-u-wt', jwt)`로 저장 (❌ `data.token`) |
-| `data.id` | `string` | 사용자 ID |
-| `data.email` | `string` | 이메일 |
-| `data.name` | `string` | 이름 |
-| `data.picture` | `string` | 프로필 이미지 URL |
-| `data.boost` | `number` | Boost 수치 |
-| `data.given_name` | `string` | 이름(given) |
-| `data.payments` | `object` | `{ xsollaUseYN, tossUseYN }` |
-
-#### 에러
-
-| resultCode | 설명 |
-|------------|------|
-| `GOOGLE_API_ERROR` | OAuth 토큰 무효 또는 Google API 오류 |
-
-#### 성공 판별
-
-```js
-if (result.resultCode !== '0000') { /* 오류 처리 */ }
-const jwt = result.data.jwt
-localStorage.setItem('pie-u-wt', jwt)
-```
+이 페이지에서 사용하는 엔드포인트:
+- `POST /users/login` — Google OAuth 로그인 및 JWT 발급
+- `GET /users/me` — 내 정보 조회 (Bearer 인증 필요)
 
 ---
 
 ## 로그인 후 라우팅
 
-JWT payload의 `follow_onboarding_yn` 필드로 이동 페이지 결정:
+`GET /users/me` 또는 JWT payload의 `follow_onboarding_yn` 필드로 이동 페이지 결정:
 
 | 조건 | 이동 |
 |------|------|

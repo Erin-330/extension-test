@@ -39,9 +39,11 @@
 1. `.claude/spec-template.md` 읽기
 2. `.claude/Design System.md` 읽기
 
-### Step 2 — Swagger fetch (조건부 — Swagger URL이 함께 제공된 경우)
+### Step 2 — API 필요 여부 확인 및 Swagger fetch
 
-Swagger URL에서 OpenAPI 스펙을 fetch해 페이지에서 사용할 엔드포인트를 파악한다.
+**Swagger URL이 함께 제공된 경우:**
+
+아래 명령으로 OpenAPI 스펙을 fetch한다.
 
 > **⚠️ WebFetch 툴은 HTTP URL을 HTTPS로 자동 업그레이드하므로 HTTP 서버에 접근 불가.**
 > **반드시 Bash 툴의 curl 명령어를 사용한다.**
@@ -50,10 +52,16 @@ Swagger URL에서 OpenAPI 스펙을 fetch해 페이지에서 사용할 엔드포
 curl -s "[Swagger URL]/api-docs/swagger-ui-init.js"
 ```
 
-- 위 경로로 전체 OpenAPI 스펙(swaggerDoc)을 가져온다.
 - `/api-docs/swagger-ui-init.js` 가 없으면 `/api-docs-json`, `/openapi.json` 순으로 시도한다.
 - 이 페이지의 기능과 관계없는 엔드포인트는 제외한다.
-- fetch 결과는 Step 3의 **API 섹션**에만 반영한다. 별도 파일로 저장하지 않는다.
+- fetch 결과는 Step 3 MD 파일의 **API 섹션**에만 반영한다. 별도 파일로 저장하지 않는다.
+
+**Swagger URL이 없는 경우:**
+
+사용자에게 묻는다: "이 페이지에 API 연동이 필요한가요?"
+
+- 필요 없다 → Step 3에서 API 섹션을 생략하고 진행한다.
+- 필요하다 → Swagger URL 또는 엔드포인트 정보를 요청한 뒤 제공받은 후 진행한다.
 
 ### Step 3 — MD 명세 파일 작성
 
@@ -63,7 +71,18 @@ curl -s "[Swagger URL]/api-docs/swagger-ui-init.js"
 - 파일명은 spec-template의 "파일명 규칙" 섹션을 따른다.
 - 필수 섹션은 모두 작성, 조건부 섹션은 해당 기능이 없으면 생략한다.
 - 기능명세서 이미지가 입력으로 오면 spec-template의 "기능명세서 이미지에서 추출해야 할 정보" 표를 참고해 정보를 추출한다.
-- Swagger를 fetch했다면 spec-template의 API 섹션 형식대로 Request/Response 표를 채운다.
+- **Swagger URL이 제공된 경우**: API 섹션에 상세 내용 대신 아래 형식으로만 기재한다.
+
+```md
+## API
+
+**Swagger**: `[Swagger URL]/api-docs/swagger-ui-init.js`
+
+이 페이지에서 사용하는 엔드포인트:
+- `[METHOD] /path` — 설명
+```
+
+- API를 구현할 때는 MD에 기재된 Swagger URL을 curl로 fetch해 스펙을 확인한 뒤 구현한다.
 
 ### Step 4 — CLAUDE.md 매핑 업데이트
 
