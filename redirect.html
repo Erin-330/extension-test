@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RORR · 인증 처리</title>
+    <link rel="stylesheet" href="./src/tokens.css" />
+    <link rel="stylesheet" href="./src/redirect/redirect.css" />
+  </head>
+  <body>
+    <main class="redirect-page">
+      <img
+        class="emblem"
+        src="https://erin-bucket-team.s3.amazonaws.com/RORR%20EMBLEM.png"
+        alt="RORR"
+      />
+      <div id="status-block" class="status-block">
+        <div class="spinner" id="spinner" aria-hidden="true"></div>
+        <p id="status-text" class="status-text">인증 처리 중...</p>
+      </div>
+      <p class="hint">잠시 후 창이 닫힙니다</p>
+    </main>
+
+    <script type="module" src="./src/redirect/main.js"></script>
+  </body>
+</html>

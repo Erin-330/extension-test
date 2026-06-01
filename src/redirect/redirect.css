@@ -1,0 +1,90 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-background-light);
+  color: var(--color-text-0);
+  font-family: var(--font-family-base);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.redirect-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.emblem {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.status-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.status-block.success .spinner,
+.status-block.error .spinner {
+  display: none;
+}
+
+.status-block.success::before,
+.status-block.error::before {
+  content: '';
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-block;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.status-block.success::before {
+  background-color: var(--color-success);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+}
+
+.status-block.error::before {
+  background-color: var(--color-error);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><line x1='18' y1='6' x2='6' y2='18'/><line x1='6' y1='6' x2='18' y2='18'/></svg>");
+}
+
+.status-text {
+  margin: 0;
+  font-size: var(--font-size-description-16);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-0);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--font-size-annotation);
+  color: var(--color-text-50);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
