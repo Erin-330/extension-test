@@ -94,6 +94,13 @@ curl -s "[Swagger URL]/api-docs/swagger-ui-init.js"
 
 ### Step 5 — HTML 페이지 구현
 
+> **API 구현 전 필수 — MD에 Swagger URL이 있는 경우**
+> Step 3에서 작성한 MD 파일의 API 섹션에 Swagger URL이 있으면, 구현 전 반드시 아래 명령으로 스펙을 fetch한 뒤 엔드포인트 상세(Request/Response)를 확인하고 구현한다.
+> ```bash
+> curl -s "[MD에 기재된 Swagger URL]"
+> ```
+> Swagger 스펙이 구현의 유일한 API 진실 소스다. MD에 별도 테이블이 없어도 Swagger를 읽으면 충분하다.
+
 > **Chrome Extension JS 작성 규칙**
 > - `chrome.runtime.sendMessage` 응답 형식: `{ code, message: 'success'|'fail', data: { ... } }`
 > - OAuth 토큰: `result.data.token` (❌ `result.token`)
