@@ -3,7 +3,7 @@
   "name": "RORR",
   "version": "1.0.0",
   "description": "스포츠를 더 즐겁게, 함께",
-  "permissions": ["sidePanel"],
+  "permissions": ["sidePanel", "identity"],
   "host_permissions": [
     "https://erin-bucket-team.s3.amazonaws.com/*",
     "https://erin-bucket-team.s3.us-east-1.amazonaws.com/*"
