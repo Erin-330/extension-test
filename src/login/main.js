@@ -54,18 +54,8 @@ async function loginToBackend(googleToken) {
   return res.json()
 }
 
-async function fetchMe(jwt) {
-  const res = await fetch(`${API_BASE}/users/me`, {
-    headers: { Authorization: `Bearer ${jwt}` },
-  })
-  if (!res.ok) return null
-  return res.json()
-}
-
-function routeAfterLogin(me) {
-  const onboarded = me && me.follow_onboarding_yn === true
-  const next = onboarded ? 'home.html' : 'follow-league.html'
-  window.location.href = next
+function routeAfterLogin() {
+  window.location.href = 'profile.html'
 }
 
 async function handleGoogleLogin() {
@@ -111,8 +101,7 @@ async function handleGoogleLogin() {
     localStorage.setItem(JWT_KEY, jwt)
     chrome.runtime.sendMessage({ type: 'auth/loginSuccess' }).catch(() => {})
 
-    const me = await fetchMe(jwt)
-    routeAfterLogin(me)
+    routeAfterLogin()
   } catch (e) {
     setStatus(e?.message || '알 수 없는 오류가 발생했습니다.', 'error')
     setLoading(false)
