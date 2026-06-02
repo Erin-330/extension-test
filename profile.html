@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RORR 프로필</title>
+    <link rel="stylesheet" href="./src/tokens.css" />
+    <link rel="stylesheet" href="./src/profile/profile.css" />
+  </head>
+  <body>
+    <main class="profile-page">
+      <header class="profile-header">
+        <button id="close-btn" type="button" class="icon-btn" aria-label="닫기">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+        <button id="mail-btn" type="button" class="icon-btn" aria-label="메일함">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path d="M3 6h18v12H3zM3 6l9 7 9-7" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none" />
+          </svg>
+          <span id="mail-badge" class="badge" hidden>0</span>
+        </button>
+      </header>
+
+      <section class="user-card">
+        <div id="avatar-ring" class="avatar-ring" data-grade="participant">
+          <div id="avatar" class="avatar">
+            <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" fill="currentColor" />
+              <path d="M4 20c0-4 4-6 8-6s8 2 8 6" fill="currentColor" />
+            </svg>
+          </div>
+        </div>
+        <p id="email" class="email">—</p>
+        <div class="nickname-row">
+          <p id="displayname" class="displayname">—</p>
+          <button id="toggle-name-btn" type="button" class="toggle-name-btn" hidden>더 보기</button>
+        </div>
+        <div class="stats-row">
+          <div class="stat">
+            <span class="stat-label">Spark</span>
+            <span id="exp" class="stat-value spark">0</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">등급</span>
+            <span id="grade-name" class="stat-value">—</span>
+          </div>
+          <div class="stat energy">
+            <span class="stat-label">에너지</span>
+            <span id="cash" class="stat-value energy-value">0</span>
+            <button id="charge-btn" type="button" class="charge-btn" aria-label="에너지 충전" disabled>+</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="menu-list">
+        <button class="menu-item" data-action="internal" data-href="follow-league.html?from=profile" type="button">
+          <span class="menu-icon" aria-hidden="true">★</span>
+          <span class="menu-label">팔로우 팀 &amp; 선수</span>
+          <span class="menu-arrow" aria-hidden="true">›</span>
+        </button>
+        <button class="menu-item" data-action="internal" data-href="purchase-history.html?from=profile" type="button">
+          <span class="menu-icon" aria-hidden="true">▦</span>
+          <span class="menu-label">구매 내역</span>
+          <span class="menu-arrow" aria-hidden="true">›</span>
+        </button>
+        <button class="menu-item" data-action="internal" data-href="boost-history.html?from=profile" type="button">
+          <span class="menu-icon" aria-hidden="true">⚡</span>
+          <span class="menu-label">부스트 내역</span>
+          <span class="menu-arrow" aria-hidden="true">›</span>
+        </button>
+        <button class="menu-item" data-action="external" data-href="https://rorr.club" type="button">
+          <span class="menu-icon" aria-hidden="true">◎</span>
+          <span class="menu-label">서비스 바로가기</span>
+          <span class="menu-arrow" aria-hidden="true">↗</span>
+        </button>
+        <button class="menu-item" data-action="external" data-href="https://rorr.club/terms" type="button">
+          <span class="menu-icon" aria-hidden="true">§</span>
+          <span class="menu-label">이용약관</span>
+          <span class="menu-arrow" aria-hidden="true">↗</span>
+        </button>
+        <button class="menu-item" data-action="external" data-href="https://rorr.club/privacy" type="button">
+          <span class="menu-icon" aria-hidden="true">🔒</span>
+          <span class="menu-label">개인정보 처리방침</span>
+          <span class="menu-arrow" aria-hidden="true">↗</span>
+        </button>
+      </section>
+
+      <p id="status-message" class="status-message" role="status" aria-live="polite"></p>
+
+      <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner" aria-label="로딩 중"></div>
+      </div>
+    </main>
+
+    <script type="module" src="./src/profile/main.js"></script>
+  </body>
+</html>
