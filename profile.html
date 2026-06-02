@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RORR 프로필</title>
+    <link rel="stylesheet" href="./src/tokens.css" />
+    <link rel="stylesheet" href="./src/profile/profile.css" />
+  </head>
+  <body>
+    <main class="profile-page" id="profile-page">
+      <div id="loading-overlay" class="loading-overlay" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span>
+      </div>
+
+      <div id="error-banner" class="error-banner" role="alert" hidden></div>
+
+      <section id="profile-content" class="profile-content" hidden>
+        <header class="profile-card">
+          <div class="avatar-wrap" data-grade-id="1">
+            <img id="profile-picture" class="avatar" alt="" />
+            <button
+              id="mail-badge"
+              class="mail-badge"
+              type="button"
+              aria-label="메일함"
+              hidden
+            >
+              <span id="mail-count" class="mail-count">0</span>
+            </button>
+          </div>
+
+          <div class="profile-meta">
+            <p id="profile-email" class="profile-email" title=""></p>
+            <div class="nickname-row">
+              <h1 id="profile-nickname" class="profile-nickname"></h1>
+              <button
+                id="nickname-toggle"
+                class="nickname-toggle"
+                type="button"
+                hidden
+              >
+                더 보기
+              </button>
+            </div>
+            <p id="profile-grade" class="profile-grade"></p>
+          </div>
+        </header>
+
+        <section class="balance-row">
+          <div class="balance-card">
+            <span class="balance-label">SPARK</span>
+            <span id="spark-value" class="balance-value spark-value">0</span>
+          </div>
+          <div class="balance-card">
+            <span class="balance-label">에너지</span>
+            <div class="balance-energy">
+              <span id="energy-value" class="balance-value energy-value">0</span>
+              <button
+                id="energy-charge"
+                class="energy-charge"
+                type="button"
+                aria-label="에너지 충전"
+                disabled
+              >
+                +
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <nav class="menu-list" aria-label="프로필 메뉴">
+          <button class="menu-item" type="button" data-action="internal" data-target="follow-league.html?from=profile">
+            <span class="menu-label">팔로우 팀 &amp; 선수</span>
+            <span class="menu-arrow" aria-hidden="true">›</span>
+          </button>
+          <button class="menu-item" type="button" data-action="internal" data-target="purchase-history.html?from=profile">
+            <span class="menu-label">구매 내역</span>
+            <span class="menu-arrow" aria-hidden="true">›</span>
+          </button>
+          <button class="menu-item" type="button" data-action="internal" data-target="boost-history.html?from=profile">
+            <span class="menu-label">부스트 내역</span>
+            <span class="menu-arrow" aria-hidden="true">›</span>
+          </button>
+          <button class="menu-item" type="button" data-action="external" data-target="https://rorr.club">
+            <span class="menu-label">서비스 바로가기</span>
+            <span class="menu-arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="menu-item" type="button" data-action="external" data-target="https://rorr.club/terms">
+            <span class="menu-label">이용약관</span>
+            <span class="menu-arrow" aria-hidden="true">↗</span>
+          </button>
+          <button class="menu-item" type="button" data-action="external" data-target="https://rorr.club/privacy">
+            <span class="menu-label">개인정보 처리방침</span>
+            <span class="menu-arrow" aria-hidden="true">↗</span>
+          </button>
+        </nav>
+      </section>
+    </main>
+
+    <script type="module" src="./src/profile/main.js"></script>
+  </body>
+</html>
