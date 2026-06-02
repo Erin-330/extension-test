@@ -56,12 +56,6 @@ curl -s "[Swagger URL]/api-docs/swagger-ui-init.js"
 - 이 페이지의 기능과 관계없는 엔드포인트는 제외한다.
 - fetch 결과는 Step 3 MD 파일의 **API 섹션**에만 반영한다. 별도 파일로 저장하지 않는다.
 
-**Swagger URL이 없는 경우:**
-
-사용자에게 묻는다: "이 페이지에 API 연동이 필요한가요?"
-
-- 필요 없다 → Step 3에서 API 섹션을 생략하고 진행한다.
-- 필요하다 → Swagger URL 또는 엔드포인트 정보를 요청한 뒤 제공받은 후 진행한다.
 
 ### Step 3 — MD 명세 파일 작성
 
