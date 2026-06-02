@@ -31,7 +31,6 @@
 
 - `payments` 배열이 비어있으면 버튼 disabled
 - 탭 시 `chrome.tabs.create({ url: 충전URL })` 로 외부 탭 오픈
-- 충전 완료 신호(`boost/charged`)를 background로부터 수신하면 `cash` 값 업데이트 + 숫자 증가 애니메이션
 
 ### 메뉴 아이템
 
