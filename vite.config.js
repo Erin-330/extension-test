@@ -6,6 +6,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         login: resolve(__dirname, 'login.html'),
+        'email-login': resolve(__dirname, 'email-login.html'),
         profile: resolve(__dirname, 'profile.html'),
       },
     },
