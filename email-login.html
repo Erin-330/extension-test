@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RORR 이메일 로그인</title>
+    <link rel="stylesheet" href="./src/tokens.css" />
+    <link rel="stylesheet" href="./src/email-login/email-login.css" />
+  </head>
+  <body>
+    <main class="login-page">
+      <section class="brand">
+        <img
+          class="emblem"
+          src="https://erin-bucket-team.s3.amazonaws.com/RORR%20EMBLEM.png"
+          alt="RORR"
+        />
+        <p class="brand-tagline">스포츠를 더 즐겁게, 함께</p>
+      </section>
+
+      <form id="login-form" class="auth" novalidate>
+        <div class="field">
+          <label class="field-label" for="email">이메일</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            class="text-input"
+            inputmode="email"
+            autocomplete="email"
+            placeholder="example@rorr.club"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="password">비밀번호</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            class="text-input"
+            autocomplete="current-password"
+            placeholder="비밀번호를 입력하세요"
+            required
+          />
+        </div>
+
+        <p id="status-message" class="status-message" role="status" aria-live="polite"></p>
+
+        <button id="login-btn" type="submit" class="login-btn">
+          <span class="btn-label">로그인</span>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+      </form>
+
+      <nav class="auth-links">
+        <a href="#" id="find-password-link">비밀번호 찾기</a>
+        <span class="divider" aria-hidden="true"></span>
+        <a href="#" id="signup-link">회원가입</a>
+      </nav>
+    </main>
+
+    <script type="module" src="./src/email-login/main.js"></script>
+  </body>
+</html>
