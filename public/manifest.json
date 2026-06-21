@@ -24,7 +24,7 @@
     "default_title": "RORR"
   },
   "side_panel": {
-    "default_path": "login.html"
+    "default_path": "splash.html"
   },
   "background": {
     "service_worker": "background.js"
